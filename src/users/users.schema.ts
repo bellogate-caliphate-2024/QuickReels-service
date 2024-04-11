@@ -17,7 +17,7 @@ export class User {
 
   @Prop({ required: true }) // Specify type as String for video_url
   @IsNotEmpty()
-  video_url: string[]; // This will store an object as a JSON string
+  video_url: string; // This will store an object as a JSON string
 
   @Prop({}) // Specify type as String for thumbnail_url
   @IsNotEmpty()

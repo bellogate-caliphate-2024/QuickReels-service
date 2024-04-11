@@ -8,6 +8,7 @@ import {
   HttpStatus,
   NotFoundException,
   Param,
+  Patch,
   Post,
   Put,
   Query,
@@ -22,6 +23,7 @@ import { CreateUserDto } from 'src/dto/create-user.dto';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { User } from './users.schema';
 import { error } from 'console';
+import { UpdateUserDto } from 'src/dto/updateDto';
 @Controller('users')
 export class UsersController {
   constructor(private readonly userService: UsersService) {}
@@ -55,23 +57,72 @@ export class UsersController {
   @Get(':email')
   async getUserById(@Param('email') email: string): Promise<User> {
     const user = await this.userService.findByEmail(email);
-    return user
+    return user;
   }
+
 
   @Get('count')
   async countUsers(): Promise<number> {
-    return this.userService.countAll();
+    try {
+      return this.userService.countAll();
+    } catch (error) {
+      throw new Error(error.message);
+    }
   }
- 
+
   @Get('/videos/:email')
-  async getUserVideos(@Param('email') email: string): Promise<string[]> {
-    return this.userService.getUserVideos(email);
+  async getUserVideos(@Param('email') email: string): Promise<string> {
+    try {
+      return this.userService.getUserVideos(email);
+    } catch (error) {
+      throw new Error(error.message);
+    }
   }
 
   @Get('/allv')
-async getAllVideos(): Promise<string[]> {
-  const allvideos = await this.userService.getAllVideos();
-  console.log(allvideos);
-  return allvideos.toString().split(" "); 
-}
+  async getAllVideos(): Promise<string[]> {
+    try {
+      const allvideos = await this.userService.getAllVideos();
+      console.log(allvideos);
+      return allvideos.toString().split(' ');
+    } catch (error) {
+      throw new Error(error.message);
+    }
+  }
+
+  @Put(':id')
+  async updateUser(
+    @Param('id') userId: string,
+    @Body() updateUserDto: CreateUserDto,
+  ): Promise<User> {
+    try {
+      const updatedUser = await this.userService.updateUser(
+        userId,
+        updateUserDto,
+      );
+      return updatedUser;
+    } catch (error) {
+      throw new Error(error.message);
+    }
+  }
+
+  @Patch(':id')
+  async updateUserFields(
+    @Param('id') id: string,
+    @Body() updateDto: UpdateUserDto,
+  ) {
+    try {
+      return this.userService.updateUserFields(id, updateDto);
+    } catch (error) {
+      throw new Error(error.message);
+    }
+  }
+
+  @Delete(':id')
+  async deleteUser(@Param('id') id: string): Promise<void> {
+    const deletedUser = await this.userService.deleteById(id);
+    if (!deletedUser) {
+      throw new NotFoundException(`User with ID ${id} not found`);
+    }
+  }
 }
