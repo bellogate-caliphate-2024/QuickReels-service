@@ -99,39 +99,43 @@ export class UsersService {
 
   }
 
-  async getUserVideos(email: string): Promise<string> {
+  async getUserVideos(email: string): Promise<object> {
     try {
       const user = await this.userModel
-        .find({ email })
         .findOne({ email })
         .populate('video_url')
         .exec();
-
+  
       if (!user) {
-        throw new Error(`User with ${email} not found`);
+        throw new Error(`User with email ${email} not found`);
       }
-
-      const userVideos = user.video_url; 
-      return userVideos;
+  
+      const videoObj = {
+        videolink: user.video_url,
+      };
+  
+      return videoObj;
     } catch (error) {
       throw new Error('Failed to get user videos');
     }
   }
+  
 
 
-  async getAllVideos(): Promise<string> {
+  async getAllVideos(): Promise<any> {
     try {
-      // Fetch all users from the database
+      // Find all users and select only the video_url field
       const users = await this.userModel.find().select('video_url').exec();
-      console.log(users);
-
-      // Extract video URLs from each user and join them into a single string
-      const videoUrls = users.map((user) => user.video_url.toString());
-
+  
+      // Extract the video URLs from the users
+      const videoUrls = users.map(user => user.video_url.toString());
+  
+      // Log the video URLs for debugging purposes
+      console.log(videoUrls);
+  
       // Return the array of video URLs
-      return videoUrls.join(" , ");
+      return videoUrls;
     } catch (error) {
-      // Handle any errors that occur during the fetch operation
       console.error('Error fetching all videos:', error);
       throw new Error('Failed to fetch all videos');
     }

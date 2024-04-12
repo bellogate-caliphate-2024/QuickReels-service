@@ -1,9 +1,12 @@
+import { VideosModule } from './../videos/videos.module';
 import { UsersController } from './users.controller';
 import { Module} from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
 import { DatabaseConnection } from 'src/db';
 import { User, userSchema} from './users.schema';
 import { UsersService } from './users.service';
+import { VideosService } from 'src/videos/videos.service';
+import { VideosController } from 'src/videos/videos.controller';
 
 
 @Module({
@@ -14,9 +17,10 @@ import { UsersService } from './users.service';
     }),
   ],
     
-    controllers: [UsersController],
-    providers: [UsersService,DatabaseConnection,User],
-    exports: [UsersService]
+    controllers: [UsersController,VideosController],
+    providers: [UsersService,DatabaseConnection,VideosService,User],
+    exports:[User]
+    
 })
 export class UsersModule {}
 

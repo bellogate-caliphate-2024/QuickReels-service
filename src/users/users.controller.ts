@@ -72,7 +72,7 @@ export class UsersController {
   }
 
   @Get('/videos/:email')
-  async getUserVideos(@Param('email') email: string): Promise<string> {
+  async getUserVideos(@Param('email') email: string): Promise<any> {
     try {
       return this.userService.getUserVideos(email);
     } catch (error) {
@@ -80,15 +80,8 @@ export class UsersController {
     }
   }
 
-  @Get('/allv')
-  async getAllVideos(): Promise<string> {
-    try {
-      const allvideos = await this.userService.getAllVideos();
-      return allvideos 
-    } catch (error) {
-      throw new Error(error.message);
-    }
-  }
+  
+
 
 
   @Put(':id')
@@ -119,11 +112,5 @@ export class UsersController {
     }
   }
 
-  @Delete(':id')
-  async deleteUser(@Param('id') id: string): Promise<void> {
-    const deletedUser = await this.userService.deleteById(id);
-    if (!deletedUser) {
-      throw new NotFoundException(`User with ID ${id} not found`);
-    }
-  }
+  
 }
