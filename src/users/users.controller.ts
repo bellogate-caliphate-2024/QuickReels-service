@@ -26,9 +26,10 @@ import { error } from 'console';
 import { UpdateUserDto } from 'src/dto/updateDto';
 @Controller('users')
 export class UsersController {
+  private video : string[]
   constructor(private readonly userService: UsersService) {}
 
-  @Post('post_video')
+  @Post('create_user')
   async createUserWithVideo(
     @Body() createUserDto: CreateUserDto,
   ): Promise<User> {
@@ -80,15 +81,15 @@ export class UsersController {
   }
 
   @Get('/allv')
-  async getAllVideos(): Promise<string[]> {
+  async getAllVideos(): Promise<string> {
     try {
       const allvideos = await this.userService.getAllVideos();
-      console.log(allvideos);
-      return allvideos.toString().split(' ');
+      return allvideos 
     } catch (error) {
       throw new Error(error.message);
     }
   }
+
 
   @Put(':id')
   async updateUser(

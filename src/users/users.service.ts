@@ -86,7 +86,7 @@ export class UsersService {
 
   async deleteById(id: string): Promise<User> {
     try {
-      const user = await this.userModel.findByIdAndDelete(id);
+      const user = await this.userModel.findByIdAndDelete({id});
       console.log(user);
       
       if (!user) {
@@ -119,19 +119,17 @@ export class UsersService {
   }
 
 
-  async getAllVideos(): Promise<string[]> {
+  async getAllVideos(): Promise<string> {
     try {
       // Fetch all users from the database
-      const users = await this.userModel.find().exec();
+      const users = await this.userModel.find().select('video_url').exec();
+      console.log(users);
 
       // Extract video URLs from each user and join them into a single string
       const videoUrls = users.map((user) => user.video_url.toString());
 
-      // Log the video URLs for debugging purposes
-      console.log(videoUrls);
-
       // Return the array of video URLs
-      return videoUrls;
+      return videoUrls.join(" , ");
     } catch (error) {
       // Handle any errors that occur during the fetch operation
       console.error('Error fetching all videos:', error);
@@ -147,9 +145,15 @@ export class UsersService {
 
     // Update user properties
     user.email = updateUserDto.email || user.email;
-    user.video_url = updateUserDto.video_url || user.video_url;
+    user.video_url = updateUserDto.video_url ||  user.video_url;
     user.thumbnail = updateUserDto.thumbnail || user.thumbnail;
     user.caption = updateUserDto.caption || user.caption;
+
+
+  //   if (!Array.isArray(user.video_url)) {
+  //     user.video_url = [user.video_url];
+  // }
+
 
     // Save updated user
     const updatedUser = await user.save();
