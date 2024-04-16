@@ -1,7 +1,7 @@
 import { Module} from '@nestjs/common';
 import { User, userSchema } from 'src/users/users.schema';
-import { VideosController } from './videos.controller';
-import { VideosService } from './videos.service';
+import { VideosController } from './data.controller';
+import { VideosService } from './data.service';
 import { UsersModule } from 'src/users/users.module';
 import { MongooseModule } from '@nestjs/mongoose';
 import { DatabaseConnection } from 'src/db';

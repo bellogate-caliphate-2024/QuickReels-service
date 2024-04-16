@@ -10,7 +10,7 @@ export class User {
   @Prop({})
   time: string;
 
-  @Prop({ required: true, unique: true })
+  @Prop({ required: true})
   @IsNotEmpty()
   @IsString()
   email: string;

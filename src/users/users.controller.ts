@@ -26,7 +26,6 @@ import { error } from 'console';
 import { UpdateUserDto } from 'src/dto/updateDto';
 @Controller('users')
 export class UsersController {
-  private video : string[]
   constructor(private readonly userService: UsersService) {}
 
   @Post('create_user')

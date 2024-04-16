@@ -1,12 +1,12 @@
-import { VideosModule } from './../videos/videos.module';
+import { VideosModule } from '../data/data.module';
 import { UsersController } from './users.controller';
 import { Module} from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
 import { DatabaseConnection } from 'src/db';
 import { User, userSchema} from './users.schema';
 import { UsersService } from './users.service';
-import { VideosService } from 'src/videos/videos.service';
-import { VideosController } from 'src/videos/videos.controller';
+import { VideosService } from 'src/data/data.service';
+import { VideosController } from 'src/data/data.controller';
 
 
 @Module({

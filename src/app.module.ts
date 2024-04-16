@@ -1,4 +1,4 @@
-import { VideosModule } from './videos/videos.module';
+import { VideosModule } from './data/data.module';
 import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
@@ -13,6 +13,7 @@ import { ConfigModule } from '@nestjs/config';
     }),
     UsersModule,
     VideosModule,
+    
   ],
   controllers: [AppController],
   providers: [AppService],

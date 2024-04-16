@@ -124,19 +124,12 @@ export class UsersService {
 
   async getAllVideos(): Promise<any> {
     try {
-      // Find all users and select only the video_url field
       const users = await this.userModel.find().select('video_url').exec();
   
-      // Extract the video URLs from the users
       const videoUrls = users.map(user => user.video_url.toString());
   
-      // Log the video URLs for debugging purposes
-      console.log(videoUrls);
-  
-      // Return the array of video URLs
       return videoUrls;
     } catch (error) {
-      console.error('Error fetching all videos:', error);
       throw new Error('Failed to fetch all videos');
     }
   }
@@ -153,13 +146,6 @@ export class UsersService {
     user.thumbnail = updateUserDto.thumbnail || user.thumbnail;
     user.caption = updateUserDto.caption || user.caption;
 
-
-  //   if (!Array.isArray(user.video_url)) {
-  //     user.video_url = [user.video_url];
-  // }
-
-
-    // Save updated user
     const updatedUser = await user.save();
     return updatedUser;
   }

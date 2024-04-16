@@ -10,57 +10,18 @@ import { UpdateUserDto } from 'src/dto/updateDto';
 export class VideosService {
   constructor(@InjectModel(User.name) private readonly userModel: Model<UserDocument>) {}
 
-  // async getAllVideos(): Promise<any[]> {
-  //   try {
-  //     const video_urls = await this.userModel.find().select('video_url').exec();
-  //     const users = await this.userModel.find().select('email').exec();
 
-  //     const videoObjects = video_urls.map((user, index) => ({
-  //         email: users[index].email, 
-  //         links: [user.video_url],
-  //     }));
-
-
-  //     return videoObjects;
-  //   } catch (error) {
-  //     console.error('Error fetching all videos:', error);
-  //     throw new Error('Failed to fetch all videos');
-  //   }
-  // }
-  
-
-//   async getAllVideos(page: number = 1, limit: number = 10): Promise<any[]> {
-//     try {
-//         const skipCount = (page - 1) * limit;
-        
-//         const video_urls = await this.userModel.find().select('video_url').skip(skipCount).limit(limit).exec();
-//         const users = await this.userModel.find().select('email').skip(skipCount).limit(limit).exec();
-
-//         const videoObjects = video_urls.map((user, index) => ({
-//             email: users[index].email, 
-//             links: [user.video_url],
-//         }));
-
-//         return videoObjects;
-//     } catch (error) {
-//         console.error('Error fetching all videos:', error);
-//         throw new Error('Failed to fetch all videos');
-//     }
-// }
-
-
-async createVideo(createUserDto: CreateUserDto): Promise<User> {
+async postVideo(createUserDto: CreateUserDto): Promise<User> {
   try {
-    // Check if video file is provided
     if (!createUserDto) {
-      throw new Error('No user data added');
+      throw new Error('No data added');
     }
     const formattedTime = format(new Date(), 'EEE do MMM yyyy h:mm a');
 
     createUserDto.time = formattedTime;
 
     // Create a new user object using the createUserDto data
-    const newUser = new CreateUserDto(
+    const newPost = new CreateUserDto(
       createUserDto.time,
       createUserDto.email,
       createUserDto.video_url,
@@ -68,18 +29,17 @@ async createVideo(createUserDto: CreateUserDto): Promise<User> {
       createUserDto.caption,
     );
 
-    const createdUser = await this.userModel.create(newUser);
-    await createdUser.save();
-    return createdUser;
+    const createdPost = await this.userModel.create(newPost);
+    await createdPost.save();
+    return createdPost;
   } catch (error) {
     console.log(error);
-
-    throw new Error('Failed to create user');
+    throw new Error('Failed to post video');
   }
 }
 
 
-async findVideosData(
+async getContent(
   page: number = 1,
   limit: number = 10,
 ): Promise<{
@@ -91,24 +51,21 @@ async findVideosData(
 }> {
   try {
     const skip = (page - 1) * limit;
-    const users = await this.userModel.find().skip(skip).limit(limit).exec();
+    const content = await this.userModel.find().skip(skip).limit(limit).exec();
     const totalUsers = await this.userModel.countDocuments().exec();
     const totalPages = Math.ceil(totalUsers / limit);
 
     return {
-      data: users,
+      data: content,
       page,
       limit,
       totalUsers,
       totalPages,
     };
   } catch (error) {
-    console.error('Error with pagination query', error);
-    throw new Error('Failed to fetch users');
+    throw new Error('Failed to Get Contents');
   }
 }
-
-
 
 
 
@@ -116,7 +73,7 @@ async getAllVideos(
   page: number = 1,
   limit: number = 10,
 ): Promise<{
-  data: { email: string; links: string[]; }[];
+  data: { email: string; video_url: string[]; }[];
   page: number;
   limit: number;
   totalVideos: number;
@@ -130,8 +87,9 @@ async getAllVideos(
 
       const data = videoUrls.map(user => ({
           email: user.email,
-          links: [user.video_url],
+          video_url: [user.video_url],
       }));
+
 
       return {
           data,
@@ -141,7 +99,6 @@ async getAllVideos(
           totalPages,
       };
   } catch (error) {
-      console.error('Error with pagination query', error);
       throw new Error('Failed to fetch videos');
   }
 }
@@ -150,20 +107,18 @@ async getAllVideos(
 
 async deleteVideo(id: string): Promise<any> {
   try {
-    const user = await this.userModel.findByIdAndDelete(id);
-    console.log(user);
-    
-    if (!user) {
-      throw new Error(`Video with URL ${user} not found`);
+    const data = await this.userModel.findByIdAndDelete(id);    
+    if (!data) {
+      throw new Error(` URL ${data} not found`);
     }
-    return { message: 'Video deleted successfully', user: user };
+    return { message: 'Deleted successfully', data: data };
   } catch (error) {
     throw new Error(`Failed to delete user`);
   }
-
 }
 
-async updateUserFields(id: string, updateDto: UpdateUserDto): Promise<User> {
+
+async updateFields(id: string, updateDto: UpdateUserDto): Promise<User> {
   try {
     return this.userModel
       .findByIdAndUpdate(id, updateDto, { new: true })
