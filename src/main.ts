@@ -16,8 +16,8 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { Logger } from '@nestjs/common';
-import  cluster from 'cluster';
-import  os from 'os';
+import cluster from 'cluster';
+import os from 'os';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -39,9 +39,9 @@ async function bootstrap() {
     });
   } else {
     await app.listen(3000);
+
     
     logger.log(`Worker ${process.pid} started`);
-
   }
 }
 

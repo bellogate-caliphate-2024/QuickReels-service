@@ -62,6 +62,7 @@ async getContent(
       totalUsers,
       totalPages,
     };
+    
   } catch (error) {
     throw new Error('Failed to Get Contents');
   }
