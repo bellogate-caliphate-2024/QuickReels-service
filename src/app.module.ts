@@ -1,8 +1,7 @@
-import { VideosModule } from './data/data.module';
+import { VideosModule } from './video_url/video_url.module';
 import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
-import { UsersModule } from './users/users.module';
 import { ConfigModule } from '@nestjs/config';
 
 @Module({
@@ -11,7 +10,6 @@ import { ConfigModule } from '@nestjs/config';
       envFilePath: '.env',
       isGlobal: true,
     }),
-    UsersModule,
     VideosModule,
     
   ],

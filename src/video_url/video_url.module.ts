@@ -1,20 +1,18 @@
 import { Module} from '@nestjs/common';
-import { User, userSchema } from 'src/users/users.schema';
-import { VideosController } from './data.controller';
-import { VideosService } from './data.service';
-import { UsersModule } from 'src/users/users.module';
+import { VideosController } from './video_url.controller';
+import { VideosService } from './video_url.service';
 import { MongooseModule } from '@nestjs/mongoose';
 import { DatabaseConnection } from 'src/db';
+import { Video_Url,video_urlSchema } from './video_url.schema';
 @Module({
     imports: [
-      UsersModule,
-      MongooseModule.forFeature([{name: "User", schema: userSchema}]),
+      MongooseModule.forFeature([{name: "Video_Url", schema: video_urlSchema}]),
       MongooseModule.forRootAsync({
         useClass: DatabaseConnection,
       }),
     ],
       controllers: [VideosController],
-      providers: [VideosService,User],
+      providers: [VideosService,Video_Url],
       
   })
 

@@ -1,6 +1,5 @@
-import { User } from "src/users/users.schema";
 
-export class CreateUserDto {
+export class CreateVideoDto {
    time: string; // Change type to string for formatted date
   readonly email: string;
   readonly video_url:string; // Change type to MulterFile
@@ -15,9 +14,6 @@ export class CreateUserDto {
     this.thumbnail = thumbnail;
     this.caption = caption;
   }
-
-  
-
   
 }
 

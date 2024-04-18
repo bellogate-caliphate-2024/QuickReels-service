@@ -2,10 +2,10 @@ import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document } from 'mongoose';
 import { IsNotEmpty, IsObject, IsString, IsUrl } from 'class-validator';
 
-export type UserDocument = User & Document;
+export type video_urlDocument = Video_Url & Document;
 
 @Schema({ timestamps: true })
-export class User {
+export class Video_Url {
 
   @Prop({})
   time: string;
@@ -30,4 +30,4 @@ export class User {
 
 }
 
-export const userSchema = SchemaFactory.createForClass(User);
+export const video_urlSchema = SchemaFactory.createForClass(Video_Url);

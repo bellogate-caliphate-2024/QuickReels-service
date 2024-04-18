@@ -1,35 +1,35 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
-import { User, UserDocument } from '../users/users.schema';
-import { CreateUserDto } from 'src/dto/create-user.dto';
+import { Video_Url,video_urlDocument } from './video_url.schema';
 import { format } from 'date-fns';
-import { UpdateUserDto } from 'src/dto/updateDto';
-
+import { UpdateVideo_urlDto } from 'src/dto/updateDto';
+import { CreateVideoDto } from 'src/dto/video_url.dto';
 @Injectable()
 export class VideosService {
-  constructor(@InjectModel(User.name) private readonly userModel: Model<UserDocument>) {}
+  // constructor(@InjectModel(User.name) private readonly userModel: Model<UserDocument>) {}
+  constructor(@InjectModel(Video_Url.name) private readonly video_urlModel: Model<video_urlDocument>) {}
 
 
-async postVideo(createUserDto: CreateUserDto): Promise<User> {
+async postVideo(createVideoDTO: CreateVideoDto): Promise<Video_Url> {
   try {
-    if (!createUserDto) {
+    if (!createVideoDTO) {
       throw new Error('No data added');
     }
     const formattedTime = format(new Date(), 'EEE do MMM yyyy h:mm a');
 
-    createUserDto.time = formattedTime;
+    createVideoDTO.time = formattedTime;
 
-    // Create a new user object using the createUserDto data
-    const newPost = new CreateUserDto(
-      createUserDto.time,
-      createUserDto.email,
-      createUserDto.video_url,
-      createUserDto.thumbnail,
-      createUserDto.caption,
+    // Create a new user object using the createVideoDTO data
+    const newPost = new CreateVideoDto(
+      createVideoDTO.time,
+      createVideoDTO.email,
+      createVideoDTO.video_url,
+      createVideoDTO.thumbnail,
+      createVideoDTO.caption,
     );
 
-    const createdPost = await this.userModel.create(newPost);
+    const createdPost = await this.video_urlModel.create(newPost);
     await createdPost.save();
     return createdPost;
   } catch (error) {
@@ -43,7 +43,7 @@ async getContent(
   page: number = 1,
   limit: number = 10,
 ): Promise<{
-  data: User[];
+  data: Video_Url[];
   page: number;
   limit: number;
   totalUsers: number;
@@ -51,8 +51,8 @@ async getContent(
 }> {
   try {
     const skip = (page - 1) * limit;
-    const content = await this.userModel.find().skip(skip).limit(limit).exec();
-    const totalUsers = await this.userModel.countDocuments().exec();
+    const content = await this.video_urlModel.find().skip(skip).limit(limit).exec();
+    const totalUsers = await this.video_urlModel.countDocuments().exec();
     const totalPages = Math.ceil(totalUsers / limit);
 
     return {
@@ -82,8 +82,8 @@ async getAllVideos(
 }> {
   try {
       const skip = (page - 1) * limit;
-      const videoUrls = await this.userModel.find().select('email video_url').skip(skip).limit(limit).exec();
-      const totalVideos = await this.userModel.countDocuments().exec();
+      const videoUrls = await this.video_urlModel.find().select('email video_url').skip(skip).limit(limit).exec();
+      const totalVideos = await this.video_urlModel.countDocuments().exec();
       const totalPages = Math.ceil(totalVideos / limit);
 
       const data = videoUrls.map(user => ({
@@ -108,7 +108,7 @@ async getAllVideos(
 
 async deleteVideo(id: string): Promise<any> {
   try {
-    const data = await this.userModel.findByIdAndDelete(id);    
+    const data = await this.video_urlModel.findByIdAndDelete(id);    
     if (!data) {
       throw new Error(` URL ${data} not found`);
     }
@@ -119,9 +119,9 @@ async deleteVideo(id: string): Promise<any> {
 }
 
 
-async updateFields(id: string, updateDto: UpdateUserDto): Promise<User> {
+async updateFields(id: string, updateDto: UpdateVideo_urlDto): Promise<Video_Url> {
   try {
-    return this.userModel
+    return this.video_urlModel
       .findByIdAndUpdate(id, updateDto, { new: true })
       .exec();
   } catch (error) {

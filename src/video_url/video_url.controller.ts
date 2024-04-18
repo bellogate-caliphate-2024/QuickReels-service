@@ -8,21 +8,20 @@ import {
   Post,
   Query,
 } from '@nestjs/common';
-import { VideosService } from './data.service';
-import { User } from 'src/users/users.schema';
-import { CreateUserDto } from 'src/dto/create-user.dto';
-import { UpdateUserDto } from 'src/dto/updateDto';
-
-@Controller('post')
+import { VideosService } from './video_url.service';
+import { UpdateVideo_urlDto } from 'src/dto/updateDto';
+import { CreateVideoDto } from 'src/dto/video_url.dto';
+import { Video_Url } from './video_url.schema';
+@Controller('api/v1/production')
 export class VideosController {
   constructor(private readonly videosService: VideosService) {}
 
   @Post('post_video')
   async createUserWithVideo(
-    @Body() createUserDto: CreateUserDto,
-  ): Promise<User> {
+    @Body() createVideo_urlDTO: CreateVideoDto,
+  ): Promise<Video_Url> {
     try {
-      const user = this.videosService.postVideo(createUserDto);
+      const user = this.videosService.postVideo(createVideo_urlDTO);
       return user;
     } catch (error) {
       console.log(error);
@@ -34,7 +33,7 @@ export class VideosController {
     @Query('page') page: number,
     @Query('limit') limit: number,
   ): Promise<{
-    data: User[];
+    data: Video_Url[];
     page: number;
     limit: number;
     totalUsers: number;
@@ -63,7 +62,7 @@ export class VideosController {
   @Patch('edit_post/:id')
   async updateUserFields(
     @Param('id') id: string,
-    @Body() updateDto: UpdateUserDto,
+    @Body() updateDto: UpdateVideo_urlDto,
   ) {
     try {
       return this.videosService.updateFields(id, updateDto);
