@@ -19,10 +19,9 @@ import {
 } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { CreateUserDto } from 'src/dto/create-user.dto';
-import { FileInterceptor } from '@nestjs/platform-express';
 import { User } from './users.schema';
-import { error } from 'console';
-@Controller('users')
+
+@Controller('api/v1/development')
 export class UsersController {
   constructor(private readonly userService: UsersService) {}
 
