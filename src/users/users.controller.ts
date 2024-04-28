@@ -37,6 +37,8 @@ export class UsersController {
     }
   }
 
+
+
   @Get('/')
   async findAll(
     @Query('page') page: number,
@@ -73,4 +75,6 @@ async getAllVideos(): Promise<string[]> {
   console.log(allvideos);
   return allvideos.toString().split(" "); 
 }
+
+
 }

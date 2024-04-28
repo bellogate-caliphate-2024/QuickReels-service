@@ -5,7 +5,7 @@ import { MongooseOptionsFactory, MongooseModuleOptions } from '@nestjs/mongoose'
 export class DatabaseConnection implements MongooseOptionsFactory {
   createMongooseOptions(): MongooseModuleOptions {
     return {
-      uri: process.env.MONGO_URI,
+      uri: "mongodb+srv://Gavin:x$rayG1G@cluster0.su3jrhq.mongodb.net/quickReels",
     };
   }
 }
