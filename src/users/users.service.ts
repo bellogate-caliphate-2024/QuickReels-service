@@ -30,6 +30,8 @@ export class UsersService {
 
       const createdUser = await this.userModel.create(newUser);
       await createdUser.save();
+      console.log(createdUser);
+      
       return createdUser;
     } catch (error) {
       console.log(error);

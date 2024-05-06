@@ -41,7 +41,7 @@ lerna-debug.log*
 .env.test.local
 .env.production.local
 .env.local
-
+.quickreels-service-firebase-adminsdk-yjzwg-1277b47e33.json
 # temp directory
 .temp
 .tmp
