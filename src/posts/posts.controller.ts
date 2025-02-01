@@ -9,9 +9,8 @@ import {
     HttpCode,
   } from '@nestjs/common';
   import { FileInterceptor } from '@nestjs/platform-express';
-  import { CreatePostDto } from './dto/create-post.dto';
+  import { CreatePostDto } from 'src/data/posts.dto';
   import { PostsService } from './posts.service';
-  
   @Controller('posts')
   export class PostsController {
     constructor(private readonly postService: PostsService) {}
