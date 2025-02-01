@@ -18,7 +18,8 @@ import {
   
     @Post('create_post')
     @HttpCode(201) // 201 Created
-    @UseInterceptors(FileInterceptor('video'))
+    // Set up the endpoint to accept: A video file (multipart/form-data)
+    @UseInterceptors(FileInterceptor('video')) 
     async createPost(
       @UploadedFile() videoFile: Express.Multer.File,
       @Query() createPostDto: CreatePostDto,
@@ -28,4 +29,6 @@ import {
       }
         return this.postService.createPost(videoFile, createPostDto);
     }
+
+    
   }
