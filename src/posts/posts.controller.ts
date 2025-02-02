@@ -9,7 +9,7 @@ import {
     HttpCode,
   } from '@nestjs/common';
   import { FileInterceptor } from '@nestjs/platform-express';
-  import { CreatePostDto } from 'src/data/posts.dto';
+  import { CreatePostDto } from 'src/data/Abstarcts/posts.dto';
   import { PostsService } from './posts.service';
   @Controller('posts')
   export class PostsController {

@@ -4,6 +4,9 @@ import { AppService } from './app.service';
 import { PostsController } from './posts/posts.controller';
 import { PostsService } from './posts/posts.service';
 import { ConfigModule } from '@nestjs/config';
+import { MongooseModule } from '@nestjs/mongoose';
+import { PostModule } from './posts/posts.module';
+import {config} from 'dotenv'
 
 @Module({
   imports: [
@@ -11,8 +14,10 @@ import { ConfigModule } from '@nestjs/config';
       envFilePath: '.env',
       isGlobal: true, // Make the configuration global
     }),
+    MongooseModule.forRoot(process.env.MONGODB || ''),
+    PostModule
   ],
   controllers: [AppController, PostsController],
-  providers: [AppService, PostsService],
+  providers: [AppService],
 })
 export class AppModule {}

@@ -21,4 +21,9 @@ export class CreatePostDto {
   @IsOptional()
   @IsString()
   email?: string;
+
+  @IsOptional()
+  @IsString()
+  videoUrl?: string;
+  
 }
