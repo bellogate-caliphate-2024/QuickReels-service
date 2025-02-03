@@ -1,29 +1,25 @@
 // src/posts/dto/create-post.dto.ts
-import { IsString, IsNotEmpty, IsOptional } from 'class-validator';
+import { IsString, IsNotEmpty, IsOptional, IsArray } from 'class-validator';
 
 export class CreatePostDto {
   @IsString()
   @IsNotEmpty()
-  videoId: string;
+  email: string;
 
-  @IsString()
-  @IsNotEmpty()
-  userId: string;
+  @IsOptional()
+  @IsArray()
+  @IsString({ each: true })
+  video_url?: string[];  // Updated to be an array of strings
 
-  @IsString()
-  @IsNotEmpty()
-  time: string;
-
-  @IsString()
-  @IsNotEmpty()
-  caption: string;
+  @IsOptional()
+  @IsString({ each: true })
+  thumbnail?: string[];
 
   @IsOptional()
   @IsString()
-  email?: string;
+  caption?: string;
 
   @IsOptional()
   @IsString()
-  videoUrl?: string;
-  
+  time?: string;
 }
