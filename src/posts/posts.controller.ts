@@ -33,12 +33,15 @@ import {
     }
 
 
-    @Delete('/deletevideo/:email')
+    @Delete('/deletePost/:postId')
     async deletePost(
       @Param('email') email: string,
-      @Body('video_url') videoUrl: string,
+      @Body('videoUrl') videoUrl: string,
     ) {
       try {
+        if (!videoUrl) {
+          throw new BadRequestException('No post was found');
+        }
         return await this.postService.deletePost(email, videoUrl);
       } catch (error) {
         console.error(error.message);
