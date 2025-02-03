@@ -7,6 +7,9 @@ import {
     UseInterceptors,
     BadRequestException,
     HttpCode,
+    Param,
+    Delete,
+    Body,
   } from '@nestjs/common';
   import { FileInterceptor } from '@nestjs/platform-express';
   import { CreatePostDto } from 'src/data/Abstarcts/posts.dto';
@@ -29,5 +32,19 @@ import {
         return this.postService.createPost(videoFile, createPostDto);
     }
 
+
+    @Delete('/deletevideo/:email')
+    async deletePost(
+      @Param('email') email: string,
+      @Body('video_url') videoUrl: string,
+    ) {
+      try {
+        return await this.postService.deletePost(email, videoUrl);
+      } catch (error) {
+        console.error(error.message);
+        throw new Error('Failed to delete video URL from user');
+      }
+    }
+  
     
   }

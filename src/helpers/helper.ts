@@ -1,4 +1,4 @@
-import { BadRequestException, ConflictException, InternalServerErrorException, Injectable, Logger } from "@nestjs/common";
+import { BadRequestException, ConflictException, InternalServerErrorException, Injectable, Logger, NotFoundException } from "@nestjs/common";
 import { InjectModel } from "@nestjs/mongoose";
 import { Model } from "mongoose";
 import { Post } from "src/data/Abstarcts/Schemas/posts.schema";
@@ -17,6 +17,23 @@ export class Helper {
       return await createdPost.save();
     } catch (error) {
       this.logger.error(`Database save failed: ${error.message}`, error.stack);
+      throw this.handleError(error);
+    }
+  }
+
+
+
+  async deletePost(id: string) {
+    try {
+      const deletedPost = await this.postModel.findByIdAndDelete(id).exec();
+      
+      if (!deletedPost) {
+        throw new NotFoundException(`Post with ID ${id} not found`);
+      }
+
+      return deletedPost;
+    } catch (error) {
+      this.logger.error(`Database delete failed: ${error.message}`, error.stack);
       throw this.handleError(error);
     }
   }

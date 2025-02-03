@@ -135,4 +135,32 @@ export class PostsService {
       throw new Error('Failed to upload video');
     }
   }
+
+
+
+
+  async deletePost(email: string, videoUrl: string): Promise<{ message }> {
+    try {
+      // Find the user by email
+      const post = await this.postModel.findOne({ email }).exec();
+
+      if (!post) {
+        throw new Error(`post with email ${email} not found`);
+      }
+
+      // Remove the specified video URL from the array
+      post.videoUrl = post.videoUrl.filter((url) => url !== videoUrl);
+
+      // Save the updated user document
+      await post.save();
+
+      return {
+        message: `users${post.email} video ${post.videoUrl} succesfully deleted`,
+      };
+    } catch (error) {
+      console.error('Error deleting post video URL:', error);
+      throw new Error('Failed to delete video URL from post');
+    }
+  }
+
 }

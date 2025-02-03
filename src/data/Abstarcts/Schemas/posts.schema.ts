@@ -1,6 +1,6 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document } from 'mongoose';
-import { IsNotEmpty, IsOptional, IsString, MinLength } from 'class-validator';
+import { IsArray, IsNotEmpty, IsOptional, IsString, MinLength } from 'class-validator';
 
 export type PostDocument = Post & Document;
 
@@ -29,7 +29,8 @@ export class Post {
   
     @IsOptional()
     @IsString()
-    videoUrl?: string;
+    @IsArray()
+    videoUrl: string[];
 
     @IsOptional()
     @IsString()
