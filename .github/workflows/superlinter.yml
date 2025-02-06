@@ -1,1 +1,31 @@
 
+name: Run Tests
+
+on:
+  push:
+    branches:
+      - delete-post-endpoint
+  pull_request:
+    branches:
+      - delete-post-endpoint
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '16'
+
+      - name: Install Dependencies
+        run: yarn install
+
+      - name: Run Tests
+        run: yarn test
