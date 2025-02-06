@@ -3,10 +3,10 @@ name: Quickreels workflow
 on:
   push:
     branches:
-      - development
+      - delete-post-endpoint
   pull_request:
     branches:
-      - development
+      -  delete-post-endpoint
 
 permissions:
   contents: read
