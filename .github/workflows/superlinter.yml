@@ -1,13 +1,12 @@
-
 name: Quickreels workflow
 
 on:
   push:
     branches:
-      - delete-post-endpoint
+      - development
   pull_request:
     branches:
-      - delete-post-endpoint
+      - development
 
 permissions:
   contents: read
@@ -25,9 +24,9 @@ jobs:
           fetch-depth: 0
 
       - name: Setup Node.js
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v4
         with:
-          node-version: '18'  
+          node-version: '18'  # Ensure this matches your project's Node.js version requirement
 
       - name: Run Super Linter
         uses: super-linter/super-linter@latest
