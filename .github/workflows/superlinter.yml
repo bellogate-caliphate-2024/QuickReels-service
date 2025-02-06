@@ -1,4 +1,4 @@
-name: Quickreels workflow
+name: Quickreels Workflow
 
 on:
   push:
@@ -6,7 +6,7 @@ on:
       - delete-post-endpoint
   pull_request:
     branches:
-      -  delete-post-endpoint
+      - delete-post-endpoint
 
 permissions:
   contents: read
@@ -14,7 +14,7 @@ permissions:
   statuses: write
 
 jobs:
-  lint:
+  lint_and_test:
     runs-on: ubuntu-latest
 
     steps:
@@ -28,10 +28,16 @@ jobs:
         with:
           node-version: '18'  # Ensure this matches your project's Node.js version requirement
 
+      - name: Install Dependencies
+        run: yarn install
+
+      - name: Run Tests
+        run: yarn test
+
       - name: Run Super Linter
         uses: super-linter/super-linter@latest
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          DEFAULT_BRANCH: development
+          DEFAULT_BRANCH: delete-post-endpoint
           VALIDATE_ALL_CODEBASE: false
           VALIDATE_YAML_PRETTIER: false
