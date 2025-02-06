@@ -1,5 +1,5 @@
 
-name: Run Tests
+name: Quickreels workflow
 
 on:
   push:
@@ -9,8 +9,13 @@ on:
     branches:
       - delete-post-endpoint
 
+permissions:
+  contents: read
+  packages: read
+  statuses: write
+
 jobs:
-  test:
+  lint:
     runs-on: ubuntu-latest
 
     steps:
@@ -22,10 +27,12 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v3
         with:
-          node-version: '16'
+          node-version: '18'  
 
-      - name: Install Dependencies
-        run: yarn install
-
-      - name: Run Tests
-        run: yarn test
+      - name: Run Super Linter
+        uses: super-linter/super-linter@latest
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          DEFAULT_BRANCH: development
+          VALIDATE_ALL_CODEBASE: false
+          VALIDATE_YAML_PRETTIER: false
