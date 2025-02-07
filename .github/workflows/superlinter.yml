@@ -39,7 +39,7 @@ jobs:
         env:
          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
          DEFAULT_BRANCH: production
-         VALIDATE_ALL_CODEBASE: 'ture'  
+         VALIDATE_ALL_CODEBASE: 'true'  
          VALIDATE_JSCPD: 'true'
          VALIDATE_JAVASCRIPT_ES: 'true'
          VALIDATE_TYPESCRIPT_ES: 'true'
