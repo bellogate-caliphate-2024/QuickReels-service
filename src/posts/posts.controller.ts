@@ -6,8 +6,5 @@ import { PostsService } from './posts.service';
     constructor(private readonly postService: PostsService) {}
   
 
-    @Get('/hello')
-    async mockdata(){
-      return await this.postService.mock();
-    }
+   
   }
