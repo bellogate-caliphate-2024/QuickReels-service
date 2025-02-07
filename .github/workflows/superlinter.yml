@@ -37,9 +37,14 @@ jobs:
       - name: Run Super Linter
         uses: super-linter/super-linter@latest
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          DEFAULT_BRANCH: production
-          VALIDATE_ALL_CODEBASE: false
-          VALIDATE_JSCPD: false
-          JSCPD_CONFIG_FILE: .jscpd.json
-          LOG_LEVEL: DEBUG
+         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+         DEFAULT_BRANCH: production
+         VALIDATE_ALL_CODEBASE: false
+         VALIDATE_JSCPD: true
+         JSCPD_CONFIG_FILE: .jscpd.json
+         VALIDATE_JAVASCRIPT_ES: false
+         VALIDATE_JSON: false
+         VALIDATE_TYPESCRIPT_ES: false
+         VALIDATE_TYPESCRIPT_PRETTIER: false
+         VALIDATE_TYPESCRIPT_STANDARD: false
+         LOG_LEVEL: DEBUG
