@@ -8,9 +8,9 @@ import {
   import { InjectModel } from '@nestjs/mongoose';
   import { Model } from 'mongoose';
   import { Express } from 'express';
-  import { Post } from 'src/Schemas/posts.schema';
-  import { CreatePostDto } from 'src/posts.dto';
-  import { Helper } from 'src/helpers/helper';
+  import { Post } from '../Schemas/posts.schema';
+  import { CreatePostDto } from '../posts.dto';
+  import { Helper } from '../helpers/helper';
   import {firebaseAdmin,firebaseApp} from '../DataBase/Firebase';
   import { v4 as uuidv4 } from 'uuid';
   import path from 'path';
