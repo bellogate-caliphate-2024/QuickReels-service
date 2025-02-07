@@ -1,0 +1,6 @@
+{
+  "threshold": 0.95,
+  "minLines": 5,
+  "minTokens": 70,
+  "languages": ["javascript", "typescript"]
+}
