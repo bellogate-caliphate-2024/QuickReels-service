@@ -38,6 +38,6 @@ jobs:
         uses: super-linter/super-linter@latest
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          DEFAULT_BRANCH: delete-post-endpoint
+          DEFAULT_BRANCH: production
           VALIDATE_ALL_CODEBASE: false
           VALIDATE_YAML_PRETTIER: false
