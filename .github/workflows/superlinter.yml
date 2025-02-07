@@ -40,7 +40,6 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           DEFAULT_BRANCH: production
           VALIDATE_ALL_CODEBASE: false
-          VALIDATE_YAML_PRETTIER: false
           VALIDATE_JSCPD: true
           JSCPD_CONFIG_FILE: .jscpd.json
           LOG_LEVEL: DEBUG
