@@ -5,6 +5,6 @@ import { PostsService } from './posts.service';
   export class PostsController {
     constructor(private readonly postService: PostsService) {}
   
-
    
+    
   }
