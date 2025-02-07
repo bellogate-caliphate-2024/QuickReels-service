@@ -41,10 +41,7 @@ jobs:
          DEFAULT_BRANCH: production
          VALIDATE_ALL_CODEBASE: false
          VALIDATE_JSCPD: true
+         VALIDATE_JAVASCRIPT_ES: true
+         VALIDATE_TYPESCRIPT_ES: true
          JSCPD_CONFIG_FILE: .jscpd.json
-         VALIDATE_JAVASCRIPT_ES: false
-         VALIDATE_JSON: false
-         VALIDATE_TYPESCRIPT_ES: false
-         VALIDATE_TYPESCRIPT_PRETTIER: false
-         VALIDATE_TYPESCRIPT_STANDARD: false
          LOG_LEVEL: DEBUG
