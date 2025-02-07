@@ -3,7 +3,7 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { PostsController } from './posts.controller';
 import { PostsService } from './posts.service';
 import { BadRequestException } from '@nestjs/common';
-import { CreatePostDto } from 'src/data/Abstarcts/posts.dto';
+import { CreatePostDto } from '../data/Abstarcts/posts.dto';
 
 describe('PostsController', () => {
   let controller: PostsController;
