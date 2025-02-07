@@ -1,3 +1,5 @@
+jest.mock('firebase-admin'); // Add this at the very top
+
 import { Test, TestingModule } from '@nestjs/testing';
 import { PostsService } from './posts.service';
 
