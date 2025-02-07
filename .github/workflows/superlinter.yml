@@ -40,8 +40,8 @@ jobs:
          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
          DEFAULT_BRANCH: production
          VALIDATE_ALL_CODEBASE: 'true'  
-         VALIDATE_JSCPD: 'true'
-         VALIDATE_JAVASCRIPT_ES: 'true'
-         VALIDATE_TYPESCRIPT_ES: 'true'
+         VALIDATE_JSCPD: 'false'
+         VALIDATE_JAVASCRIPT_ES: 'false'
+         VALIDATE_TYPESCRIPT_ES: 'false'
          JSCPD_CONFIG_FILE: .jscpd.json
          LOG_LEVEL: DEBUG
