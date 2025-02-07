@@ -39,8 +39,10 @@ jobs:
         env:
          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
          DEFAULT_BRANCH: production
-         VALIDATE_ALL_CODEBASE: 'false'  
-         VALIDATE_JSCPD: 'false'
+         VALIDATE_ALL_CODEBASE: 'false'
+         VALIDATE_JSCPD: 'true'
+         VALIDATE_YAML: 'false'
+         VALIDATE_YAML_PRETTIER: 'false'
          VALIDATE_JAVASCRIPT_ES: 'false'
          VALIDATE_TYPESCRIPT_ES: 'false'
          JSCPD_CONFIG_FILE: .jscpd.json
