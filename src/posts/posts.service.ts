@@ -4,8 +4,6 @@ import { Injectable } from '@nestjs/common';
 export class PostsService {
 
 
-    async mock(){
-        return "hello"
-      }
+   
 
 }
