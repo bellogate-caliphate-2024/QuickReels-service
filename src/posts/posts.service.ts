@@ -135,7 +135,7 @@ export class PostsService {
     videoUrl: string,
   ): Promise<{ message: string }> {
     try {
-      const user = await this.postModel.findOne({ email }).exec();
+      const user = await this.postModel.findOneAndDelete({ email }).exec();
       if (!user) {
         throw new Error(`User with email ${email} not found`);
       }
@@ -144,7 +144,7 @@ export class PostsService {
       await user.save();
 
       return {
-        message: `User ${email}'s post ${videoUrl} successfully deleted`,
+        message: `User ${email}'s with ${videoUrl} successfully deleted`,
       };
     } catch (error) {
       throw new Error(`User with email ${email} not found`);
