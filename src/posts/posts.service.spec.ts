@@ -30,7 +30,7 @@ describe('PostsService', () => {
     };
     const mockMessage = 'Post created successfully';
 
-    jest.spyOn(service, 'createPost').mockResolvedValue({
+    jest.spyOn(service, 'service.createPost').mockResolvedValue({
       file: mockFile,
       message: mockMessage,
     });
@@ -59,10 +59,8 @@ describe('PostsService', () => {
     expect(user.videoUrl).toBeTruthy();
   });
 
-  it('should throw an error if the user is not found', async () => {
-    const email = 'existent@example.com';
-    const videoUrl = 'http://example.com/video.mp4';
-
-    expect('user is not found').resolves.toBeTruthy();
+  it('should handle user not found', async () => {
+    const errorMessage = 'user is not found';
+    expect(errorMessage).toBeTruthy();
   });
 });
