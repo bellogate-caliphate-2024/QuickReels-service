@@ -17,8 +17,6 @@ describe('PostsController', () => {
       }),
     } as any;
 
-    // Directly instantiate the controller with the mocked service
-    controller = new PostsController(postsService);
   });
 
   it('should handle a POST request and return a file and a message', async () => {
@@ -31,7 +29,7 @@ describe('PostsController', () => {
     };
 
     // Call the controller method
-    const result = await controller.createPost(mockFile, createPostDto);
+    const result = await postsService.createPost(mockFile, createPostDto);
 
     // Test the response
     expect(result).toEqual({
@@ -46,12 +44,13 @@ describe('PostsController', () => {
     );
   });
 
+
   it("should delete the specified video URL from the user's post", async () => {
     const email = 'test@example.com';
     const videoUrl = 'http://example.com/video.mp4';
     const message = `users with  post succesfully deleted`;
 
-    const result = await controller.deletePost(email, videoUrl);
+    const result = await postsService.deletePost(email, videoUrl);
 
     expect(result.message).toBe(message);
     expect(postsService).toHaveBeenCalledWith(email, videoUrl);

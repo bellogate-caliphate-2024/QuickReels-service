@@ -46,6 +46,7 @@ describe('PostsService', () => {
     expect(service.createPost).toHaveBeenCalledWith(mockFile, mockPost);
   });
 
+
   it("should delete the specified video URL from the user's post", async () => {
     const email = 'test@example.com';
     const videoUrl = 'http://example.com/video.mp4';
@@ -58,7 +59,7 @@ describe('PostsService', () => {
     const result = await service.deletePost(email, videoUrl);
 
     expect(user.save).toHaveBeenCalled();
-    expect(result.message).toBe(`user(s) with  post succesfully deleted`);
+    expect(result.message).toBe(`user ${email} with ${videoUrl} deleted`);
   });
 
   it('should throw an error if the user is not found', async () => {

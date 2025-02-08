@@ -32,7 +32,7 @@ export class PostsController {
     return this.postService.createPost(videoFile, createPostDto);
   }
 
-  @Delete('/deletePost/:postId')
+  @Delete('/deletePost/:email')
   async deletePost(
     @Param('email') email: string,
     @Body('videoUrl') videoUrl: string,
@@ -42,7 +42,7 @@ export class PostsController {
         throw new BadRequestException('No post was found');
       }
       await this.postService.deletePost(email, videoUrl);
-      return { message: 'users with  post succesfully deleted' };
+      return { message: 'User post successfully deleted' };
     } catch (error) {
       throw new Error(error.message);
     }

@@ -130,26 +130,20 @@ export class PostsService {
     }
   }
 
-  async deletePost(email: string, videoUrl: string): Promise<{ message }> {
+  async deletePost(email: string, videoUrl: string): Promise<{ message: string }> {
     try {
-      // Find the user by email
       const user = await this.postModel.findOne({ email }).exec();
-
       if (!user) {
-        throw new Error(`user with email ${email} not found`);
+        throw new Error(`User with email ${email} not found`);
       }
 
-      // Remove the specified video URL from the array
       user.videoUrl = user.videoUrl.filter((url) => url !== videoUrl);
-
-      // Save the updated post document
       await user.save();
 
-      return {
-        message: `user(s) with  post succesfully deleted`,
-      };
+      return { message: `User ${email}'s post ${videoUrl} successfully deleted` };
     } catch (error) {
-      throw new Error('User not found!');
+      console.error('Error deleting post video URL:', error);
+      throw new Error('Failed to delete video URL from post');
     }
   }
 }
