@@ -46,7 +46,6 @@ describe('PostsService', () => {
     expect(service.createPost).toHaveBeenCalledWith(mockFile, mockPost);
   });
 
-
   it("should delete the specified video URL from the user's post", async () => {
     const email = 'test@example.com';
     const videoUrl = 'http://example.com/video.mp4';

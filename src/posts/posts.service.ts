@@ -130,7 +130,10 @@ export class PostsService {
     }
   }
 
-  async deletePost(email: string, videoUrl: string): Promise<{ message: string }> {
+  async deletePost(
+    email: string,
+    videoUrl: string,
+  ): Promise<{ message: string }> {
     try {
       const user = await this.postModel.findOne({ email }).exec();
       if (!user) {
@@ -140,9 +143,10 @@ export class PostsService {
       user.videoUrl = user.videoUrl.filter((url) => url !== videoUrl);
       await user.save();
 
-      return { message: `User ${email}'s post ${videoUrl} successfully deleted` };
+      return {
+        message: `User ${email}'s post ${videoUrl} successfully deleted`,
+      };
     } catch (error) {
-      console.error('Error deleting post video URL:', error);
       throw new Error('Failed to delete video URL from post');
     }
   }

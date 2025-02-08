@@ -16,7 +16,6 @@ describe('PostsController', () => {
         message: 'Post created successfully',
       }),
     } as any;
-
   });
 
   it('should handle a POST request and return a file and a message', async () => {
@@ -43,7 +42,6 @@ describe('PostsController', () => {
       createPostDto,
     );
   });
-
 
   it("should delete the specified video URL from the user's post", async () => {
     const email = 'test@example.com';
