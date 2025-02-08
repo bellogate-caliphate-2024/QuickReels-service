@@ -55,7 +55,7 @@ describe('PostsService', () => {
       save: jest.fn(),
     };
 
-    const result = await service.deletePost(email, videoUrl);
+    const result = await service.deletePost('email', videoUrl);
 
     expect(user.save).toBeTruthy();
     expect(result.message).toBe(
@@ -63,10 +63,10 @@ describe('PostsService', () => {
     );
   });
 
-  // it('should throw an error if the user is not found', async () => {
-  //   const email = 'existent@example.com';
-  //   const videoUrl = 'http://example.com/video.mp4';
+  it('should throw an error if the user is not found', async () => {
+    const email = 'existent@example.com';
+    const videoUrl = 'http://example.com/video.mp4';
 
-  //   expect(service.deletePost(email, videoUrl)).resolves.toBeTruthy();
-  // });
+    expect(service.deletePost(email, videoUrl)).resolves.toBeTruthy();
+  });
 });
