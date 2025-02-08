@@ -45,4 +45,17 @@ describe('PostsController', () => {
       createPostDto,
     );
   });
+
+  it("should delete the specified video URL from the user's post", async () => {
+    const email = 'test@example.com';
+    const videoUrl = 'http://example.com/video.mp4';
+    const message = `User ${email}'s post successfully deleted`;
+
+    jest.spyOn(postsService, 'deletePost').mockResolvedValue({ message });
+
+    const result = await controller.deletePost(email, videoUrl);
+
+    expect(result.message).toBe(message);
+    expect(postsService).toHaveBeenCalledWith(email, videoUrl);
+  });
 });

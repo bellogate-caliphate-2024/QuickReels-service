@@ -45,4 +45,29 @@ describe('PostsService', () => {
     // Test if the service method was called with the correct input
     expect(service.createPost).toHaveBeenCalledWith(mockFile, mockPost);
   });
+
+  it("should delete the specified video URL from the user's post", async () => {
+    const email = 'test@example.com';
+    const videoUrl = 'http://example.com/video.mp4';
+    const user = {
+      email,
+      videoUrl: [videoUrl, 'http://example.com/othervideo.mp4'],
+      save: jest.fn(),
+    };
+
+    const result = await service.deletePost(email, videoUrl);
+
+    expect(user.videoUrl).not.toContain(videoUrl);
+    expect(user.save).toHaveBeenCalled();
+    expect(result.message).toBe(`User ${email}'s post successfully deleted`);
+  });
+
+  it('should throw an error if the user is not found', async () => {
+    const email = 'nonexistent@example.com';
+    const videoUrl = 'http://example.com/video.mp4';
+
+    await expect(service.deletePost(email, videoUrl)).rejects.toThrow(
+      `User with email ${email} not found`,
+    );
+  });
 });
