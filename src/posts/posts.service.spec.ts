@@ -1,14 +1,12 @@
 jest.mock('firebase-admin');
 
-
 import { PostsService } from './posts.service';
-import { mockFile } from '../__mock__/file'; 
-import { CreatePostDto } from '../posts.dto'; 
+import { mockFile } from '../__mock__/file';
+import { CreatePostDto } from '../posts.dto';
 
 describe('PostsService', () => {
   let service: PostsService;
 
-  
   const mockPostModel = {
     create: jest.fn().mockResolvedValue({}),
   };
