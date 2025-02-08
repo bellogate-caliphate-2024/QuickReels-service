@@ -17,7 +17,7 @@ import { PostsService } from './posts.service';
 
 @Controller('posts')
 export class PostsController {
-  constructor(private readonly postService: PostsService) { }
+  constructor(private readonly postService: PostsService) {}
 
   @Post('create_post')
   @HttpCode(201)
@@ -31,8 +31,6 @@ export class PostsController {
     }
     return this.postService.createPost(videoFile, createPostDto);
   }
-
-
 
   @Delete('/deletePost/:postId')
   async deletePost(
@@ -49,6 +47,4 @@ export class PostsController {
       throw new Error('Failed to delete video URL from user');
     }
   }
-
-
 }
