@@ -3,20 +3,23 @@ jest.mock('firebase-admin');
 import { PostsService } from './posts.service';
 import { mockFile } from '../__mock__/file';
 import { CreatePostDto } from '../posts.dto';
-import { model } from 'mongoose';
+import { Model, model } from 'mongoose';
+import { Post } from 'src/Schemas/posts.schema';
 
 describe('PostsService', () => {
-  let service: PostsService;
+  let service
+  
 
-  const mockPostModel = {
-    create: jest.fn().mockResolvedValue({}),
-  };
-  const mockHelper = {
-    someHelperMethod: jest.fn(),
-  };
+  // const mockPostModel = {
+  //   create: jest.fn().mockResolvedValue({}),
+  // };
+  // const mockHelper = {
+  //   someHelperMethod: jest.fn(),
+  // };
 
   beforeEach(() => {
-    service = new PostsService(mockPostModel as any, mockHelper as any);
+    service = PostsService
+
   });
 
   it('should create a post and return a file and a message', async () => {
@@ -62,6 +65,8 @@ describe('PostsService', () => {
     expect(user.videoUrl).toBeTruthy();
   });
 
+
+  
   it('should throw an error if the user is not found', async () => {
     const email = 'existent@example.com';
     const videoUrl = 'http://example.com/video.mp4';
