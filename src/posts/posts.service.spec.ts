@@ -58,7 +58,9 @@ describe('PostsService', () => {
     const result = await service.deletePost(email, videoUrl);
 
     expect(user.save).toBeTruthy();
-    expect(result.message).toBe('Failed to delete video URL from post');
+    expect(result.message).toBe(
+      `User ${email}'s post ${videoUrl} successfully deleted`,
+    );
   });
 
   it('should throw an error if the user is not found', async () => {
