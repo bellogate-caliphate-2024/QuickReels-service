@@ -19,6 +19,6 @@ describe('PostsController', () => {
   });
 
   it('should be defined', () => {
-    expect(controller).toBeDefined();
+    expect(controller).toBe;
   });
 });
