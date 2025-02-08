@@ -49,8 +49,11 @@ describe('PostsController', () => {
   it("should delete the specified video URL from the user's post", async () => {
     const email = 'test@example.com';
     const videoUrl = 'http://example.com/video.mp4';
-    const message = `users with post succesfully deleted`;
+    const message = `users with  post succesfully deleted`;
 
+    const result = await controller.deletePost(email, videoUrl);
+
+    expect(result.message).toBe(message);
     expect(postsService).toHaveBeenCalledWith(email, videoUrl);
   });
 });
