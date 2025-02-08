@@ -30,7 +30,7 @@ describe('PostsService', () => {
     };
     const mockFile = 'mockFile'; // Replace with your mock file
     const mockMessage = 'Post created successfully';
-  
+
     // Manually mock the createPost method
     service.createPost = async (file, post) => {
       if (file === mockFile && post === mockPost) {
@@ -38,24 +38,20 @@ describe('PostsService', () => {
       }
       throw new Error('Unexpected input');
     };
-  
+
     // Call the method
     const result = await service.createPost(mockFile, mockPost);
-  
+
     // Test the return value
     expect(result).toEqual({
       file: mockFile,
       message: mockMessage,
     });
-  
+
     // Test if the service method was called with the correct input
 
-    
     // This is implicit in the manual mock; no need for a separate check
   });
-  
-
-
 
   it("should delete the specified video URL from the user's post", async () => {
     const email = 'test@example.com';
