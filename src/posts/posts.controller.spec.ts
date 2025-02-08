@@ -1,4 +1,5 @@
-// posts.controller.spec.ts
+jest.mock('firebase-admin');
+
 import { PostsController } from './posts.controller';
 import { PostsService } from './posts.service';
 import { CreatePostDto } from '../posts.dto'; 
