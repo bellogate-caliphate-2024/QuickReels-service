@@ -2,8 +2,8 @@ jest.mock('firebase-admin');
 
 import { PostsController } from './posts.controller';
 import { PostsService } from './posts.service';
-import { CreatePostDto } from '../posts.dto'; 
-import { mockFile } from '../__mock__/file'; 
+import { CreatePostDto } from '../posts.dto';
+import { mockFile } from '../__mock__/file';
 
 describe('PostsController', () => {
   let controller: PostsController;
@@ -40,6 +40,9 @@ describe('PostsController', () => {
     });
 
     // Test if the service method was called
-    expect(postsService.createPost).toHaveBeenCalledWith(mockFile, createPostDto);
+    expect(postsService.createPost).toHaveBeenCalledWith(
+      mockFile,
+      createPostDto,
+    );
   });
 });
