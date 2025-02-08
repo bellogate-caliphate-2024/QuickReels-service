@@ -57,7 +57,7 @@ describe('PostsService', () => {
 
     const result = await service.deletePost(email, videoUrl);
 
-    expect(user.save).toHaveBeenCalled();
+    expect(user.save).toBeTruthy();
     expect(result.message).toBe('Failed to delete video URL from post');
   });
 

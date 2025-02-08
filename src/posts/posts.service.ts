@@ -147,7 +147,7 @@ export class PostsService {
         message: `User ${email}'s post ${videoUrl} successfully deleted`,
       };
     } catch (error) {
-      throw new Error('Failed to delete video URL from post');
+      throw new Error(`User with email ${email} not found`);
     }
   }
 }
