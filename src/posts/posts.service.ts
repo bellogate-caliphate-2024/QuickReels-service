@@ -133,4 +133,29 @@ constructor(
    
 
 
+  async deletePost(email: string, videoUrl: string): Promise<{ message }> {
+    try {
+      // Find the user by email
+      const user = await this.postModel.findOne({ email }).exec();
+
+      if (!user) {
+        throw new Error(`user with email ${email} not found`);
+      }
+
+      // Remove the specified video URL from the array
+      user.videoUrl = user.videoUrl.filter((url) => url !== videoUrl);
+
+      // Save the updated post document
+      await user.save();
+
+      return {
+        message: `users${user.email} post ${user.videoUrl} succesfully deleted`,
+      };
+    } catch (error) {
+      console.error('Error deleting post video URL:', error);
+      throw new Error('Failed to delete video URL from post');
+    }
+  }
+  
+
 }

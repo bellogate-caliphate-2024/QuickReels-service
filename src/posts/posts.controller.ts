@@ -33,5 +33,22 @@ import { PostsService } from './posts.service';
     }
 
 
+
+    @Delete('/deletePost/:postId')
+    async deletePost(
+      @Param('email') email: string,
+      @Body('videoUrl') videoUrl: string,
+    ) {
+      try {
+        if (!videoUrl) {
+          throw new BadRequestException('No post was found');
+        }
+        return await this.postService.deletePost(email, videoUrl);
+      } catch (error) {
+        console.error(error.message);
+        throw new Error('Failed to delete video URL from user');
+      }
+    }
+  
     
   }
