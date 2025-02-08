@@ -59,7 +59,9 @@ describe('PostsService', () => {
 
     expect(user.videoUrl).not.toContain(videoUrl);
     expect(user.save).toHaveBeenCalled();
-    expect(result.message).toBe(`User ${email}'s post successfully deleted`);
+    expect(result.message).toBe(
+      `users${user.email} post ${user.videoUrl} succesfully deleted`,
+    );
   });
 
   it('should throw an error if the user is not found', async () => {
