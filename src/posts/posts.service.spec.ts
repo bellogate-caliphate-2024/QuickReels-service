@@ -3,6 +3,7 @@ jest.mock('firebase-admin');
 import { PostsService } from './posts.service';
 import { mockFile } from '../__mock__/file';
 import { CreatePostDto } from '../posts.dto';
+import { model } from 'mongoose';
 
 describe('PostsService', () => {
   let service: PostsService;
@@ -51,16 +52,16 @@ describe('PostsService', () => {
     const videoUrl = 'http://example.com/video.mp4';
     const user = {
       email,
-      videoUrl: [videoUrl, 'http://example.com/othervideo.mp4'],
-      save: jest.fn(),
+      videoUrl: [videoUrl, 'http://example.com/other-video.mp4'],
+      save: jest.fn().mockResolvedValue(true),
     };
 
-    const result = await service.deletePost('email', videoUrl);
+    await expect(service.deletePost(email, videoUrl)).resolves.toEqual({
+      message: `User ${email}'s post ${videoUrl} successfully deleted`,
+    });
 
-    expect(user.save).toBeTruthy();
-    expect(result.message).toBe(
-      `User ${email}'s post ${videoUrl} successfully deleted`,
-    );
+    expect(user.videoUrl).not.toContain(videoUrl);
+    expect(user.save).toHaveBeenCalled();
   });
 
   it('should throw an error if the user is not found', async () => {
