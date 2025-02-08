@@ -60,7 +60,7 @@ describe('PostsService', () => {
     expect(user.videoUrl).not.toContain(videoUrl);
     expect(user.save).toHaveBeenCalled();
     expect(result.message).toBe(
-      `users${user.email} post ${user.videoUrl} succesfully deleted`,
+      `users${email} post ${videoUrl} succesfully deleted`,
     );
   });
 

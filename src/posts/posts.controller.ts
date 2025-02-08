@@ -43,7 +43,7 @@ export class PostsController {
       }
       return await this.postService.deletePost(email, videoUrl);
     } catch (error) {
-      throw new Error('Failed to delete video URL from user');
+      throw new Error(error.message);
     }
   }
 }
