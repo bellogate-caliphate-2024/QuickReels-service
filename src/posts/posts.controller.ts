@@ -41,7 +41,8 @@ export class PostsController {
       if (!videoUrl) {
         throw new BadRequestException('No post was found');
       }
-      return await this.postService.deletePost(email, videoUrl);
+      await this.postService.deletePost(email, videoUrl);
+      return { message: 'users with  post succesfully deleted' };
     } catch (error) {
       throw new Error(error.message);
     }
