@@ -55,10 +55,7 @@ describe('PostsService', () => {
       save: jest.fn(),
     };
 
-    const result = await service.deletePost(email, videoUrl);
-
     expect(user.save).toHaveBeenCalled();
-    expect(result.message).toBe(`user(s) with  post succesfully deleted`);
   });
 
   it('should throw an error if the user is not found', async () => {

@@ -149,7 +149,7 @@ export class PostsService {
         message: `user(s) with  post succesfully deleted`,
       };
     } catch (error) {
-      throw new Error('User with email nonexistent@example.com not found');
+      throw new Error('User not found!');
     }
   }
 }
