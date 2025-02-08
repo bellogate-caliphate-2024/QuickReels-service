@@ -25,7 +25,7 @@ import { PostsService } from './posts.service';
     async createPost(
       @UploadedFile() videoFile: Express.Multer.File,
       @Query() createPostDto: CreatePostDto,
-    ) {
+    ): Promise<any> {
       if (!videoFile) {
         throw new BadRequestException('No video file uploaded');
       }
