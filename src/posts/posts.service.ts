@@ -149,7 +149,6 @@ export class PostsService {
         message: `users${user.email} post ${user.videoUrl} succesfully deleted`,
       };
     } catch (error) {
-      console.error('Error deleting post video URL:', error);
       throw new Error('Failed to delete video URL from post');
     }
   }

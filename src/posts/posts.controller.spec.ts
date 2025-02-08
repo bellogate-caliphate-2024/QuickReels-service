@@ -51,8 +51,6 @@ describe('PostsController', () => {
     const videoUrl = 'http://example.com/video.mp4';
     const message = `users${email} post ${videoUrl} succesfully deleted`;
 
-    jest.spyOn(postsService, 'deletePost').mockResolvedValue({ message });
-
     const result = await controller.deletePost(email, videoUrl);
 
     expect(result.message).toBe(message);
