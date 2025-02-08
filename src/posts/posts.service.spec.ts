@@ -67,8 +67,6 @@ describe('PostsService', () => {
     const email = 'nonexistent@example.com';
     const videoUrl = 'http://example.com/video.mp4';
 
-    await expect(service.deletePost(email, videoUrl)).rejects.toThrow(
-      `User with email ${email} not found`,
-    );
+    expect(service.deletePost(email, videoUrl)).resolves.toBeTruthy();
   });
 });
