@@ -1,4 +1,6 @@
-// posts.service.spec.ts
+jest.mock('firebase-admin');
+
+
 import { PostsService } from './posts.service';
 import { mockFile } from '../__mock__/file'; 
 import { CreatePostDto } from '../posts.dto'; 
