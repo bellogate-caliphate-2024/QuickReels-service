@@ -1,34 +1,33 @@
 import {
-    Injectable,
-    ConflictException,
-    BadRequestException,
-    InternalServerErrorException,
-    Logger,
-  } from '@nestjs/common';
-  import { InjectModel } from '@nestjs/mongoose';
-  import { Model } from 'mongoose';
-  import { Express } from 'express';
-  import { Post } from '../Schemas/posts.schema';
-  import { CreatePostDto } from '../posts.dto';
-  import { Helper } from '../helpers/helper';
-  import {firebaseAdmin,firebaseApp} from '../DataBase/Firebase';
-  import { v4 as uuidv4 } from 'uuid';
-  import path from 'path';
-  import * as fs from 'fs';
-  import { getStorage, ref, uploadBytesResumable } from 'firebase/storage';
-  import ffmpeg from 'fluent-ffmpeg';
-  import * as ffmpegStatic from '@ffmpeg-installer/ffmpeg';
-  import * as ffprobeStatic from '@ffprobe-installer/ffprobe';
-
+  Injectable,
+  ConflictException,
+  BadRequestException,
+  InternalServerErrorException,
+  Logger,
+} from '@nestjs/common';
+import { InjectModel } from '@nestjs/mongoose';
+import { Model } from 'mongoose';
+import { Express } from 'express';
+import { Post } from '../Schemas/posts.schema';
+import { CreatePostDto } from '../posts.dto';
+import { Helper } from '../helpers/helper';
+import { firebaseAdmin, firebaseApp } from '../DataBase/Firebase';
+import { v4 as uuidv4 } from 'uuid';
+import path from 'path';
+import * as fs from 'fs';
+import { getStorage, ref, uploadBytesResumable } from 'firebase/storage';
+import ffmpeg from 'fluent-ffmpeg';
+import * as ffmpegStatic from '@ffmpeg-installer/ffmpeg';
+import * as ffprobeStatic from '@ffprobe-installer/ffprobe';
 
 @Injectable()
 export class PostsService {
-constructor(
+  constructor(
     @InjectModel(Post.name)
     private readonly postModel: Model<Post>,
     private ACTION: Helper,
   ) {}
-  
+
   async createPost(
     videoFile: Express.Multer.File,
     createDto: CreatePostDto,
@@ -130,7 +129,4 @@ constructor(
       throw new Error('Failed to upload video');
     }
   }
-   
-
-
 }
