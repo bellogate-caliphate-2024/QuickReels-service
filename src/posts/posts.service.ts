@@ -1,7 +1,4 @@
-import {
-  Injectable,
- 
-} from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { Post } from '../Schemas/posts.schema';
@@ -17,7 +14,6 @@ export class PostsService {
     private readonly postModel: Model<Post>,
     private ACTION: Helper,
   ) {}
-
 
   async createPost(
     videoFile: Express.Multer.File,
