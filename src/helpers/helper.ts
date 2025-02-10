@@ -26,121 +26,121 @@ export class Helper {
 
   constructor(@InjectModel(Post.name) private postModel: Model<Post>) {}
 
-  async saveToDatabase(postData: Partial<Post>) {
-    try {
-      const createdPost = new this.postModel(postData);
-      return await createdPost.save();
-    } catch (error) {
-      this.logger.error(`Database save failed: ${error.message}`, error.stack);
-      throw this.handleError(error);
-    }
-  }
+  // async saveToDatabase(postData: Partial<Post>) {
+  //   try {
+  //     const createdPost = new this.postModel(postData);
+  //     return await createdPost.save();
+  //   } catch (error) {
+  //     this.logger.error(`Database save failed: ${error.message}`, error.stack);
+  //     throw this.handleError(error);
+  //   }
+  // }
 
-  async handleError(error: any) {
-    if (error.code === 11000) {
-      throw new ConflictException('Duplicate video ID detected');
-    }
+  // async handleError(error: any) {
+  //   if (error.code === 11000) {
+  //     throw new ConflictException('Duplicate video ID detected');
+  //   }
 
-    if (error.name === 'ValidationError') {
-      const messages = Object.values(error.errors).map(
-        (err: any) => err.message,
-      );
-      throw new BadRequestException(messages);
-    }
+  //   if (error.name === 'ValidationError') {
+  //     const messages = Object.values(error.errors).map(
+  //       (err: any) => err.message,
+  //     );
+  //     throw new BadRequestException(messages);
+  //   }
 
-    if (error.name === 'MongoNetworkError') {
-      throw new InternalServerErrorException('Database connection failed');
-    }
+  //   if (error.name === 'MongoNetworkError') {
+  //     throw new InternalServerErrorException('Database connection failed');
+  //   }
 
-    throw new InternalServerErrorException('Failed to create post');
-  }
+  //   throw new InternalServerErrorException('Failed to create post');
+  // }
 
-  saveTempFile(buffer: Buffer, filename: string): string {
-    const filePath = path.join(__dirname, filename);
-    fs.writeFileSync(filePath, buffer);
-    return filePath;
-  }
+  // saveTempFile(buffer: Buffer, filename: string): string {
+  //   const filePath = path.join(__dirname, filename);
+  //   fs.writeFileSync(filePath, buffer);
+  //   return filePath;
+  // }
 
-  async uploadVideoToFirebase(
-    videoFile: Express.Multer.File,
-    filePath: string,
-  ): Promise<string> {
-    const storage = getStorage(firebaseApp);
-    const fileName = `quickreels_videos/${Date.now()}_${uuidv4()}_${videoFile.originalname}`;
+  // async uploadVideoToFirebase(
+  //   videoFile: Express.Multer.File,
+  //   filePath: string,
+  // ): Promise<string> {
+  //   const storage = getStorage(firebaseApp);
+  //   const fileName = `quickreels_videos/${Date.now()}_${uuidv4()}_${videoFile.originalname}`;
 
-    // Upload file
-    const storageRef = ref(storage, fileName);
-    await uploadBytesResumable(storageRef, videoFile.buffer, {
-      contentType: videoFile.mimetype,
-    });
+  //   // Upload file
+  //   const storageRef = ref(storage, fileName);
+  //   await uploadBytesResumable(storageRef, videoFile.buffer, {
+  //     contentType: videoFile.mimetype,
+  //   });
 
-    // Generate download URL
-    return this.generateFirebaseDownloadUrl(fileName);
-  }
+  //   // Generate download URL
+  //   return this.generateFirebaseDownloadUrl(fileName);
+  // }
 
-  async generateThumbnail(videoPath: string, tempDir: string): Promise<string> {
-    const thumbnailFileName = `thumbnail-${Date.now()}.png`;
-    const thumbnailPath = path.join(tempDir, thumbnailFileName);
+  // async generateThumbnail(videoPath: string, tempDir: string): Promise<string> {
+  //   const thumbnailFileName = `thumbnail-${Date.now()}.png`;
+  //   const thumbnailPath = path.join(tempDir, thumbnailFileName);
 
-    await new Promise((resolve, reject) => {
-      ffmpeg(videoPath)
-        .setFfmpegPath(ffmpegStatic.path)
-        .setFfprobePath(ffprobeStatic.path)
-        .on('end', resolve)
-        .on('error', reject)
-        .screenshots({
-          timestamps: ['50%'],
-          filename: thumbnailFileName,
-          folder: tempDir,
-          size: '320x240',
-        });
-    });
+  //   await new Promise((resolve, reject) => {
+  //     ffmpeg(videoPath)
+  //       .setFfmpegPath(ffmpegStatic.path)
+  //       .setFfprobePath(ffprobeStatic.path)
+  //       .on('end', resolve)
+  //       .on('error', reject)
+  //       .screenshots({
+  //         timestamps: ['50%'],
+  //         filename: thumbnailFileName,
+  //         folder: tempDir,
+  //         size: '320x240',
+  //       });
+  //   });
 
-    return thumbnailPath;
-  }
+  //   return thumbnailPath;
+  // }
 
-  async uploadThumbnailToFirebase(thumbnailPath: string): Promise<string> {
-    const storage = getStorage(firebaseApp);
-    const fileName = `quickreels_thumbnails/${Date.now()}_${uuidv4()}_${path.basename(thumbnailPath)}`;
-    const buffer = fs.readFileSync(thumbnailPath);
+  // async uploadThumbnailToFirebase(thumbnailPath: string): Promise<string> {
+  //   const storage = getStorage(firebaseApp);
+  //   const fileName = `quickreels_thumbnails/${Date.now()}_${uuidv4()}_${path.basename(thumbnailPath)}`;
+  //   const buffer = fs.readFileSync(thumbnailPath);
 
-    // Upload thumbnail
-    const storageRef = ref(storage, fileName);
-    await uploadBytesResumable(storageRef, buffer, {
-      contentType: 'image/png',
-    });
+  //   // Upload thumbnail
+  //   const storageRef = ref(storage, fileName);
+  //   await uploadBytesResumable(storageRef, buffer, {
+  //     contentType: 'image/png',
+  //   });
 
-    // Generate download URL
-    return this.generateFirebaseDownloadUrl(fileName);
-  }
+  //   // Generate download URL
+  //   return this.generateFirebaseDownloadUrl(fileName);
+  // }
 
-  generateFirebaseDownloadUrl(fileName: string): string {
-    const bucket = firebaseAdmin.storage().bucket();
-    return `https://firebasestorage.googleapis.com/v0/b/${bucket.name}/o/${encodeURIComponent(fileName)}?alt=media`;
-  }
+  // generateFirebaseDownloadUrl(fileName: string): string {
+  //   const bucket = firebaseAdmin.storage().bucket();
+  //   return `https://firebasestorage.googleapis.com/v0/b/${bucket.name}/o/${encodeURIComponent(fileName)}?alt=media`;
+  // }
 
-  updateDtoWithUrls(
-    createDto: CreatePostDto,
-    videoUrl: string,
-    thumbnailUrl: string,
-  ): CreatePostDto {
-    const updatedDto = { ...createDto };
+  // updateDtoWithUrls(
+  //   createDto: CreatePostDto,
+  //   videoUrl: string,
+  //   thumbnailUrl: string,
+  // ): CreatePostDto {
+  //   const updatedDto = { ...createDto };
 
-    if (!Array.isArray(updatedDto.video_url)) updatedDto.video_url = [];
-    if (!Array.isArray(updatedDto.thumbnail)) updatedDto.thumbnail = [];
+  //   if (!Array.isArray(updatedDto.video_url)) updatedDto.video_url = [];
+  //   if (!Array.isArray(updatedDto.thumbnail)) updatedDto.thumbnail = [];
 
-    updatedDto.video_url.push(videoUrl);
-    updatedDto.thumbnail.push(thumbnailUrl);
-    updatedDto.time = new Date().toISOString();
+  //   updatedDto.video_url.push(videoUrl);
+  //   updatedDto.thumbnail.push(thumbnailUrl);
+  //   updatedDto.time = new Date().toISOString();
 
-    return updatedDto;
-  }
+  //   return updatedDto;
+  // }
 
-  cleanupTempFiles(...paths: string[]) {
-    paths.forEach((path) => {
-      if (path && fs.existsSync(path)) {
-        fs.unlinkSync(path);
-      }
-    });
-  }
+  // cleanupTempFiles(...paths: string[]) {
+  //   paths.forEach((path) => {
+  //     if (path && fs.existsSync(path)) {
+  //       fs.unlinkSync(path);
+  //     }
+  //   });
+  // }
 }

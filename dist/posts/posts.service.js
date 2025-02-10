@@ -18,33 +18,10 @@ const mongoose_1 = require("@nestjs/mongoose");
 const mongoose_2 = require("mongoose");
 const posts_schema_1 = require("../Schemas/posts.schema");
 const helper_1 = require("../helpers/helper");
-const uuid_1 = require("uuid");
-const path_1 = require("path");
 let PostsService = class PostsService {
     constructor(postModel, ACTION) {
         this.postModel = postModel;
         this.ACTION = ACTION;
-    }
-    async createPost(videoFile, createDto) {
-        const tempDir = path_1.default.join(__dirname, 'tmp');
-        let videoFilePath;
-        let thumbnailPath;
-        try {
-            videoFilePath = this.ACTION.saveTempFile(videoFile.buffer, `video-${Date.now()}_${(0, uuid_1.v4)()}_${videoFile.originalname}`);
-            const videoUrl = await this.ACTION.uploadVideoToFirebase(videoFile, videoFilePath);
-            thumbnailPath = await this.ACTION.generateThumbnail(videoFilePath, tempDir);
-            const thumbnailUrl = await this.ACTION.uploadThumbnailToFirebase(thumbnailPath);
-            const updatedDto = this.ACTION.updateDtoWithUrls(createDto, videoUrl, thumbnailUrl);
-            const newUser = await this.ACTION.saveToDatabase(updatedDto);
-            return {
-                message: 'User video and thumbnail successfully uploaded and stored in Firebase and MongoDB',
-                newUser,
-            };
-        }
-        catch (error) {
-            console.error('Error uploading video:', error);
-            throw new Error('Failed to upload video');
-        }
     }
 };
 exports.PostsService = PostsService;
