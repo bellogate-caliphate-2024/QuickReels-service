@@ -10,10 +10,8 @@ config();
       clientEmail: process.env.quickReels_EMAIL,
       privateKey: (process.env.quickReels_PRIVATE_KEY || '').replace(/\\n/g, '\n')
     }),
-    storageBucket: 'quickreels-service.appspot.com', // Your storage bucket name
+    storageBucket: 'quickreels-service.appspot.com', 
   });
-
-
 
 const firebaseConfig = {
   apiKey: process.env.FIREBASE_API_KEY,
@@ -24,7 +22,6 @@ const firebaseConfig = {
   appId: process.env.FIREBASE_APP_ID,
   measurementId: process.env.FIREBASE_MEASUREMENT_ID,
 };
-
 
 // Initialize Firebase
 export const firebaseApp = initializeApp(firebaseConfig);
