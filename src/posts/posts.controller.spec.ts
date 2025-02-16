@@ -28,7 +28,7 @@ describe('PostsController', () => {
       thumbnail: ['https://example.com/thumbnail.jpg'],
       caption: 'This is a test post',
       time: '2023-10-01T12:00:00Z',
-      Ismock: false
+      Ismock: false,
     };
 
     // Call the controller method

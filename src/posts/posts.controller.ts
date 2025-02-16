@@ -17,7 +17,7 @@ import { PostsService } from './posts.service';
 
 @Controller('posts')
 export class PostsController {
-  constructor(private readonly postService: PostsService) { }
+  constructor(private readonly postService: PostsService) {}
 
   @Post('create_post')
   @HttpCode(201)
@@ -32,14 +32,12 @@ export class PostsController {
     return this.postService.createPost(videoFile, createPostDto);
   }
 
-
-  // @Get('getContents')
-  // async getContents(
-  //   @Query('email') email: string,
-  //   @Query('page') page: number = 1,
-  //   @Query('limit') limit: number = 10,
-  // ) {
-  //   return this.postService.getContents(email, Number(page), Number(limit));
-  // }
-
+  @Get('getContents')
+  async getContents(
+    @Query('email') email: string,
+    @Query('page') page: number = 1,
+    @Query('limit') limit: number = 10,
+  ) {
+    return this.postService.getContents(email, Number(page), Number(limit));
+  }
 }

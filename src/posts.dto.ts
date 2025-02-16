@@ -1,5 +1,13 @@
 // src/posts/dto/create-post.dto.ts
-import { IsString, IsNotEmpty, IsOptional, IsArray, IsEmail, IsEmpty, IsBoolean } from 'class-validator';
+import {
+  IsString,
+  IsNotEmpty,
+  IsOptional,
+  IsArray,
+  IsEmail,
+  IsEmpty,
+  IsBoolean,
+} from 'class-validator';
 import { Transform } from 'class-transformer';
 
 export class CreatePostDto {
@@ -25,11 +33,7 @@ export class CreatePostDto {
   @IsString()
   caption?: string;
 
-
   @IsBoolean()
-  @Transform(({ value }) => value === 'true') 
+  @Transform(({ value }) => value === 'true')
   Ismock: boolean;
-
-
-
 }
