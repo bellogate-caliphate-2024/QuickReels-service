@@ -1,15 +1,21 @@
 // src/posts/dto/create-post.dto.ts
-import { IsString, IsNotEmpty, IsOptional, IsArray } from 'class-validator';
+import { IsString, IsNotEmpty, IsOptional, IsArray, IsEmail, IsEmpty, IsBoolean } from 'class-validator';
+import { Transform } from 'class-transformer';
 
 export class CreatePostDto {
+  @IsOptional()
   @IsString()
+  time?: string;
+
+  @IsString()
+  @IsEmail()
   @IsNotEmpty()
   email: string;
 
   @IsOptional()
   @IsArray()
   @IsString({ each: true })
-  video_url?: string[];  // Updated to be an array of strings
+  video_url?: string[];
 
   @IsOptional()
   @IsString({ each: true })
@@ -19,7 +25,11 @@ export class CreatePostDto {
   @IsString()
   caption?: string;
 
-  @IsOptional()
-  @IsString()
-  time?: string;
+
+  @IsBoolean()
+  @Transform(({ value }) => value === 'true') 
+  Ismock: boolean;
+
+
+
 }

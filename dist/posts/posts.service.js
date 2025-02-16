@@ -19,14 +19,14 @@ const mongoose_2 = require("mongoose");
 const posts_schema_1 = require("../Schemas/posts.schema");
 const helper_1 = require("../helpers/helper");
 const uuid_1 = require("uuid");
-const path_1 = require("path");
+const path = require("path");
 let PostsService = class PostsService {
     constructor(postModel, ACTION) {
         this.postModel = postModel;
         this.ACTION = ACTION;
     }
     async createPost(videoFile, createDto) {
-        const tempDir = path_1.default.join(__dirname, 'tmp');
+        const tempDir = path.join(__dirname, 'tmp');
         let videoFilePath;
         let thumbnailPath;
         try {
@@ -34,16 +34,87 @@ let PostsService = class PostsService {
             const videoUrl = await this.ACTION.uploadVideoToFirebase(videoFile, videoFilePath);
             thumbnailPath = await this.ACTION.generateThumbnail(videoFilePath, tempDir);
             const thumbnailUrl = await this.ACTION.uploadThumbnailToFirebase(thumbnailPath);
-            const updatedDto = this.ACTION.updateDtoWithUrls(createDto, videoUrl, thumbnailUrl);
-            const newUser = await this.ACTION.saveToDatabase(updatedDto);
-            return {
-                message: 'User video and thumbnail successfully uploaded and stored in Firebase and MongoDB',
-                newUser,
-            };
+            if (!createDto.email) {
+                throw new Error('Email is required to create a post.');
+            }
+            let existingPost = await this.postModel.findOne({ email: createDto.email });
+            if (existingPost) {
+                existingPost.video_url.push(videoUrl);
+                existingPost.thumbnail.push(thumbnailUrl);
+                existingPost.time = new Date().toISOString();
+                if (createDto.caption) {
+                    existingPost.caption = createDto.caption;
+                }
+                await existingPost.save();
+                return {
+                    message: 'Video and thumbnail successfully added to your posts.',
+                    newPost: existingPost,
+                };
+            }
+            else {
+                const newPost = await this.postModel.create({
+                    email: createDto.email,
+                    caption: createDto.caption,
+                    videoUrl: [videoUrl],
+                    thumbnailUrl: [thumbnailUrl],
+                    Ismock: createDto.Ismock,
+                    time: createDto.time,
+                });
+                console.log('Saved Post:', newPost);
+                return {
+                    message: 'Video and thumbnail successfully uploaded and stored.',
+                    newPost,
+                };
+            }
         }
         catch (error) {
             console.error('Error uploading video:', error);
-            throw new Error('Failed to upload video');
+            throw new Error(error.message || 'Failed to upload video');
+        }
+    }
+    async getContents(email, page = 1, limit = 10) {
+        try {
+            const skip = (page - 1) * limit;
+            const posts = await this.postModel
+                .find({}, { video_url: 1, email: 1, Ismock: 1, _id: 0 })
+                .skip(skip)
+                .limit(limit)
+                .lean()
+                .exec();
+            const mockVideos = [];
+            const regularVideos = [];
+            posts.forEach(post => {
+                post.video_url.forEach((video) => {
+                    if (post.Ismock) {
+                        mockVideos.push({ [post.email]: video });
+                    }
+                    else {
+                        regularVideos.push({ [post.email]: video });
+                    }
+                });
+            });
+            const videos = [];
+            let i = 0;
+            let j = 0;
+            while (i < mockVideos.length || j < regularVideos.length) {
+                if (i < mockVideos.length) {
+                    videos.push(mockVideos[i++]);
+                }
+                if (j < regularVideos.length) {
+                    videos.push(regularVideos[j++]);
+                }
+            }
+            const totalVideos = videos.length;
+            console.log(videos);
+            return {
+                currentPage: page,
+                totalPages: Math.ceil(totalVideos / limit),
+                totalVideos,
+                videos
+            };
+        }
+        catch (error) {
+            throw new Error('Failed to retrieve contents');
         }
     }
 };

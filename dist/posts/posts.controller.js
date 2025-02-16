@@ -27,18 +27,30 @@ let PostsController = class PostsController {
         }
         return this.postService.createPost(videoFile, createPostDto);
     }
+    async getContents(email, page = 1, limit = 10) {
+        return this.postService.getContents(email, Number(page), Number(limit));
+    }
 };
 exports.PostsController = PostsController;
 __decorate([
     (0, common_1.Post)('create_post'),
     (0, common_1.HttpCode)(201),
-    (0, common_1.UseInterceptors)((0, platform_express_1.FileInterceptor)('video')),
+    (0, common_1.UseInterceptors)((0, platform_express_1.FileInterceptor)('videoFile')),
     __param(0, (0, common_1.UploadedFile)()),
-    __param(1, (0, common_1.Query)()),
+    __param(1, (0, common_1.Body)()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Object, posts_dto_1.CreatePostDto]),
     __metadata("design:returntype", Promise)
 ], PostsController.prototype, "createPost", null);
+__decorate([
+    (0, common_1.Get)('getContents'),
+    __param(0, (0, common_1.Query)('email')),
+    __param(1, (0, common_1.Query)('page')),
+    __param(2, (0, common_1.Query)('limit')),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String, Number, Number]),
+    __metadata("design:returntype", Promise)
+], PostsController.prototype, "getContents", null);
 exports.PostsController = PostsController = __decorate([
     (0, common_1.Controller)('posts'),
     __metadata("design:paramtypes", [posts_service_1.PostsService])

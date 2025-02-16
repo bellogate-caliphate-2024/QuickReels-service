@@ -1,40 +1,41 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document } from 'mongoose';
-import { IsArray, IsNotEmpty, IsOptional, IsString, MinLength } from 'class-validator';
+import { IsArray, IsBoolean, IsEmail, IsNotEmpty, IsOptional, IsString, IsUrl, MinLength } from 'class-validator';
 
 export type PostDocument = Post & Document;
 
 @Schema({ timestamps: true })
 export class Post {
-  
-    @IsString()
-    @IsNotEmpty()
-    videoId: string;
-  
-    @IsString()
-    @IsNotEmpty()
-    userId: string;
-  
-    @IsString()
-    @IsNotEmpty()
-    time: string;
-  
-    @IsString()
-    @IsNotEmpty()
-    caption: string;
-  
-    @IsOptional()
-    @IsString()
-    email?: string;
-  
-    @IsOptional()
-    @IsString()
-    @IsArray()
-    videoUrl: string[];
+  @Prop({ required: false }) 
+  @IsOptional()
+  @IsString()
+  time?: string;
 
-    @IsOptional()
-    @IsString()
-    thumbnailUrl?: string;
+  @Prop({ required: true, unique: true })
+  @IsNotEmpty()
+  @IsEmail()
+  email: string;
+
+  @Prop({ required: true })
+  @IsNotEmpty()
+  @IsUrl()
+  video_url: string[];
+
+  
+  @Prop({ required: false })
+  @IsOptional()
+  @IsUrl()
+  thumbnail: string[];
+
+  @Prop({ required: false })
+  @IsOptional()
+  @IsString()
+  @MinLength(10)
+  caption?: string;
+
+  @Prop({ required: false })
+  @IsBoolean()
+  Ismock: boolean;
     
 }
 

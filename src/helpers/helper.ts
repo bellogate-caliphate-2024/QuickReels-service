@@ -13,10 +13,10 @@ import { Post } from '../Schemas/posts.schema';
 import { CreatePostDto } from '../posts.dto';
 import { firebaseAdmin, firebaseApp } from '../DataBase/Firebase';
 import { v4 as uuidv4 } from 'uuid';
-import path from 'path';
+import * as path from 'path'; // Updated import for path
 import * as fs from 'fs';
 import { getStorage, ref, uploadBytesResumable } from 'firebase/storage';
-import ffmpeg from 'fluent-ffmpeg';
+import * as ffmpeg from 'fluent-ffmpeg';
 import * as ffmpegStatic from '@ffmpeg-installer/ffmpeg';
 import * as ffprobeStatic from '@ffprobe-installer/ffprobe';
 
@@ -35,7 +35,6 @@ export class Helper {
       throw this.handleError(error);
     }
   }
-
   async handleError(error: any) {
     if (error.code === 11000) {
       throw new ConflictException('Duplicate video ID detected');
@@ -56,7 +55,18 @@ export class Helper {
   }
 
   saveTempFile(buffer: Buffer, filename: string): string {
-    const filePath = path.join(__dirname, filename);
+    // Define the temporary directory
+    const tempDir = path.join(__dirname, 'tmp');
+
+    // Create the directory if it doesn't exist
+    if (!fs.existsSync(tempDir)) {
+      fs.mkdirSync(tempDir, { recursive: true });
+    }
+
+    // Build the full file path
+    const filePath = path.join(tempDir, filename);
+
+    // Write the file to disk
     fs.writeFileSync(filePath, buffer);
     return filePath;
   }
@@ -68,13 +78,13 @@ export class Helper {
     const storage = getStorage(firebaseApp);
     const fileName = `quickreels_videos/${Date.now()}_${uuidv4()}_${videoFile.originalname}`;
 
-    // Upload file
+    // Upload file to Firebase Storage
     const storageRef = ref(storage, fileName);
     await uploadBytesResumable(storageRef, videoFile.buffer, {
       contentType: videoFile.mimetype,
     });
 
-    // Generate download URL
+    // Generate and return the download URL
     return this.generateFirebaseDownloadUrl(fileName);
   }
 
@@ -104,19 +114,21 @@ export class Helper {
     const fileName = `quickreels_thumbnails/${Date.now()}_${uuidv4()}_${path.basename(thumbnailPath)}`;
     const buffer = fs.readFileSync(thumbnailPath);
 
-    // Upload thumbnail
+    // Upload thumbnail to Firebase Storage
     const storageRef = ref(storage, fileName);
     await uploadBytesResumable(storageRef, buffer, {
       contentType: 'image/png',
     });
 
-    // Generate download URL
+    // Generate and return the download URL
     return this.generateFirebaseDownloadUrl(fileName);
   }
 
   generateFirebaseDownloadUrl(fileName: string): string {
     const bucket = firebaseAdmin.storage().bucket();
-    return `https://firebasestorage.googleapis.com/v0/b/${bucket.name}/o/${encodeURIComponent(fileName)}?alt=media`;
+    return `https://firebasestorage.googleapis.com/v0/b/${bucket.name}/o/${encodeURIComponent(
+      fileName,
+    )}?alt=media`;
   }
 
   updateDtoWithUrls(
@@ -126,6 +138,7 @@ export class Helper {
   ): CreatePostDto {
     const updatedDto = { ...createDto };
 
+    // Ensure the properties are arrays before pushing new values.
     if (!Array.isArray(updatedDto.video_url)) updatedDto.video_url = [];
     if (!Array.isArray(updatedDto.thumbnail)) updatedDto.thumbnail = [];
 
@@ -136,10 +149,10 @@ export class Helper {
     return updatedDto;
   }
 
-  cleanupTempFiles(...paths: string[]) {
-    paths.forEach((path) => {
-      if (path && fs.existsSync(path)) {
-        fs.unlinkSync(path);
+  cleanupTempFiles(...pathsToCleanup: string[]) {
+    pathsToCleanup.forEach((filePath) => {
+      if (filePath && fs.existsSync(filePath)) {
+        fs.unlinkSync(filePath);
       }
     });
   }

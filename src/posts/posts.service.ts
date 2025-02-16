@@ -5,15 +5,16 @@ import { Post } from '../Schemas/posts.schema';
 import { CreatePostDto } from '../posts.dto';
 import { Helper } from '../helpers/helper';
 import { v4 as uuidv4 } from 'uuid';
-import path from 'path';
+import * as path from 'path';
 
 @Injectable()
 export class PostsService {
   constructor(
     @InjectModel(Post.name)
-    private readonly postModel: Model<Post>,
+    private postModel: Model<Post>,
     private ACTION: Helper,
   ) {}
+
 
   async createPost(
     videoFile: Express.Multer.File,
@@ -60,6 +61,64 @@ export class PostsService {
     } catch (error) {
       console.error('Error uploading video:', error);
       throw new Error('Failed to upload video');
+    }
+  }
+
+  async getContents(email: string, page: number = 1, limit: number = 10) {
+    try {
+      const skip = (page - 1) * limit;
+
+      // Fetch all posts, retrieving video_url, email, and Ismock fields
+      const posts = await this.postModel
+        .find({}, { video_url: 1, email: 1, Ismock: 1, _id: 0 })
+        .skip(skip)
+        .limit(limit)
+        .lean()
+        .exec();
+
+      // Separate the posts based on the Ismock field
+      const mockVideos: { [key: string]: string }[] = [];
+      const regularVideos: { [key: string]: string }[] = [];
+
+      posts.forEach((post) => {
+        // Ensure video_url is an array, then add each URL separately
+        post.video_url.forEach((video: string) => {
+          if (post.Ismock) {
+            mockVideos.push({ [post.email]: video });
+          } else {
+            regularVideos.push({ [post.email]: video });
+          }
+        });
+      });
+
+      // Now alternate between the mock and regular videos
+      const videos: { [key: string]: string }[] = [];
+
+      let i = 0;
+      let j = 0;
+
+      // Alternate between mock and regular videos
+      while (i < mockVideos.length || j < regularVideos.length) {
+        if (i < mockVideos.length) {
+          videos.push(mockVideos[i++]);
+        }
+        if (j < regularVideos.length) {
+          videos.push(regularVideos[j++]);
+        }
+      }
+
+      // Calculate total number of videos
+      const totalVideos = videos.length;
+      console.log(videos);
+
+      return {
+        currentPage: page,
+        totalPages: Math.ceil(totalVideos / limit),
+        totalVideos,
+        videos,
+      };
+    } catch (error) {
+      throw new Error('Failed to retrieve contents');
     }
   }
 }
