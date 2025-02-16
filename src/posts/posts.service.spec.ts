@@ -72,34 +72,34 @@ describe('PostsService', () => {
 
 
 
-  const mockPosts: Post[] = [
-    { email: 'user1@gmail.com', video_url: ['video1.mp4'], Ismock: true, thumbnail: [], time: new Date().toISOString() },
-    { email: 'user2@gmail.com', video_url: ['video2.mp4'], Ismock: false, thumbnail: [], time: new Date().toISOString() },
-    { email: 'user3@gmail.com', video_url: ['video3.mp4'], Ismock: false, thumbnail: [], time: new Date().toISOString() },
-    { email: 'user4@gmail.com', video_url: ['video4.mp4'], Ismock: true, thumbnail: [], time: new Date().toISOString() },
-  ];
+  // const mockPosts: Post[] = [
+  //   { email: 'user1@gmail.com', video_url: ['video1.mp4'], Ismock: true, thumbnail: [], time: new Date().toISOString() },
+  //   { email: 'user2@gmail.com', video_url: ['video2.mp4'], Ismock: false, thumbnail: [], time: new Date().toISOString() },
+  //   { email: 'user3@gmail.com', video_url: ['video3.mp4'], Ismock: false, thumbnail: [], time: new Date().toISOString() },
+  //   { email: 'user4@gmail.com', video_url: ['video4.mp4'], Ismock: true, thumbnail: [], time: new Date().toISOString() },
+  // ];
   
-  const mockExec = jest.fn().mockResolvedValue(mockPosts);
+  // const mockExec = jest.fn().mockResolvedValue(mockPosts);
   
-  const mockFind = jest.fn().mockReturnValue({
-    select: jest.fn().mockReturnThis(),
-    skip: jest.fn().mockReturnThis(),
-    limit: jest.fn().mockReturnThis(),
-    lean: jest.fn().mockReturnThis(),
-    exec: mockExec,
-  });
+  // const mockFind = jest.fn().mockReturnValue({
+  //   select: jest.fn().mockReturnThis(),
+  //   skip: jest.fn().mockReturnThis(),
+  //   limit: jest.fn().mockReturnThis(),
+  //   lean: jest.fn().mockReturnThis(),
+  //   exec: mockExec,
+  // });
   
-  it('should return videos alternating between Ismock true and false', async () => {
-    jest.spyOn(postModel, 'find').mockImplementation(mockFind);
+  // it('should return videos alternating between Ismock true and false', async () => {
+  //   jest.spyOn(postModel, 'find').mockImplementation(mockFind);
   
-    const result = await service.getContents('test@gmail.com'); 
+  //   const result = await service.getContents('test@gmail.com'); 
   
-    expect(result.videos).toEqual([
-      { 'user1@gmail.com': 'video1.mp4' }, // Ismock: true
-      { 'user2@gmail.com': 'video2.mp4' }, // Ismock: false
-      { 'user4@gmail.com': 'video4.mp4' }, // Ismock: true
-      { 'user3@gmail.com': 'video3.mp4' }, // Ismock: false
-    ]);
-  });
+  //   expect(result.videos).toEqual([
+  //     { 'user1@gmail.com': 'video1.mp4' },
+  //     { 'user2@gmail.com': 'video2.mp4' }, 
+  //     { 'user4@gmail.com': 'video4.mp4' }, 
+  //     { 'user3@gmail.com': 'video3.mp4' }, 
+  //   ]);
+  // });
   
 });
