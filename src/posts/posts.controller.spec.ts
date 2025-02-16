@@ -17,7 +17,6 @@ describe('PostsController', () => {
       }),
     } as any;
 
-    // Directly instantiate the controller with the mocked service
     controller = new PostsController(postsService);
   });
 
@@ -28,19 +27,29 @@ describe('PostsController', () => {
       thumbnail: ['https://example.com/thumbnail.jpg'],
       caption: 'This is a test post',
       time: '2023-10-01T12:00:00Z',
-      Ismock: false
+      userName: 'Clark',
+      isLiked: true,
+      Ismock: false,
     };
 
-    // Call the controller method
-    const result = await controller.createPost(mockFile, createPostDto);
+    const numberOfViews = 100;
 
-    // Test the response
+    const numberOfComments = 50;
+
+    const result = await controller.createPost(
+      mockFile,
+      createPostDto,
+      ' ',
+      numberOfComments,
+      numberOfViews,
+      0,
+    );
+
     expect(result).toEqual({
       file: mockFile,
       message: 'Post created successfully',
     });
 
-    // Test if the service method was called
     expect(postsService.createPost).toHaveBeenCalledWith(
       mockFile,
       createPostDto,
