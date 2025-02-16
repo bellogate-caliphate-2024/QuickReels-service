@@ -3,7 +3,7 @@ import { PostsController } from './posts.controller';
 import { PostsService } from './posts.service';
 import { MongooseModule } from '@nestjs/mongoose';
 import { Post, PostSchema } from 'src/Schemas/posts.schema';
-import { Helper } from 'src/helpers/helper';
+import { Helper } from '../helpers/helper.module';
 
 @Module({
   imports: [

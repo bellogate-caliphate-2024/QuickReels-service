@@ -7,10 +7,11 @@ import { getModelToken } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { Test, TestingModule } from '@nestjs/testing';
 import { Post } from 'src/Schemas/posts.schema';
+import { Helper } from '../helpers/helper.module';
 describe('PostsService', () => {
   let service: PostsService;
   let postModel: Model<any>;
-
+  let helper:Helper
   const mockPostModel = {
     create: jest.fn().mockResolvedValue({}),
   };
@@ -25,15 +26,14 @@ describe('PostsService', () => {
       limit: jest.fn().mockReturnThis(),
       lean: jest.fn().mockReturnThis(),
       exec: jest.fn(),
-    } as unknown as jest.Mocked<Model<any>>; // ✅ Cast it correctly
+    } as unknown as jest.Mocked<Model<any>>; 
 
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         PostsService,
-        {
-          provide: getModelToken('Post'),
-          useValue: mockPostModel, // ✅ Pass the mocked model
-        },
+        
+    { provide: getModelToken('Post'), useValue: mockPostModel },
+    { provide: Helper, useValue: mockHelper },     
       ],
     }).compile();
 
@@ -70,25 +70,7 @@ describe('PostsService', () => {
     expect(service.createPost).toHaveBeenCalledWith(mockFile, mockPost);
   });
 
-  //   it('should return videos alternating between Ismock true and false', async () => {
-  //     const mockPosts = [
-  //         { email: 'user1@gmail.com', video_url: ['video1.mp4'], Ismock: true },
-  //         { email: 'user2@gmail.com', video_url: ['video2.mp4'], Ismock: false },
-  //         { email: 'user4@gmail.com', video_url: ['video4.mp4'], Ismock: true },
-  //         { email: 'user3@gmail.com', video_url: ['video3.mp4'], Ismock: false },
-  //     ];
 
-  //     jest.spyOn(postModel, 'exec').mockResolvedValue(mockPosts);
-
-  //     const result = await service.getContents('test@gmail.com');
-
-  //     expect(result.videos).toEqual([
-  //         { 'user1@gmail.com': 'video1.mp4' }, // Ismock: true
-  //         { 'user2@gmail.com': 'video2.mp4' }, // Ismock: false
-  //         { 'user4@gmail.com': 'video4.mp4' }, // Ismock: true
-  //         { 'user3@gmail.com': 'video3.mp4' }  // Ismock: false
-  //     ]);
-  // });
 
   const mockPosts: Post[] = [
     {
