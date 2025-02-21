@@ -176,6 +176,7 @@ describe('PostsService', () => {
     const limit = 4;
     const result = await service.getContents(page, limit);
 
+
     // Extract Ismock values from the response
     const isMockValues = result.listOfContents.map((content) => content.Ismock);
 
