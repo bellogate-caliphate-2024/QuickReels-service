@@ -42,7 +42,6 @@ jobs:
           VALIDATE_ALL_CODEBASE: 'false'
           VALIDATE_JSCPD: 'false'
           VALIDATE_YAML: 'false'
-          VALIDATE_YAML_PRETTIER: 'false'
           VALIDATE_JAVASCRIPT_ES: 'false'
           VALIDATE_TYPESCRIPT_STANDARD: 'false'
           VALIDATE_TYPESCRIPT_ES: 'false'
