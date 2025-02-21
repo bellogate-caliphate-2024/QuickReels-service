@@ -25,19 +25,28 @@ export class PostsController {
   async createPost(
     @UploadedFile() videoFile: Express.Multer.File,
     @Body() createPostDto: CreatePostDto,
+    @Query('userProfilePicture') userProfilePicture: string,
+    @Query('numberOfViews') numberOfViews: number,
+    @Query('numberOfLikes') numberOfLikes: number,
+    @Query('numberOfComments') numberOfComments: number,
   ): Promise<any> {
     if (!videoFile) {
       throw new BadRequestException('No video file uploaded');
     }
+
+    createPostDto.userProfilePicture = userProfilePicture;
+    createPostDto.numberOfViews = Number(numberOfViews);
+    createPostDto.numberOfLikes = Number(numberOfLikes);
+    createPostDto.numberOfComments = Number(numberOfComments);
+
     return this.postService.createPost(videoFile, createPostDto);
   }
 
   @Get('getContents')
   async getContents(
-    @Query('email') email: string,
-    @Query('page') page: number = 1,
-    @Query('limit') limit: number = 10,
+    @Query('page') page: number,
+    @Query('limit') limit: number,
   ) {
-    return this.postService.getContents(email, Number(page), Number(limit));
+    return this.postService.getContents(Number(page), Number(limit));
   }
 }

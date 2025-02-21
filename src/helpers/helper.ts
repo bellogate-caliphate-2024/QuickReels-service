@@ -36,9 +36,9 @@ export class Helper {
     }
   }
   async handleError(error: any) {
-    if (error.code === 11000) {
-      throw new ConflictException('Duplicate video ID detected');
-    }
+    // if (error.code === 11000) {
+    //   throw new ConflictException('Duplicate video ID detected');
+    // }
 
     if (error.name === 'ValidationError') {
       const messages = Object.values(error.errors).map(

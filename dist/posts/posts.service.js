@@ -20,6 +20,7 @@ const posts_schema_1 = require("../Schemas/posts.schema");
 const helper_1 = require("../helpers/helper");
 const uuid_1 = require("uuid");
 const path = require("path");
+const date_fns_1 = require("date-fns");
 let PostsService = class PostsService {
     constructor(postModel, ACTION) {
         this.postModel = postModel;
@@ -34,86 +35,81 @@ let PostsService = class PostsService {
             const videoUrl = await this.ACTION.uploadVideoToFirebase(videoFile, videoFilePath);
             thumbnailPath = await this.ACTION.generateThumbnail(videoFilePath, tempDir);
             const thumbnailUrl = await this.ACTION.uploadThumbnailToFirebase(thumbnailPath);
-            if (!createDto.email) {
-                throw new Error('Email is required to create a post.');
-            }
-            let existingPost = await this.postModel.findOne({ email: createDto.email });
-            if (existingPost) {
-                existingPost.video_url.push(videoUrl);
-                existingPost.thumbnail.push(thumbnailUrl);
-                existingPost.time = new Date().toISOString();
-                if (createDto.caption) {
-                    existingPost.caption = createDto.caption;
-                }
-                await existingPost.save();
-                return {
-                    message: 'Video and thumbnail successfully added to your posts.',
-                    newPost: existingPost,
-                };
-            }
-            else {
-                const newPost = await this.postModel.create({
-                    email: createDto.email,
-                    caption: createDto.caption,
-                    videoUrl: [videoUrl],
-                    thumbnailUrl: [thumbnailUrl],
-                    Ismock: createDto.Ismock,
-                    time: createDto.time,
-                });
-                console.log('Saved Post:', newPost);
-                return {
-                    message: 'Video and thumbnail successfully uploaded and stored.',
-                    newPost,
-                };
-            }
-        }
-        catch (error) {
-            console.error('Error uploading video:', error);
-            throw new Error(error.message || 'Failed to upload video');
-        }
-    }
-    async getContents(email, page = 1, limit = 10) {
-        try {
-            const skip = (page - 1) * limit;
-            const posts = await this.postModel
-                .find({}, { video_url: 1, email: 1, Ismock: 1, _id: 0 })
-                .skip(skip)
-                .limit(limit)
-                .lean()
-                .exec();
-            const mockVideos = [];
-            const regularVideos = [];
-            posts.forEach(post => {
-                post.video_url.forEach((video) => {
-                    if (post.Ismock) {
-                        mockVideos.push({ [post.email]: video });
-                    }
-                    else {
-                        regularVideos.push({ [post.email]: video });
-                    }
-                });
-            });
-            const videos = [];
-            let i = 0;
-            let j = 0;
-            while (i < mockVideos.length || j < regularVideos.length) {
-                if (i < mockVideos.length) {
-                    videos.push(mockVideos[i++]);
-                }
-                if (j < regularVideos.length) {
-                    videos.push(regularVideos[j++]);
-                }
-            }
-            const totalVideos = videos.length;
-            console.log(videos);
+            const profilePictureUrl = createDto.userProfilePicture;
+            createDto.time = new Date().toISOString();
+            const formattedTime = (0, date_fns_1.format)(new Date(createDto.time), 'MM/dd/yyyy');
+            createDto.time = formattedTime;
+            const updatedDto = {
+                ...createDto,
+                video_url: [videoUrl],
+                thumbnail: [thumbnailUrl],
+                userProfilePicture: profilePictureUrl,
+            };
+            const newUser = await this.ACTION.saveToDatabase(updatedDto);
             return {
-                currentPage: page,
-                totalPages: Math.ceil(totalVideos / limit),
-                totalVideos,
-                videos
+                message: 'User video, thumbnail, and profile picture successfully uploaded and stored in Firebase and MongoDB',
+                newUser,
             };
         }
         catch (error) {
+            console.error('Error uploading video:', error);
+            throw new Error('Failed to upload video');
+        }
+    }
+    async getContents(page, limit) {
+        try {
+            const skip = (page - 1) * limit;
+            const posts = await this.postModel
+                .find({}, {
+                video_url: 1,
+                thumbnail: 1,
+                caption: 1,
+                time: 1,
+                numberOfViews: 1,
+                numberOfLikes: 1,
+                numberOfComments: 1,
+                email: 1,
+                userName: 1,
+                userProfilePicture: 1,
+                isLiked: 1,
+                Ismock: 1,
+            })
+                .lean()
+                .exec();
+            const allVideos = [];
+            posts.forEach((post) => {
+                post.video_url?.forEach((video, index) => {
+                    const content = {
+                        id: `content-${post._id}-${index}`,
+                        videoUrl: video,
+                        thumbnailUrl: post.thumbnail?.[index] || '',
+                        caption: post.caption || '',
+                        date: post.time
+                            ? new Date(post.time).toISOString().split('T')[0]
+                            : '',
+                        numberOfViews: post.numberOfViews || 0,
+                        numberOfLikes: post.numberOfLikes || 0,
+                        numberOfComments: post.numberOfComments || 0,
+                        userId: post.email,
+                        userName: post.userName || 'Unknown',
+                        userProfilePicture: post.userProfilePicture || '',
+                        isLiked: post.isLiked || false,
+                        Ismock: post.Ismock || false,
+                    };
+                    allVideos.push(content);
+                });
+            });
+            const paginatedVideos = allVideos.slice(skip, skip + limit);
+            const isLastPage = skip + limit >= allVideos.length;
+            return {
+                currentPage: page,
+                nextPage: isLastPage ? null : page + 1,
+                isLastPage,
+                listOfContents: paginatedVideos,
+            };
+        }
+        catch (error) {
+            console.error('Error retrieving contents:', error);
             throw new Error('Failed to retrieve contents');
         }
     }

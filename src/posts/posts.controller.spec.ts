@@ -28,11 +28,24 @@ describe('PostsController', () => {
       thumbnail: ['https://example.com/thumbnail.jpg'],
       caption: 'This is a test post',
       time: '2023-10-01T12:00:00Z',
+      userName: 'Clark',
+      isLiked: true,
       Ismock: false,
     };
 
+    const numberOfViews = 100; // Define the variable
+
+    const numberOfComments = 50; // Define the variable
+
     // Call the controller method
-    const result = await controller.createPost(mockFile, createPostDto);
+    const result = await controller.createPost(
+      mockFile,
+      createPostDto,
+      ' ',
+      numberOfComments,
+      numberOfViews,
+      0,
+    );
 
     // Test the response
     expect(result).toEqual({

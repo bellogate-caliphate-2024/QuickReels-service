@@ -6,6 +6,7 @@ import { CreatePostDto } from '../posts.dto';
 import { Helper } from '../helpers/helper';
 import { v4 as uuidv4 } from 'uuid';
 import * as path from 'path';
+import { format } from 'date-fns';
 
 @Injectable()
 export class PostsService {
@@ -42,19 +43,27 @@ export class PostsService {
       const thumbnailUrl =
         await this.ACTION.uploadThumbnailToFirebase(thumbnailPath);
 
-      // 3. Update DTO with URLs
-      const updatedDto = this.ACTION.updateDtoWithUrls(
-        createDto,
-        videoUrl,
-        thumbnailUrl,
-      );
+      // 4. Store userProfilePicture
+      const profilePictureUrl = createDto.userProfilePicture;
 
-      // 4. Save to database
+      // Edit time format
+      createDto.time = new Date().toISOString();
+      const formattedTime = format(new Date(createDto.time), 'MM/dd/yyyy');
+      createDto.time = formattedTime;
+      // 5. Update DTO with URLs
+      const updatedDto = {
+        ...createDto,
+        video_url: [videoUrl],
+        thumbnail: [thumbnailUrl],
+        userProfilePicture: profilePictureUrl, // Ensure it's added to the DTO
+      };
+
+      // 6. Save to database
       const newUser = await this.ACTION.saveToDatabase(updatedDto);
 
       return {
         message:
-          'User video and thumbnail successfully uploaded and stored in Firebase and MongoDB',
+          'User video, thumbnail, and profile picture successfully uploaded and stored in Firebase and MongoDB',
         newUser,
       };
     } catch (error) {
@@ -63,60 +72,69 @@ export class PostsService {
     }
   }
 
-  async getContents(email: string, page: number = 1, limit: number = 10) {
+  async getContents(page: number, limit: number) {
     try {
       const skip = (page - 1) * limit;
 
-      // Fetch all posts, retrieving video_url, email, and Ismock fields
+      // Fetch all posts from the database
       const posts = await this.postModel
-        .find({}, { video_url: 1, email: 1, Ismock: 1, _id: 0 })
-        .skip(skip)
-        .limit(limit)
+        .find(
+          {},
+          {
+            video_url: 1,
+            thumbnail: 1,
+            caption: 1,
+            time: 1,
+            numberOfViews: 1,
+            numberOfLikes: 1,
+            numberOfComments: 1,
+            email: 1,
+            userName: 1,
+            userProfilePicture: 1,
+            isLiked: 1,
+            Ismock: 1,
+          },
+        )
         .lean()
         .exec();
 
-      // Separate the posts based on the Ismock field
-      const mockVideos: { [key: string]: string }[] = [];
-      const regularVideos: { [key: string]: string }[] = [];
-
+      // Flatten all videos into a single array
+      const allVideos: any[] = [];
       posts.forEach((post) => {
-        // Ensure video_url is an array, then add each URL separately
-        post.video_url.forEach((video: string) => {
-          if (post.Ismock) {
-            mockVideos.push({ [post.email]: video });
-          } else {
-            regularVideos.push({ [post.email]: video });
-          }
+        post.video_url?.forEach((video: string, index: number) => {
+          const content = {
+            id: `content-${post._id}-${index}`,
+            videoUrl: video,
+            thumbnailUrl: post.thumbnail?.[index] || '',
+            caption: post.caption || '',
+            date: post.time
+              ? new Date(post.time).toISOString().split('T')[0]
+              : '',
+            numberOfViews: post.numberOfViews || 0,
+            numberOfLikes: post.numberOfLikes || 0,
+            numberOfComments: post.numberOfComments || 0,
+            userId: post.email,
+            userName: post.userName || 'Unknown',
+            userProfilePicture: post.userProfilePicture || '',
+            isLiked: post.isLiked || false,
+            Ismock: post.Ismock || false,
+          };
+          allVideos.push(content);
         });
       });
 
-      // Now alternate between the mock and regular videos
-      const videos: { [key: string]: string }[] = [];
-
-      let i = 0;
-      let j = 0;
-
-      // Alternate between mock and regular videos
-      while (i < mockVideos.length || j < regularVideos.length) {
-        if (i < mockVideos.length) {
-          videos.push(mockVideos[i++]);
-        }
-        if (j < regularVideos.length) {
-          videos.push(regularVideos[j++]);
-        }
-      }
-
-      // Calculate total number of videos
-      const totalVideos = videos.length;
-      console.log(videos);
+      // Apply pagination to the flattened videos array
+      const paginatedVideos = allVideos.slice(skip, skip + limit);
+      const isLastPage = skip + limit >= allVideos.length;
 
       return {
         currentPage: page,
-        totalPages: Math.ceil(totalVideos / limit),
-        totalVideos,
-        videos,
+        nextPage: isLastPage ? null : page + 1,
+        isLastPage,
+        listOfContents: paginatedVideos,
       };
     } catch (error) {
+      console.error('Error retrieving contents:', error);
       throw new Error('Failed to retrieve contents');
     }
   }

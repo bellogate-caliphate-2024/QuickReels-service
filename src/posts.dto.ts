@@ -7,6 +7,9 @@ import {
   IsEmail,
   IsEmpty,
   IsBoolean,
+  IsUrl,
+  IsInt,
+  Min,
 } from 'class-validator';
 import { Transform } from 'class-transformer';
 
@@ -33,7 +36,33 @@ export class CreatePostDto {
   @IsString()
   caption?: string;
 
+  @IsOptional()
+  @IsInt()
+  @Min(0)
+  numberOfViews?: number;
+
+  @IsOptional()
+  @IsInt()
+  @Min(0)
+  numberOfLikes?: number;
+
+  @IsOptional()
+  @IsInt()
+  @Min(0)
+  numberOfComments?: number;
+
+  @IsString()
+  userName: string;
+
+  @IsOptional()
+  @IsUrl()
+  userProfilePicture?: string;
+
   @IsBoolean()
   @Transform(({ value }) => value === 'true')
   Ismock: boolean;
+
+  @IsOptional()
+  @IsString()
+  isLiked: boolean;
 }
