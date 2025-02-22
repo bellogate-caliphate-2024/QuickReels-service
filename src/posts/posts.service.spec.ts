@@ -69,6 +69,8 @@ describe('PostsService', () => {
     expect(service.createPost).toHaveBeenCalledWith(mockFile, mockPost);
   });
 
+  // Pagination
+
   it('should return correct pagination fields', async () => {
     const mockPosts = [
       {
@@ -175,7 +177,6 @@ describe('PostsService', () => {
     const page = 1;
     const limit = 4;
     const result = await service.getContents(page, limit);
-
 
     // Extract Ismock values from the response
     const isMockValues = result.listOfContents.map((content) => content.Ismock);

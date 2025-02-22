@@ -121,7 +121,6 @@ export class PostsService {
           };
           allVideos.push(content);
         });
-        
       });
 
       // Apply pagination to the flattened videos array
