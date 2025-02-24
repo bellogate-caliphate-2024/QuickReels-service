@@ -1,20 +1,14 @@
 import {
   BadRequestException,
-  ConflictException,
   InternalServerErrorException,
   Injectable,
   Logger,
-  NotFoundException,
 } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
-import { Express } from 'express';
 import { Post } from '../Schemas/posts.schema';
-import { CreatePostDto } from '../posts.dto';
-import { v4 as uuidv4 } from 'uuid';
 import * as path from 'path'; // Updated import for path
 import * as fs from 'fs';
-import { getStorage, ref, uploadBytesResumable } from 'firebase/storage';
 import * as ffmpeg from 'fluent-ffmpeg';
 import * as ffmpegStatic from '@ffmpeg-installer/ffmpeg';
 import * as ffprobeStatic from '@ffprobe-installer/ffprobe';

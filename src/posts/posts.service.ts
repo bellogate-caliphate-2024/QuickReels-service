@@ -1,6 +1,4 @@
 import { Injectable } from '@nestjs/common';
-import { InjectModel } from '@nestjs/mongoose';
-import { Post } from '../Schemas/posts.schema';
 import { CreatePostDto } from '../posts.dto';
 import { Helper } from '../helpers/helper';
 import { v4 as uuidv4 } from 'uuid';
