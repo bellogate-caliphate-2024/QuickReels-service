@@ -8,46 +8,38 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
-var __param = (this && this.__param) || function (paramIndex, decorator) {
-    return function (target, key) { decorator(target, key, paramIndex); }
-};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.PostsService = void 0;
 const common_1 = require("@nestjs/common");
-const mongoose_1 = require("@nestjs/mongoose");
-const mongoose_2 = require("mongoose");
-const posts_schema_1 = require("../Schemas/posts.schema");
 const helper_1 = require("../helpers/helper");
 const uuid_1 = require("uuid");
 const path = require("path");
 const date_fns_1 = require("date-fns");
+const Aws_1 = require("../DataBase/Aws");
 let PostsService = class PostsService {
-    constructor(postModel, ACTION) {
-        this.postModel = postModel;
+    constructor(ACTION, awsS3Service) {
         this.ACTION = ACTION;
+        this.awsS3Service = awsS3Service;
     }
     async createPost(videoFile, createDto) {
         const tempDir = path.join(__dirname, 'tmp');
         let videoFilePath;
         let thumbnailPath;
         try {
-            videoFilePath = this.ACTION.saveTempFile(videoFile.buffer, `video-${Date.now()}_${(0, uuid_1.v4)()}_${videoFile.originalname}`);
-            const videoUrl = await this.ACTION.uploadVideoToFirebase(videoFile, videoFilePath);
+            videoFilePath = await this.ACTION.saveTempFile(videoFile.buffer, `video-${Date.now()}_${(0, uuid_1.v4)()}_${videoFile.originalname}`);
+            const videoUrl = await this.awsS3Service.uploadFile(videoFile, 'videos');
             thumbnailPath = await this.ACTION.generateThumbnail(videoFilePath, tempDir);
-            const thumbnailUrl = await this.ACTION.uploadThumbnailToFirebase(thumbnailPath);
-            const profilePictureUrl = createDto.userProfilePicture;
-            createDto.time = new Date().toISOString();
-            const formattedTime = (0, date_fns_1.format)(new Date(createDto.time), 'MM/dd/yyyy');
-            createDto.time = formattedTime;
+            const thumbnailUrl = await this.awsS3Service.uploadLocalFile(thumbnailPath, 'thumbnails');
+            const formattedTime = (0, date_fns_1.format)(new Date(), 'MM/dd/yyyy');
             const updatedDto = {
                 ...createDto,
                 video_url: [videoUrl],
                 thumbnail: [thumbnailUrl],
-                userProfilePicture: profilePictureUrl,
+                time: formattedTime,
             };
             const newUser = await this.ACTION.saveToDatabase(updatedDto);
             return {
-                message: 'User video, thumbnail, and profile picture successfully uploaded and stored in Firebase and MongoDB',
+                message: 'User video, thumbnail, and profile picture successfully uploaded and stored in AWS S3 and MongoDB',
                 newUser,
             };
         }
@@ -59,53 +51,16 @@ let PostsService = class PostsService {
     async getContents(page, limit) {
         try {
             const skip = (page - 1) * limit;
-            const posts = await this.postModel
-                .find({}, {
-                video_url: 1,
-                thumbnail: 1,
-                caption: 1,
-                time: 1,
-                numberOfViews: 1,
-                numberOfLikes: 1,
-                numberOfComments: 1,
-                email: 1,
-                userName: 1,
-                userProfilePicture: 1,
-                isLiked: 1,
-                Ismock: 1,
-            })
-                .lean()
-                .exec();
-            const allVideos = [];
-            posts.forEach((post) => {
-                post.video_url?.forEach((video, index) => {
-                    const content = {
-                        id: `content-${post._id}-${index}`,
-                        videoUrl: video,
-                        thumbnailUrl: post.thumbnail?.[index] || '',
-                        caption: post.caption || '',
-                        date: post.time
-                            ? new Date(post.time).toISOString().split('T')[0]
-                            : '',
-                        numberOfViews: post.numberOfViews || 0,
-                        numberOfLikes: post.numberOfLikes || 0,
-                        numberOfComments: post.numberOfComments || 0,
-                        userId: post.email,
-                        userName: post.userName || 'Unknown',
-                        userProfilePicture: post.userProfilePicture || '',
-                        isLiked: post.isLiked || false,
-                        Ismock: post.Ismock || false,
-                    };
-                    allVideos.push(content);
-                });
-            });
+            const posts = await this.ACTION.fetchAllPosts();
+            const alternatedPosts = this.ACTION.alternateMockPosts(posts);
+            const allVideos = this.ACTION.flattenVideos(alternatedPosts);
             const paginatedVideos = allVideos.slice(skip, skip + limit);
             const isLastPage = skip + limit >= allVideos.length;
             return {
                 currentPage: page,
-                nextPage: isLastPage ? null : page + 1,
-                isLastPage,
                 listOfContents: paginatedVideos,
+                isLastPage,
+                nextPage: isLastPage ? null : page + 1,
             };
         }
         catch (error) {
@@ -117,8 +72,7 @@ let PostsService = class PostsService {
 exports.PostsService = PostsService;
 exports.PostsService = PostsService = __decorate([
     (0, common_1.Injectable)(),
-    __param(0, (0, mongoose_1.InjectModel)(posts_schema_1.Post.name)),
-    __metadata("design:paramtypes", [mongoose_2.Model,
-        helper_1.Helper])
+    __metadata("design:paramtypes", [helper_1.Helper,
+        Aws_1.AwsS3Service])
 ], PostsService);
 //# sourceMappingURL=posts.service.js.map

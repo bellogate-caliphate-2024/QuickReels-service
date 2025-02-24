@@ -49,22 +49,20 @@ export class Post {
   userName: string;
 
   @Prop({ required: true })
-  userProfilePicture: string; 
+  userProfilePicture: string;
 
   @Prop({ default: 0 })
-  numberOfViews: number; 
+  numberOfViews: number;
 
   @Prop({ default: 0 })
   numberOfLikes: number;
 
-  
   @Prop({ default: 0 })
   numberOfComments: number;
 
   @Prop({ required: false })
   @IsBoolean()
   isLiked: boolean;
-
 }
 
 export const PostSchema = SchemaFactory.createForClass(Post);

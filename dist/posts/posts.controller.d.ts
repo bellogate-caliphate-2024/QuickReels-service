@@ -6,8 +6,8 @@ export declare class PostsController {
     createPost(videoFile: Express.Multer.File, createPostDto: CreatePostDto, userProfilePicture: string, numberOfViews: number, numberOfLikes: number, numberOfComments: number): Promise<any>;
     getContents(page: number, limit: number): Promise<{
         currentPage: number;
-        nextPage: number | null;
-        isLastPage: boolean;
         listOfContents: any[];
+        isLastPage: boolean;
+        nextPage: number | null;
     }>;
 }

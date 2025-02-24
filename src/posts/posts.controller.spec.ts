@@ -17,7 +17,6 @@ describe('PostsController', () => {
       }),
     } as any;
 
-    // Directly instantiate the controller with the mocked service
     controller = new PostsController(postsService);
   });
 
@@ -33,11 +32,10 @@ describe('PostsController', () => {
       Ismock: false,
     };
 
-    const numberOfViews = 100; // Define the variable
+    const numberOfViews = 100;
 
-    const numberOfComments = 50; // Define the variable
+    const numberOfComments = 50;
 
-    // Call the controller method
     const result = await controller.createPost(
       mockFile,
       createPostDto,
@@ -47,13 +45,11 @@ describe('PostsController', () => {
       0,
     );
 
-    // Test the response
     expect(result).toEqual({
       file: mockFile,
       message: 'Post created successfully',
     });
 
-    // Test if the service method was called
     expect(postsService.createPost).toHaveBeenCalledWith(
       mockFile,
       createPostDto,

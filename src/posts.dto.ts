@@ -1,4 +1,3 @@
-// src/posts/dto/create-post.dto.ts
 import {
   IsString,
   IsNotEmpty,
