@@ -1,6 +1,4 @@
 import { Injectable } from '@nestjs/common';
-import { InjectModel } from '@nestjs/mongoose';
-import { Post } from '../Schemas/posts.schema';
 import { CreatePostDto } from '../posts.dto';
 import { Helper } from '../helpers/helper';
 import { v4 as uuidv4 } from 'uuid';
@@ -58,7 +56,6 @@ export class PostsService {
         newUser,
       };
     } catch (error) {
-      console.error('Error uploading video:', error);
       throw new Error('Failed to upload video');
     }
   }
@@ -83,7 +80,6 @@ export class PostsService {
         nextPage: isLastPage ? null : page + 1,
       };
     } catch (error) {
-      console.error('Error retrieving contents:', error);
       throw new Error('Failed to retrieve contents');
     }
   }

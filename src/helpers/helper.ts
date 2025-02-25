@@ -1,27 +1,19 @@
 import {
   BadRequestException,
-  ConflictException,
   InternalServerErrorException,
   Injectable,
-  Logger,
-  NotFoundException,
 } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
-import { Express } from 'express';
 import { Post } from '../Schemas/posts.schema';
-import { CreatePostDto } from '../posts.dto';
-import { v4 as uuidv4 } from 'uuid';
 import * as path from 'path'; // Updated import for path
 import * as fs from 'fs';
-import { getStorage, ref, uploadBytesResumable } from 'firebase/storage';
 import * as ffmpeg from 'fluent-ffmpeg';
 import * as ffmpegStatic from '@ffmpeg-installer/ffmpeg';
 import * as ffprobeStatic from '@ffprobe-installer/ffprobe';
 
 @Injectable()
 export class Helper {
-  private logger = new Logger(Helper.name);
   @InjectModel(Post.name) private postModel: Model<Post>;
   constructor() {}
 
@@ -30,7 +22,6 @@ export class Helper {
       const createdPost = new this.postModel(postData);
       return await createdPost.save();
     } catch (error) {
-      this.logger.error(`Database save failed: ${error.message}`, error.stack);
       throw this.handleError(error);
     }
   }
@@ -56,14 +47,12 @@ export class Helper {
     try {
       await fs.promises.mkdir(tempDir, { recursive: true });
 
-      // Build the full file path
       const filePath = path.join(tempDir, filename);
 
       await fs.promises.writeFile(filePath, buffer);
 
       return filePath;
     } catch (error) {
-      console.error('Error saving temporary file:', error);
       throw new Error('Failed to save temporary file');
     }
   }
