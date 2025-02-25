@@ -1,0 +1,49 @@
+name: Quickreels Workflow
+
+on:
+  push:
+    branches:
+      - staging
+  pull_request:
+    branches:
+      - staging
+
+permissions:
+  contents: read
+  packages: read
+  statuses: write
+
+jobs:
+  lint_and_test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22.13.1'
+
+      - name: Install Dependencies
+        run: yarn install
+
+      - name: Run Tests
+        run: yarn test
+
+      - name: Run Super Linter
+        uses: super-linter/super-linter@latest
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          DEFAULT_BRANCH: production
+          VALIDATE_ALL_CODEBASE: 'false'
+          VALIDATE_JSCPD: 'false'
+          VALIDATE_YAML: 'false'
+          VALIDATE_JAVASCRIPT_ES: 'false'
+          VALIDATE_TYPESCRIPT_STANDARD: 'false'
+          VALIDATE_TYPESCRIPT_ES: 'false'
+          JSCPD_CONFIG_FILE: .jscpd.json
+          LOG_LEVEL: DEBUG
