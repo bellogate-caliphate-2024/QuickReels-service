@@ -1,0 +1,56 @@
+import { PostsController } from './posts.controller';
+import { PostsService } from './posts.service';
+import { CreatePostDto } from '../posts.dto';
+import { mockFile } from '../__mock__/file';
+
+describe('PostsController', () => {
+  let controller: PostsController;
+  let postsService: PostsService;
+
+  beforeEach(() => {
+    postsService = {
+      createPost: jest.fn().mockResolvedValue({
+        file: mockFile,
+        message: 'Post created successfully',
+      }),
+    } as any;
+
+    controller = new PostsController(postsService);
+  });
+
+  it('should handle a POST request and return a file and a message', async () => {
+    const createPostDto: CreatePostDto = {
+      email: 'test@example.com',
+      video_url: ['https://example.com/video.mp4'],
+      thumbnail: ['https://example.com/thumbnail.jpg'],
+      caption: 'This is a test post',
+      time: '2023-10-01T12:00:00Z',
+      userName: 'Clark',
+      isLiked: true,
+      Ismock: false,
+    };
+
+    const numberOfViews = 100;
+
+    const numberOfComments = 50;
+
+    const result = await controller.createPost(
+      mockFile,
+      createPostDto,
+      ' ',
+      numberOfComments,
+      numberOfViews,
+      0,
+    );
+
+    expect(result).toEqual({
+      file: mockFile,
+      message: 'Post created successfully',
+    });
+
+    expect(postsService.createPost).toHaveBeenCalledWith(
+      mockFile,
+      createPostDto,
+    );
+  });
+});
