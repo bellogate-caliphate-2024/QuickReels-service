@@ -47,7 +47,6 @@ export class Helper {
     try {
       await fs.promises.mkdir(tempDir, { recursive: true });
 
-      // Build the full file path
       const filePath = path.join(tempDir, filename);
 
       await fs.promises.writeFile(filePath, buffer);
