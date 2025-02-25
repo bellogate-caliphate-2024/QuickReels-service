@@ -1,12 +1,21 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document } from 'mongoose';
-import { IsArray, IsBoolean, IsEmail, IsNotEmpty, IsOptional, IsString, IsUrl, MinLength } from 'class-validator';
+import {
+  IsArray,
+  IsBoolean,
+  IsEmail,
+  IsNotEmpty,
+  IsOptional,
+  IsString,
+  IsUrl,
+  MinLength,
+} from 'class-validator';
 
 export type PostDocument = Post & Document;
 
 @Schema({ timestamps: true })
 export class Post {
-  @Prop({ required: false }) 
+  @Prop({ required: false })
   @IsOptional()
   @IsString()
   time?: string;
@@ -21,7 +30,6 @@ export class Post {
   @IsUrl()
   video_url: string[];
 
-  
   @Prop({ required: false })
   @IsOptional()
   @IsUrl()
@@ -36,7 +44,25 @@ export class Post {
   @Prop({ required: false })
   @IsBoolean()
   Ismock: boolean;
-    
+
+  @Prop({ required: true })
+  userName: string;
+
+  @Prop({ required: true })
+  userProfilePicture: string;
+
+  @Prop({ default: 0 })
+  numberOfViews: number;
+
+  @Prop({ default: 0 })
+  numberOfLikes: number;
+
+  @Prop({ default: 0 })
+  numberOfComments: number;
+
+  @Prop({ required: false })
+  @IsBoolean()
+  isLiked: boolean;
 }
 
 export const PostSchema = SchemaFactory.createForClass(Post);

@@ -3,10 +3,10 @@ name: Quickreels Workflow
 on:
   push:
     branches:
-      - create-post
+      - contents
   pull_request:
     branches:
-      - create-post
+      - contents
 
 permissions:
   contents: read
@@ -37,14 +37,13 @@ jobs:
       - name: Run Super Linter
         uses: super-linter/super-linter@latest
         env:
-         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-         DEFAULT_BRANCH: production
-         VALIDATE_ALL_CODEBASE: 'false'
-         VALIDATE_JSCPD: 'false'
-         VALIDATE_YAML: 'false'
-         VALIDATE_YAML_PRETTIER: 'false'
-         VALIDATE_JAVASCRIPT_ES: 'false'
-         VALIDATE_TYPESCRIPT_STANDARD: 'false'
-         VALIDATE_TYPESCRIPT_ES: 'false'
-         JSCPD_CONFIG_FILE: .jscpd.json
-         LOG_LEVEL: DEBUG
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          DEFAULT_BRANCH: production
+          VALIDATE_ALL_CODEBASE: 'false'
+          VALIDATE_JSCPD: 'false'
+          VALIDATE_YAML: 'false'
+          VALIDATE_JAVASCRIPT_ES: 'false'
+          VALIDATE_TYPESCRIPT_STANDARD: 'false'
+          VALIDATE_TYPESCRIPT_ES: 'false'
+          JSCPD_CONFIG_FILE: .jscpd.json
+          LOG_LEVEL: DEBUG

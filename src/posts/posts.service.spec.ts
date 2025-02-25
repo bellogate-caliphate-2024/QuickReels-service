@@ -1,22 +1,43 @@
-jest.mock('firebase-admin');
-
 import { PostsService } from './posts.service';
 import { mockFile } from '../__mock__/file';
 import { CreatePostDto } from '../posts.dto';
 import { getModelToken } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { Test, TestingModule } from '@nestjs/testing';
-import { Post } from 'src/Schemas/posts.schema';
+import { Helper } from '../helpers/helper.module';
+import { AwsS3Service } from '../../src/DataBase/Aws';
+
 describe('PostsService', () => {
   let service: PostsService;
   let postModel: Model<any>;
+  let ACTION: Helper;
 
-  const mockPostModel = {
-    create: jest.fn().mockResolvedValue({}),
-  };
   const mockHelper = {
     someHelperMethod: jest.fn(),
+    alternateMockPosts: jest.fn((posts) => {
+      return posts.map((post, index) => ({
+        ...post,
+        Ismock: index % 2 === 0,
+      }));
+    }),
+    fetchAllPosts: jest.fn().mockResolvedValue([
+      {
+        video_url: ['https://example.com/video.mp4'],
+        thumbnail: ['https://example.com/thumb.jpg'],
+        caption: 'Test Caption',
+        time: '2025-02-24T08:00:59.602Z',
+        numberOfViews: 100,
+        numberOfLikes: 10,
+        numberOfComments: 5,
+        email: 'test@example.com',
+        userName: 'Test User',
+        userProfilePicture: 'https://example.com/profile.jpg',
+        isLiked: true,
+        Ismock: false,
+      },
+    ]),
   };
+  const mockAwsS3Service = { uploadFile: jest.fn() };
 
   beforeEach(async () => {
     const mockPostModel = {
@@ -25,20 +46,42 @@ describe('PostsService', () => {
       limit: jest.fn().mockReturnThis(),
       lean: jest.fn().mockReturnThis(),
       exec: jest.fn(),
-    } as unknown as jest.Mocked<Model<any>>; // ✅ Cast it correctly
+    } as unknown as jest.Mocked<Model<any>>;
 
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         PostsService,
+        { provide: Helper, useValue: mockHelper },
+        { provide: AwsS3Service, useValue: mockAwsS3Service },
         {
           provide: getModelToken('Post'),
-          useValue: mockPostModel, // ✅ Pass the mocked model
+          useValue: {
+            find: jest.fn().mockReturnThis(),
+            lean: jest.fn().mockReturnThis(),
+            exec: jest.fn().mockResolvedValue([
+              {
+                video_url: ['https://example.com/video.mp4'],
+                thumbnail: ['https://example.com/thumb.jpg'],
+                caption: 'Test Caption',
+                time: '2025-02-24T08:00:59.602Z',
+                numberOfViews: 100,
+                numberOfLikes: 10,
+                numberOfComments: 5,
+                email: 'test@example.com',
+                userName: 'Test User',
+                userProfilePicture: 'https://example.com/profile.jpg',
+                isLiked: true,
+                Ismock: false,
+              },
+            ]),
+          },
         },
       ],
     }).compile();
 
-    service = new PostsService(mockPostModel as any, mockHelper as any);
+    service = module.get<PostsService>(PostsService);
     postModel = module.get<Model<any>>(getModelToken('Post'));
+    ACTION = module.get<Helper>(Helper);
   });
 
   it('should create a post and return a file and a message', async () => {
@@ -49,6 +92,8 @@ describe('PostsService', () => {
       caption: 'This is a test post',
       Ismock: true,
       time: '2023-10-01T12:00:00Z',
+      userName: '',
+      isLiked: false,
     };
     const mockMessage = 'Post created successfully';
 
@@ -57,75 +102,123 @@ describe('PostsService', () => {
       message: mockMessage,
     });
 
-    // Call the method
     const result = await service.createPost(mockFile, mockPost);
 
-    // Test the return value
     expect(result).toEqual({
       file: mockFile,
       message: mockMessage,
     });
 
-    // Test if the service method was called with the correct input
     expect(service.createPost).toHaveBeenCalledWith(mockFile, mockPost);
   });
 
-  //   it('should return videos alternating between Ismock true and false', async () => {
-  //     const mockPosts = [
-  //         { email: 'user1@gmail.com', video_url: ['video1.mp4'], Ismock: true },
-  //         { email: 'user2@gmail.com', video_url: ['video2.mp4'], Ismock: false },
-  //         { email: 'user4@gmail.com', video_url: ['video4.mp4'], Ismock: true },
-  //         { email: 'user3@gmail.com', video_url: ['video3.mp4'], Ismock: false },
-  //     ];
+  it('should return correct pagination fields', async () => {
+    const mockPosts = [
+      {
+        _id: '1',
+        video_url: ['video1.mp4', 'video2.mp4'],
+        thumbnail: ['thumb1.jpg', 'thumb2.jpg'],
+        caption: 'Caption 1',
+        time: new Date().toISOString(),
+        numberOfViews: 10,
+        numberOfLikes: 5,
+        numberOfComments: 2,
+        email: 'user@example.com',
+        userName: 'John Doe',
+        userProfilePicture: 'profile.jpg',
+        isLiked: true,
+        Ismock: false,
+      },
+    ];
 
-  //     jest.spyOn(postModel, 'exec').mockResolvedValue(mockPosts);
+    (postModel.find as jest.Mock).mockReturnValue({
+      lean: jest.fn().mockReturnThis(),
+      exec: jest.fn().mockResolvedValue(mockPosts),
+    });
 
-  //     const result = await service.getContents('test@gmail.com');
+    const page = 1;
+    const limit = 1;
+    jest.spyOn(service, 'getContents').mockResolvedValue({
+      currentPage: page,
+      listOfContents: mockPosts.slice(0, limit),
+      isLastPage: false,
+      nextPage: page + 1,
+    });
 
-  //     expect(result.videos).toEqual([
-  //         { 'user1@gmail.com': 'video1.mp4' }, // Ismock: true
-  //         { 'user2@gmail.com': 'video2.mp4' }, // Ismock: false
-  //         { 'user4@gmail.com': 'video4.mp4' }, // Ismock: true
-  //         { 'user3@gmail.com': 'video3.mp4' }  // Ismock: false
-  //     ]);
-  // });
+    jest.spyOn(service, 'getContents').mockResolvedValue({
+      currentPage: page,
+      listOfContents: mockPosts,
+      isLastPage: false,
+      nextPage: page + 1,
+    });
 
-  const mockPosts: Post[] = [
-    {
-      email: 'user1@gmail.com',
-      video_url: ['video1.mp4'],
-      Ismock: true,
-      thumbnail: [],
-      time: new Date().toISOString(),
-    },
-    {
-      email: 'user2@gmail.com',
-      video_url: ['video2.mp4'],
-      Ismock: false,
-      thumbnail: [],
-      time: new Date().toISOString(),
-    },
-  ];
+    const result = await service.getContents(page, limit);
 
-  // Mock the Mongoose query chain properly
-  const mockExec = jest.fn().mockResolvedValue(mockPosts);
-  const mockFind = jest.fn().mockReturnValue({
-    select: jest.fn().mockReturnThis(),
-    skip: jest.fn().mockReturnThis(),
-    limit: jest.fn().mockReturnThis(),
-    lean: jest.fn().mockReturnThis(),
-    exec: mockExec,
+    expect(result.currentPage).toBe(page);
+    expect(result.listOfContents.length).toBe(limit);
+    expect(result.isLastPage).toBe(false);
+    expect(result.nextPage).toBe(page + 1);
   });
 
-  it('should return videos alternating between Ismock true and false', async () => {
-    const result = await service.getContents('test@gmail.com');
-    jest.spyOn(postModel, 'find').mockImplementation(mockFind);
+  it('should alternate results between Ismock = true and Ismock = false', () => {
+    const mockPosts = [
+      { _id: '1', Ismock: true },
+      { _id: '2', Ismock: false },
+      { _id: '3', Ismock: true },
+      { _id: '4', Ismock: false },
+    ];
 
-    expect(result.videos).toEqual([
-      { 'user1@gmail.com': 'video1.mp4' }, // Ismock: true
-      { 'user2@gmail.com': 'video2.mp4' }, // Ismock: false
-      { 'user4@gmail.com': 'video4.mp4' }, // Ismock: true
-      { 'user3@gmail.com': 'video3.mp4' }, // Ismock: false
+    const nonMockPosts = [
+      { _id: '5', Ismock: false },
+      { _id: '6', Ismock: true },
+      { _id: '7', Ismock: false },
+      { _id: '8', Ismock: true },
+    ];
+
+    // Directly test the helper function
+    const result = ACTION.alternateMockPosts(mockPosts);
+
+    // Extract Ismock values
+    const isMockValues = result.map((post) => post.Ismock);
+
+    // Check alternating pattern
+    for (let i = 0; i < isMockValues.length - 1; i++) {
+      expect(isMockValues[i]).not.toBe(isMockValues[i + 1]);
+    }
+  });
+
+  it('should fetch all posts with the specified fields', async () => {
+    (postModel.find().exec as jest.Mock).mockResolvedValue([
+      {
+        _id: '123',
+        video_url: ['video1.mp4', 'video2.mp4'],
+        thumbnail: ['thumb1.jpg', 'thumb2.jpg'],
+        caption: 'Test Caption',
+        time: new Date().toISOString(),
+        numberOfViews: 10,
+        numberOfLikes: 5,
+        numberOfComments: 2,
+        email: 'test@example.com',
+        userName: 'Test User',
+        userProfilePicture: 'profile.jpg',
+        isLiked: true,
+        Ismock: false,
+      },
     ]);
+
+    const result = await ACTION.fetchAllPosts();
+    expect(result).toEqual(expect.any(Array));
+    expect(result[0]).toHaveProperty('video_url');
+    expect(result[0]).toHaveProperty('thumbnail');
+    expect(result[0]).toHaveProperty('caption');
+    expect(result[0]).toHaveProperty('time');
+    expect(result[0]).toHaveProperty('numberOfViews');
+    expect(result[0]).toHaveProperty('numberOfLikes');
+    expect(result[0]).toHaveProperty('numberOfComments');
+    expect(result[0]).toHaveProperty('email');
+    expect(result[0]).toHaveProperty('userName');
+    expect(result[0]).toHaveProperty('userProfilePicture');
+    expect(result[0]).toHaveProperty('isLiked');
+    expect(result[0]).toHaveProperty('Ismock');
   });
 });

@@ -21,14 +21,18 @@ let PostsController = class PostsController {
     constructor(postService) {
         this.postService = postService;
     }
-    async createPost(videoFile, createPostDto) {
+    async createPost(videoFile, createPostDto, userProfilePicture, numberOfViews, numberOfLikes, numberOfComments) {
         if (!videoFile) {
             throw new common_1.BadRequestException('No video file uploaded');
         }
+        createPostDto.userProfilePicture = userProfilePicture;
+        createPostDto.numberOfViews = Number(numberOfViews);
+        createPostDto.numberOfLikes = Number(numberOfLikes);
+        createPostDto.numberOfComments = Number(numberOfComments);
         return this.postService.createPost(videoFile, createPostDto);
     }
-    async getContents(email, page = 1, limit = 10) {
-        return this.postService.getContents(email, Number(page), Number(limit));
+    async getContents(page, limit) {
+        return this.postService.getContents(Number(page), Number(limit));
     }
 };
 exports.PostsController = PostsController;
@@ -38,17 +42,20 @@ __decorate([
     (0, common_1.UseInterceptors)((0, platform_express_1.FileInterceptor)('videoFile')),
     __param(0, (0, common_1.UploadedFile)()),
     __param(1, (0, common_1.Body)()),
+    __param(2, (0, common_1.Query)('userProfilePicture')),
+    __param(3, (0, common_1.Query)('numberOfViews')),
+    __param(4, (0, common_1.Query)('numberOfLikes')),
+    __param(5, (0, common_1.Query)('numberOfComments')),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Object, posts_dto_1.CreatePostDto]),
+    __metadata("design:paramtypes", [Object, posts_dto_1.CreatePostDto, String, Number, Number, Number]),
     __metadata("design:returntype", Promise)
 ], PostsController.prototype, "createPost", null);
 __decorate([
     (0, common_1.Get)('getContents'),
-    __param(0, (0, common_1.Query)('email')),
-    __param(1, (0, common_1.Query)('page')),
-    __param(2, (0, common_1.Query)('limit')),
+    __param(0, (0, common_1.Query)('page')),
+    __param(1, (0, common_1.Query)('limit')),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String, Number, Number]),
+    __metadata("design:paramtypes", [Number, Number]),
     __metadata("design:returntype", Promise)
 ], PostsController.prototype, "getContents", null);
 exports.PostsController = PostsController = __decorate([
