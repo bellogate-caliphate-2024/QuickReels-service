@@ -2,7 +2,6 @@ import {
   BadRequestException,
   InternalServerErrorException,
   Injectable,
-  Logger,
 } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
@@ -15,7 +14,6 @@ import * as ffprobeStatic from '@ffprobe-installer/ffprobe';
 
 @Injectable()
 export class Helper {
-  private logger = new Logger(Helper.name);
   @InjectModel(Post.name) private postModel: Model<Post>;
   constructor() {}
 
@@ -56,7 +54,6 @@ export class Helper {
 
       return filePath;
     } catch (error) {
-      console.error('Error saving temporary file:', error);
       throw new Error('Failed to save temporary file');
     }
   }
