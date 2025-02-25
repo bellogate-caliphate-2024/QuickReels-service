@@ -56,7 +56,6 @@ export class PostsService {
         newUser,
       };
     } catch (error) {
-      console.error('Error uploading video:', error);
       throw new Error('Failed to upload video');
     }
   }
@@ -81,7 +80,6 @@ export class PostsService {
         nextPage: isLastPage ? null : page + 1,
       };
     } catch (error) {
-      console.error('Error retrieving contents:', error);
       throw new Error('Failed to retrieve contents');
     }
   }

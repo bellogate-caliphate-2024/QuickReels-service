@@ -24,7 +24,6 @@ export class Helper {
       const createdPost = new this.postModel(postData);
       return await createdPost.save();
     } catch (error) {
-      this.logger.error(`Database save failed: ${error.message}`, error.stack);
       throw this.handleError(error);
     }
   }
@@ -57,7 +56,6 @@ export class Helper {
 
       return filePath;
     } catch (error) {
-      console.error('Error saving temporary file:', error);
       throw new Error('Failed to save temporary file');
     }
   }
