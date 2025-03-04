@@ -4,14 +4,10 @@ import { Helper } from '../helpers/helper';
 import { v4 as uuidv4 } from 'uuid';
 import * as path from 'path';
 import { format } from 'date-fns';
-import { AwsS3Service } from '../DataBase/Aws';
 
 @Injectable()
 export class PostsService {
-  constructor(
-    private readonly ACTION: Helper,
-    private readonly awsS3Service: AwsS3Service,
-  ) {}
+  constructor(private readonly ACTION: Helper) {}
 
   async createPost(
     videoFile: Express.Multer.File,
@@ -27,24 +23,15 @@ export class PostsService {
         `video-${Date.now()}_${uuidv4()}_${videoFile.originalname}`,
       );
 
-      const videoUrl = await this.awsS3Service.uploadFile(videoFile, 'videos');
-
       thumbnailPath = await this.ACTION.generateThumbnail(
         videoFilePath,
         tempDir,
-      );
-
-      const thumbnailUrl = await this.awsS3Service.uploadLocalFile(
-        thumbnailPath,
-        'thumbnails',
       );
 
       const formattedTime = format(new Date(), 'MM/dd/yyyy');
 
       const updatedDto = {
         ...createDto,
-        video_url: [videoUrl],
-        thumbnail: [thumbnailUrl],
         time: formattedTime,
       };
 
@@ -71,6 +58,7 @@ export class PostsService {
       const allVideos = this.ACTION.flattenVideos(alternatedPosts);
 
       const paginatedVideos = allVideos.slice(skip, skip + limit);
+
       const isLastPage = skip + limit >= allVideos.length;
 
       return {
