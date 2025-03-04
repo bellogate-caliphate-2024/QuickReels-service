@@ -8,6 +8,7 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
+var PostsService_1;
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.PostsService = void 0;
 const common_1 = require("@nestjs/common");
@@ -16,10 +17,11 @@ const uuid_1 = require("uuid");
 const path = require("path");
 const date_fns_1 = require("date-fns");
 const Aws_1 = require("../DataBase/Aws");
-let PostsService = class PostsService {
+let PostsService = PostsService_1 = class PostsService {
     constructor(ACTION, awsS3Service) {
         this.ACTION = ACTION;
         this.awsS3Service = awsS3Service;
+        this.logger = new common_1.Logger(PostsService_1.name);
     }
     async createPost(videoFile, createDto) {
         const tempDir = path.join(__dirname, 'tmp');
@@ -44,7 +46,6 @@ let PostsService = class PostsService {
             };
         }
         catch (error) {
-            console.error('Error uploading video:', error);
             throw new Error('Failed to upload video');
         }
     }
@@ -52,6 +53,7 @@ let PostsService = class PostsService {
         try {
             const skip = (page - 1) * limit;
             const posts = await this.ACTION.fetchAllPosts();
+            this.logger.log(posts);
             const alternatedPosts = this.ACTION.alternateMockPosts(posts);
             const allVideos = this.ACTION.flattenVideos(alternatedPosts);
             const paginatedVideos = allVideos.slice(skip, skip + limit);
@@ -64,13 +66,12 @@ let PostsService = class PostsService {
             };
         }
         catch (error) {
-            console.error('Error retrieving contents:', error);
             throw new Error('Failed to retrieve contents');
         }
     }
 };
 exports.PostsService = PostsService;
-exports.PostsService = PostsService = __decorate([
+exports.PostsService = PostsService = PostsService_1 = __decorate([
     (0, common_1.Injectable)(),
     __metadata("design:paramtypes", [helper_1.Helper,
         Aws_1.AwsS3Service])
