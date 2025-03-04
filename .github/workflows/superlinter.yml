@@ -3,10 +3,10 @@ name: Quickreels Workflow
 on:
   push:
     branches:
-      - contents
+      - xxxxx
   pull_request:
     branches:
-      - contents
+      - xxxxx
 
 permissions:
   contents: read
