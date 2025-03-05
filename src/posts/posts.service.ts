@@ -29,24 +29,15 @@ export class PostsService {
         `video-${Date.now()}_${uuidv4()}_${videoFile.originalname}`,
       );
 
-      const videoUrl = await this.awsS3Service.uploadFile(videoFile, 'videos');
-
       thumbnailPath = await this.ACTION.generateThumbnail(
         videoFilePath,
         tempDir,
-      );
-
-      const thumbnailUrl = await this.awsS3Service.uploadLocalFile(
-        thumbnailPath,
-        'thumbnails',
       );
 
       const formattedTime = format(new Date(), 'MM/dd/yyyy');
 
       const updatedDto = {
         ...createDto,
-        video_url: [videoUrl],
-        thumbnail: [thumbnailUrl],
         time: formattedTime,
       };
 
@@ -71,6 +62,7 @@ export class PostsService {
       const alternatedPosts = this.ACTION.alternateMockPosts(posts);
       const allVideos = this.ACTION.flattenVideos(alternatedPosts);
       const paginatedVideos = allVideos.slice(skip, skip + limit);
+
       const isLastPage = skip + limit >= allVideos.length;
       return {
         currentPage: page,

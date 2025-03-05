@@ -5,7 +5,6 @@ import { getModelToken } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { Test, TestingModule } from '@nestjs/testing';
 import { Helper } from '../helpers/helper.module';
-import { AwsS3Service } from '../../src/DataBase/Aws';
 
 describe('PostsService', () => {
   let service: PostsService;
@@ -37,7 +36,6 @@ describe('PostsService', () => {
       },
     ]),
   };
-  const mockAwsS3Service = { uploadFile: jest.fn() };
 
   beforeEach(async () => {
     const mockPostModel = {
@@ -52,7 +50,6 @@ describe('PostsService', () => {
       providers: [
         PostsService,
         { provide: Helper, useValue: mockHelper },
-        { provide: AwsS3Service, useValue: mockAwsS3Service },
         {
           provide: getModelToken('Post'),
           useValue: {

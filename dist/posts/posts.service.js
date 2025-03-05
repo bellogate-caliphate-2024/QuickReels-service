@@ -29,14 +29,10 @@ let PostsService = PostsService_1 = class PostsService {
         let thumbnailPath;
         try {
             videoFilePath = await this.ACTION.saveTempFile(videoFile.buffer, `video-${Date.now()}_${(0, uuid_1.v4)()}_${videoFile.originalname}`);
-            const videoUrl = await this.awsS3Service.uploadFile(videoFile, 'videos');
             thumbnailPath = await this.ACTION.generateThumbnail(videoFilePath, tempDir);
-            const thumbnailUrl = await this.awsS3Service.uploadLocalFile(thumbnailPath, 'thumbnails');
             const formattedTime = (0, date_fns_1.format)(new Date(), 'MM/dd/yyyy');
             const updatedDto = {
                 ...createDto,
-                video_url: [videoUrl],
-                thumbnail: [thumbnailUrl],
                 time: formattedTime,
             };
             const newUser = await this.ACTION.saveToDatabase(updatedDto);
