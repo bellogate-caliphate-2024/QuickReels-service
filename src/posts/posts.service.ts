@@ -53,12 +53,12 @@ export class PostsService {
     }
   }
 
+  
   async getContents(page: number, limit: number) {
     try {
       const skip = (page - 1) * limit;
 
       const posts = await this.ACTION.fetchAllPosts();
-      this.logger.log(posts);
       const alternatedPosts = this.ACTION.alternateMockPosts(posts);
       const allVideos = this.ACTION.flattenVideos(alternatedPosts);
       const paginatedVideos = allVideos.slice(skip, skip + limit);
