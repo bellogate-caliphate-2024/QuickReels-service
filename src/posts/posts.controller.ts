@@ -10,7 +10,7 @@ import {
   Get,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
-import { CreatePostDto } from '../posts.dto';
+import { CreatePostDto } from '../dtos/posts.dto';
 import { PostsService } from './posts.service';
 
 @Controller('posts')

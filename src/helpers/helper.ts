@@ -11,6 +11,7 @@ import * as fs from 'fs';
 import * as ffmpeg from 'fluent-ffmpeg';
 import * as ffmpegStatic from '@ffmpeg-installer/ffmpeg';
 import * as ffprobeStatic from '@ffprobe-installer/ffprobe';
+import { format } from 'date-fns';
 
 @Injectable()
 export class Helper {
@@ -20,6 +21,8 @@ export class Helper {
   async saveToDatabase(postData: Partial<Post>) {
     try {
       const createdPost = new this.postModel(postData);
+      console.log('createdPost', createdPost);
+
       return await createdPost.save();
     } catch (error) {
       throw this.handleError(error);
@@ -141,5 +144,9 @@ export class Helper {
     }
 
     return alternatedPosts;
+  }
+
+  formatTime(time?: string | Date): string {
+    return format(time ? new Date(time) : new Date(), 'EEE HH:mm MMMM yyyy');
   }
 }

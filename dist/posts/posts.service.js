@@ -8,6 +8,9 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
+var __param = (this && this.__param) || function (paramIndex, decorator) {
+    return function (target, key) { decorator(target, key, paramIndex); }
+};
 var PostsService_1;
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.PostsService = void 0;
@@ -17,9 +20,13 @@ const uuid_1 = require("uuid");
 const path = require("path");
 const date_fns_1 = require("date-fns");
 const Aws_1 = require("../DataBase/Aws");
+const likes_schema_1 = require("../Schemas/likes.schema");
+const mongoose_1 = require("mongoose");
+const mongoose_2 = require("@nestjs/mongoose");
 let PostsService = PostsService_1 = class PostsService {
-    constructor(ACTION, awsS3Service) {
+    constructor(ACTION, likeModel, awsS3Service) {
         this.ACTION = ACTION;
+        this.likeModel = likeModel;
         this.awsS3Service = awsS3Service;
         this.logger = new common_1.Logger(PostsService_1.name);
     }
@@ -49,10 +56,21 @@ let PostsService = PostsService_1 = class PostsService {
         try {
             const skip = (page - 1) * limit;
             const posts = await this.ACTION.fetchAllPosts();
+            console.log('posts', posts);
             const alternatedPosts = this.ACTION.alternateMockPosts(posts);
             const allVideos = this.ACTION.flattenVideos(alternatedPosts);
-            const paginatedVideos = allVideos.slice(skip, skip + limit);
-            const isLastPage = skip + limit >= allVideos.length;
+            const contentIds = allVideos.map((video) => video.id);
+            const likeCounts = await this.likeModel.aggregate([
+                { $match: { contentId: { $in: contentIds } } },
+                { $group: { _id: "$contentId", count: { $sum: 1 } } }
+            ]);
+            const likeMap = new Map(likeCounts.map((like) => [like._id, like.count]));
+            const updatedVideos = allVideos.map((video) => ({
+                ...video,
+                numberOfLikes: likeMap.get(video.id) || 0,
+            }));
+            const paginatedVideos = updatedVideos.slice(skip, skip + limit);
+            const isLastPage = skip + limit >= updatedVideos.length;
             return {
                 currentPage: page,
                 listOfContents: paginatedVideos,
@@ -68,7 +86,9 @@ let PostsService = PostsService_1 = class PostsService {
 exports.PostsService = PostsService;
 exports.PostsService = PostsService = PostsService_1 = __decorate([
     (0, common_1.Injectable)(),
+    __param(1, (0, mongoose_2.InjectModel)(likes_schema_1.Like.name)),
     __metadata("design:paramtypes", [helper_1.Helper,
+        mongoose_1.Model,
         Aws_1.AwsS3Service])
 ], PostsService);
 //# sourceMappingURL=posts.service.js.map
