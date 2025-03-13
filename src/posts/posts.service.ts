@@ -52,15 +52,11 @@ export class PostsService {
       const skip = (page - 1) * limit;
 
       const posts = await this.ACTION.fetchAllPosts();
-
       const alternatedPosts = this.ACTION.alternateMockPosts(posts);
-
       const allVideos = this.ACTION.flattenVideos(alternatedPosts);
-
       const paginatedVideos = allVideos.slice(skip, skip + limit);
 
       const isLastPage = skip + limit >= allVideos.length;
-
       return {
         currentPage: page,
         listOfContents: paginatedVideos,
