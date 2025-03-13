@@ -47,4 +47,10 @@ export class PostsController {
   ) {
     return this.postService.getContents(Number(page), Number(limit));
   }
+
+
+  @Get('search')
+  async searchPosts(@Query('query') query: string) {
+    return this.postService.searchPosts(query);
+  }
 }
