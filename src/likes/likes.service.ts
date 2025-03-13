@@ -3,13 +3,13 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { Like } from '../Schemas/likes.schema';
 import { CreateLikeDto } from 'src/dtos/likes.dto';
-import { Helper } from '../helpers/helper';
+import { DatabaseHelper } from '../helpers/helper';
 
 @Injectable()
 export class LikeService {
   constructor(
     @InjectModel(Like.name) private likeModel: Model<Like>,
-    private readonly ACTION: Helper,
+    private readonly ACTION: DatabaseHelper,
   ) {}
 
   async createLike(createLikeDto: CreateLikeDto) {

@@ -1,6 +1,6 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { CreatePostDto } from '../dtos/posts.dto';
-import { Helper } from '../helpers/helper';
+import { DatabaseHelper } from '../helpers/helper';
 import { v4 as uuidv4 } from 'uuid';
 import * as path from 'path';
 import { format } from 'date-fns';
@@ -13,9 +13,8 @@ import { InjectModel } from '@nestjs/mongoose';
 export class PostsService {
   logger: Logger;
   constructor(
-    private readonly ACTION: Helper,
+    private readonly ACTION: DatabaseHelper,
     @InjectModel(Like.name) private readonly likeModel: Model<Like>,
-    private readonly awsS3Service: AwsS3Service,
   ) {
     this.logger = new Logger(PostsService.name);
   }

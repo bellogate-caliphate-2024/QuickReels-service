@@ -14,7 +14,7 @@ import * as ffprobeStatic from '@ffprobe-installer/ffprobe';
 import { format } from 'date-fns';
 
 @Injectable()
-export class Helper {
+export class DatabaseHelper {
   @InjectModel(Post.name) private postModel: Model<Post>;
   constructor() {}
 
