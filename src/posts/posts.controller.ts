@@ -6,8 +6,6 @@ import {
   UseInterceptors,
   BadRequestException,
   HttpCode,
-  Param,
-  Delete,
   Body,
   Get,
 } from '@nestjs/common';
