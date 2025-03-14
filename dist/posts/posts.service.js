@@ -2,7 +2,7 @@
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
-    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d[i]) r = (c < 3 ? d[i](r) : c > 3 ? d[i](target, key, r) : d[i](target, key)) || r;
     return c > 3 && r && Object.defineProperty(target, key, r), r;
 };
 var __metadata = (this && this.__metadata) || function (k, v) {
@@ -11,9 +11,11 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 var __param = (this && this.__param) || function (paramIndex, decorator) {
     return function (target, key) { decorator(target, key, paramIndex); }
 };
+
 var PostsService_1;
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.PostsService = void 0;
+
 const common_1 = require("@nestjs/common");
 const helper_1 = require("../helpers/helper");
 const uuid_1 = require("uuid");
@@ -23,6 +25,7 @@ const Aws_1 = require("../DataBase/Aws");
 const likes_schema_1 = require("../Schemas/likes.schema");
 const mongoose_1 = require("mongoose");
 const mongoose_2 = require("@nestjs/mongoose");
+
 let PostsService = PostsService_1 = class PostsService {
     constructor(ACTION, likeModel, awsS3Service) {
         this.ACTION = ACTION;
@@ -30,6 +33,7 @@ let PostsService = PostsService_1 = class PostsService {
         this.awsS3Service = awsS3Service;
         this.logger = new common_1.Logger(PostsService_1.name);
     }
+
     async createPost(videoFile, createDto) {
         const tempDir = path.join(__dirname, 'tmp');
         let videoFilePath;
@@ -47,11 +51,11 @@ let PostsService = PostsService_1 = class PostsService {
                 message: 'User video, thumbnail, and profile picture successfully uploaded and stored in AWS S3 and MongoDB',
                 newUser,
             };
-        }
-        catch (error) {
+        } catch (error) {
             throw new Error('Failed to upload video');
         }
     }
+
     async getContents(page, limit) {
         try {
             const skip = (page - 1) * limit;
@@ -77,12 +81,12 @@ let PostsService = PostsService_1 = class PostsService {
                 isLastPage,
                 nextPage: isLastPage ? null : page + 1,
             };
-        }
-        catch (error) {
+        } catch (error) {
             throw new Error('Failed to retrieve contents');
         }
     }
 };
+
 exports.PostsService = PostsService;
 exports.PostsService = PostsService = PostsService_1 = __decorate([
     (0, common_1.Injectable)(),
@@ -91,4 +95,3 @@ exports.PostsService = PostsService = PostsService_1 = __decorate([
         mongoose_1.Model,
         Aws_1.AwsS3Service])
 ], PostsService);
-//# sourceMappingURL=posts.service.js.map
