@@ -6,13 +6,11 @@ import {
   UseInterceptors,
   BadRequestException,
   HttpCode,
-  Param,
-  Delete,
   Body,
   Get,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
-import { CreatePostDto } from '../posts.dto';
+import { CreatePostDto } from '../dtos/posts.dto';
 import { PostsService } from './posts.service';
 
 @Controller('posts')
@@ -48,5 +46,11 @@ export class PostsController {
     @Query('limit') limit: number,
   ) {
     return this.postService.getContents(Number(page), Number(limit));
+  }
+
+
+  @Get('search')
+  async searchPosts(@Query('query') query: string) {
+    return this.postService.searchPosts(query);
   }
 }

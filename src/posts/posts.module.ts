@@ -5,10 +5,14 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { Post, PostSchema } from 'src/Schemas/posts.schema';
 import { Helper } from '../helpers/helper.module';
 import { AwsS3Service } from 'src/DataBase/Aws';
+import { Like, LikeSchema } from '../Schemas/likes.schema';
 
 @Module({
   imports: [
-    MongooseModule.forFeature([{ name: Post.name, schema: PostSchema }]), // Register PostModel
+    MongooseModule.forFeature([
+      { name: Post.name, schema: PostSchema },
+      { name: Like.name, schema: LikeSchema },
+    ]),
   ],
   controllers: [PostsController],
   providers: [PostsService, Helper, AwsS3Service],
