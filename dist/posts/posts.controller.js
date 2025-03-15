@@ -15,7 +15,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.PostsController = void 0;
 const common_1 = require("@nestjs/common");
 const platform_express_1 = require("@nestjs/platform-express");
-const posts_dto_1 = require("../dtos/posts.dto");
+const posts_dto_1 = require("../posts.dto");
 const posts_service_1 = require("./posts.service");
 let PostsController = class PostsController {
     constructor(postService) {

@@ -4,7 +4,6 @@ import { AppService } from './app.service';
 import { PostsModule } from './posts/posts.module';
 import { MongooseModule } from '@nestjs/mongoose';
 import { ConfigModule } from '@nestjs/config';
-import { LikeModule } from './likes/likes.module';
 
 @Module({
   imports: [
@@ -16,7 +15,6 @@ import { LikeModule } from './likes/likes.module';
       'mongodb+srv://Gavin:x$rayG1G@cluster0.su3jrhq.mongodb.net/POSTS',
     ),
     PostsModule,
-    LikeModule,
   ],
   controllers: [AppController],
   providers: [AppService],

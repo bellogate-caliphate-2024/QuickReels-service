@@ -59,6 +59,10 @@ export class Post {
 
   @Prop({ default: 0 })
   numberOfComments: number;
+
+  @Prop({ required: false })
+  @IsBoolean()
+  isLiked: boolean;
 }
 
 export const PostSchema = SchemaFactory.createForClass(Post);

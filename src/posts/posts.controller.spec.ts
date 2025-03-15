@@ -1,6 +1,6 @@
 import { PostsController } from './posts.controller';
 import { PostsService } from './posts.service';
-import { CreatePostDto } from '../dtos/posts.dto';
+import { CreatePostDto } from '../posts.dto';
 import { mockFile } from '../__mock__/file';
 
 describe('PostsController', () => {

@@ -1,17 +1,10 @@
 import { PostsService } from './posts.service';
 import { mockFile } from '../__mock__/file';
-import { CreatePostDto } from '../dtos/posts.dto';
+import { CreatePostDto } from '../posts.dto';
 import { getModelToken } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { Test, TestingModule } from '@nestjs/testing';
 import { Helper } from '../helpers/helper.module';
-import { Like } from '../Schemas/likes.schema';
-import { AwsS3Service } from '../DataBase/Aws';
-
-const mockAwsS3Service = {
-  uploadFile: jest.fn().mockResolvedValue('https://mock-s3-url.com/video.mp4'),
-  deleteFile: jest.fn().mockResolvedValue(true),
-};
 
 describe('PostsService', () => {
   let service: PostsService;
@@ -45,12 +38,18 @@ describe('PostsService', () => {
   };
 
   beforeEach(async () => {
+    const mockPostModel = {
+      find: jest.fn().mockReturnThis(),
+      skip: jest.fn().mockReturnThis(),
+      limit: jest.fn().mockReturnThis(),
+      lean: jest.fn().mockReturnThis(),
+      exec: jest.fn(),
+    } as unknown as jest.Mocked<Model<any>>;
+
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         PostsService,
-        { provide: Helper, useValue: {} }, // Mock Helper
-        { provide: getModelToken(Like.name), useValue: {} }, // Mock Like Model
-        { provide: AwsS3Service, useValue: mockAwsS3Service },
+        { provide: Helper, useValue: mockHelper },
         {
           provide: getModelToken('Post'),
           useValue: {
@@ -72,14 +71,6 @@ describe('PostsService', () => {
                 Ismock: false,
               },
             ]),
-          },
-        },
-        {
-          provide: getModelToken('Like'),
-          useValue: {
-            find: jest.fn().mockReturnThis(),
-            create: jest.fn(),
-            exec: jest.fn(),
           },
         },
       ],
@@ -182,7 +173,7 @@ describe('PostsService', () => {
     ];
 
     // Directly test the helper function
-    const result = alternateMockPosts(mockPosts);
+    const result = ACTION.alternateMockPosts(mockPosts);
 
     // Extract Ismock values
     const isMockValues = result.map((post) => post.Ismock);
@@ -212,7 +203,7 @@ describe('PostsService', () => {
       },
     ]);
 
-    const result = await fetchAllPosts(postModel);
+    const result = await ACTION.fetchAllPosts();
     expect(result).toEqual(expect.any(Array));
     expect(result[0]).toHaveProperty('video_url');
     expect(result[0]).toHaveProperty('thumbnail');
@@ -228,16 +219,3 @@ describe('PostsService', () => {
     expect(result[0]).toHaveProperty('Ismock');
   });
 });
-function alternateMockPosts(mockPosts: { _id: string; Ismock: boolean }[]) {
-  return mockPosts.map((post, index) => ({
-    ...post,
-    Ismock: index % 2 === 0,
-  }));
-}
-async function fetchAllPosts(postModel: Model<any>) {
-  const posts = await postModel.find().lean().exec();
-  return posts.map((post) => ({
-    ...post,
-    Ismock: false, // Assuming default value for Ismock
-  }));
-}

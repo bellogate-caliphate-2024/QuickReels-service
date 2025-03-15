@@ -1,25 +1,16 @@
-import { Injectable, Logger } from '@nestjs/common';
-import { CreatePostDto } from '../dtos/posts.dto';
-import { DatabaseHelper } from '../helpers/helper';
+import { Injectable } from '@nestjs/common';
+import { CreatePostDto } from '../posts.dto';
+import { Helper } from '../helpers/helper';
 import { v4 as uuidv4 } from 'uuid';
 import * as path from 'path';
 import { format } from 'date-fns';
-import { AwsS3Service } from '../DataBase/Aws';
-import { Like } from '../Schemas/likes.schema';
-import { Model } from 'mongoose';
-import { InjectModel } from '@nestjs/mongoose';
 import elasticsearchClient from 'src/config/elasticsearch.client';
+import { AwsS3Service } from '../DataBase/Aws';
 
 @Injectable()
 export class PostsService {
-  logger: Logger;
-  constructor(
-    private readonly ACTION: DatabaseHelper,
-    @InjectModel(Like.name) private readonly likeModel: Model<Like>,
-  ) {
-    this.logger = new Logger(PostsService.name);
-  }
-
+  constructor(private readonly ACTION: Helper,private readonly awsS3Service: AwsS3Service,
+  ) {}
 
   async createPost(
     videoFile: Express.Multer.File,
@@ -86,7 +77,6 @@ export class PostsService {
       const paginatedVideos = allVideos.slice(skip, skip + limit);
 
       const isLastPage = skip + limit >= allVideos.length;
-
       return {
         currentPage: page,
         listOfContents: paginatedVideos,
