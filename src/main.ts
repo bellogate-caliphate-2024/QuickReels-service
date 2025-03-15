@@ -3,9 +3,11 @@ import { AppModule } from './app.module';
 import { CustomLogger } from './logs/logger';
 
 async function bootstrap() {
-    const app = await NestFactory.create(AppModule, {
-      logger: new CustomLogger(),
-      });
+
+  const app = await NestFactory.create(AppModule, {
+    logger: new CustomLogger(),
+  });
+
   await app.listen(process.env.PORT ?? 3000);
 }
 bootstrap();

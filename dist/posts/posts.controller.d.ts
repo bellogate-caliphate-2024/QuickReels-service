@@ -1,4 +1,4 @@
-import { CreatePostDto } from '../posts.dto';
+import { CreatePostDto } from '../dtos/posts.dto';
 import { PostsService } from './posts.service';
 export declare class PostsController {
     private readonly postService;
