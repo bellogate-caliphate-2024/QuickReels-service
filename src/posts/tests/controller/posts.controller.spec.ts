@@ -1,7 +1,7 @@
-import { PostsController } from './posts.controller';
-import { PostsService } from './posts.service';
-import { CreatePostDto } from '../dtos/posts.dto';
-import { mockFile } from '../__mock__/file';
+import { PostsController } from '../../controllers/posts.controller';
+import { PostsService } from '../../services/posts.service';
+import { CreatePostDto } from '../../dtos/posts.dto';
+import { mockFile } from '../../../__mock__/file';
 
 describe('PostsController', () => {
   let controller: PostsController;

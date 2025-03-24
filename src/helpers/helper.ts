@@ -5,7 +5,7 @@ import {
 } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
-import { Post } from '../Schemas/posts.schema';
+import { Post } from '../posts/models/posts.schema';
 import * as path from 'path'; // Updated import for path
 import * as fs from 'fs';
 import * as ffmpeg from 'fluent-ffmpeg';

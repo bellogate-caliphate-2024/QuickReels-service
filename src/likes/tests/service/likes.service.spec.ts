@@ -1,10 +1,10 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { LikeService } from './likes.service';
+import { LikeService } from '../../likes.service';
 import { getModelToken } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
-import { Like } from '../Schemas/likes.schema';
-import { Helper } from '../helpers/helper';
-import { CreateLikeDto } from 'src/dtos/likes.dto';
+import { Like } from '../../models/likes.schema';
+import { Helper } from '../../../helpers/helper';
+import { CreateLikeDto } from 'src/likes/dtos/likes.dto';
 
 describe('LikeService', () => {
   let service: LikeService;

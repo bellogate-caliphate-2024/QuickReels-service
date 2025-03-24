@@ -1,11 +1,12 @@
 import { Module } from '@nestjs/common';
-import { PostsController } from './posts.controller';
-import { PostsService } from './posts.service';
+import { PostsController } from './controllers/posts.controller';
+import { PostsService } from './services/posts.service';
 import { MongooseModule } from '@nestjs/mongoose';
-import { Post, PostSchema } from 'src/Schemas/posts.schema';
-import { Helper } from '../helpers/helper.module';
-import { AwsS3Service } from 'src/DataBase/Aws';
-import { Like, LikeSchema } from '../Schemas/likes.schema';
+import { Post, PostSchema } from 'src/posts/models/posts.schema';
+import { DatabaseHelper } from '../helpers/helper.module';
+import { AwsS3Service } from 'src/dataBase/aws';
+import { Like, LikeSchema } from '../likes/models/likes.schema';
+import {PostsRepository} from './repository/posts.repository';
 
 @Module({
   imports: [
@@ -15,6 +16,6 @@ import { Like, LikeSchema } from '../Schemas/likes.schema';
     ]),
   ],
   controllers: [PostsController],
-  providers: [PostsService, Helper, AwsS3Service],
+  providers: [PostsService, DatabaseHelper, AwsS3Service, PostsRepository],
 })
 export class PostsModule {}

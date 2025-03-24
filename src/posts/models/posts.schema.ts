@@ -59,6 +59,7 @@ export class Post {
 
   @Prop({ default: 0 })
   numberOfComments: number;
+  id: string | undefined;
 }
 
 export const PostSchema = SchemaFactory.createForClass(Post);
