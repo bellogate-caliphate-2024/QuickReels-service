@@ -1,10 +1,11 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { LikeService } from '../../likes.service';
+import { LikeService } from '../../services/likes.service';
 import { getModelToken } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { Like } from '../../models/likes.schema';
-import { Helper } from '../../../helpers/helper';
+import { DatabaseHelper } from '../../../helpers/helper';
 import { CreateLikeDto } from 'src/likes/dtos/likes.dto';
+import { LikeRepository } from 'src/likes/repository/likes.repository';
 
 describe('LikeService', () => {
   let service: LikeService;
@@ -38,7 +39,17 @@ describe('LikeService', () => {
           provide: getModelToken('Post'),
           useValue: {},
         },
-        { provide: Helper, useValue: mockHelper },
+        {
+          provide: LikeRepository,
+          useValue: {
+            find: jest.fn(),
+            save: jest.fn(),
+          },
+        },
+        {
+          provide: DatabaseHelper,
+          useValue: mockHelper,
+        }
       ],
     }).compile();
 

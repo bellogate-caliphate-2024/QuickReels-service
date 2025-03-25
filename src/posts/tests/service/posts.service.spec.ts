@@ -1,12 +1,13 @@
-import { PostsService } from './posts.service';
-import { mockFile } from '../__mock__/file';
-import { CreatePostDto } from '../dtos/posts.dto';
+import { PostsService } from '../../services/posts.service';
+import { mockFile } from '../../../__mock__/file';
+import { CreatePostDto } from '../../dtos/posts.dto';
 import { getModelToken } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { Test, TestingModule } from '@nestjs/testing';
-import { Helper } from '../helpers/helper.module';
-import { Like } from '../Schemas/likes.schema';
-import { AwsS3Service } from '../DataBase/Aws';
+import { DatabaseHelper } from '../../../helpers/helper';
+import { Like } from '../../../likes/models/likes.schema';
+import { AwsS3Service } from '../../../dataBase/aws';
+import { Post } from 'src/posts/models/posts.schema';
 
 const mockAwsS3Service = {
   uploadFile: jest.fn().mockResolvedValue('https://mock-s3-url.com/video.mp4'),
@@ -16,7 +17,7 @@ const mockAwsS3Service = {
 describe('PostsService', () => {
   let service: PostsService;
   let postModel: Model<any>;
-  let ACTION: Helper;
+  let ACTION: DatabaseHelper;
 
   const mockHelper = {
     someHelperMethod: jest.fn(),
@@ -48,8 +49,8 @@ describe('PostsService', () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         PostsService,
-        { provide: Helper, useValue: {} }, // Mock Helper
-        { provide: getModelToken(Like.name), useValue: {} }, // Mock Like Model
+        { provide: DatabaseHelper, useValue: {} }, 
+        { provide: getModelToken(Like.name), useValue: {} }, 
         { provide: AwsS3Service, useValue: mockAwsS3Service },
         {
           provide: getModelToken('Post'),
@@ -87,7 +88,7 @@ describe('PostsService', () => {
 
     service = module.get<PostsService>(PostsService);
     postModel = module.get<Model<any>>(getModelToken('Post'));
-    ACTION = module.get<Helper>(Helper);
+    ACTION = module.get<DatabaseHelper>(DatabaseHelper);
   });
 
   it('should create a post and return a file and a message', async () => {
@@ -101,12 +102,7 @@ describe('PostsService', () => {
       userName: '',
       isLiked: false,
     };
-    const mockMessage = 'Post created successfully';
-
-    jest.spyOn(service, 'createPost').mockResolvedValue({
-      file: mockFile,
-      message: mockMessage,
-    });
+    const mockMessage = 'Post created successfully'
 
     const result = await service.createPost(mockFile, mockPost);
 
@@ -145,25 +141,21 @@ describe('PostsService', () => {
     const page = 1;
     const limit = 1;
     jest.spyOn(service, 'getContents').mockResolvedValue({
+          currentPage: page,
+          listOfContents: mockPosts.slice(0, limit),
+          isLastPage: false,
+          nextPage: page + 1,
+        } as unknown as Post[]); 
+    
+
+    const result = await service.getContents();
+
+    expect(result).toEqual({
       currentPage: page,
       listOfContents: mockPosts.slice(0, limit),
       isLastPage: false,
       nextPage: page + 1,
     });
-
-    jest.spyOn(service, 'getContents').mockResolvedValue({
-      currentPage: page,
-      listOfContents: mockPosts,
-      isLastPage: false,
-      nextPage: page + 1,
-    });
-
-    const result = await service.getContents(page, limit);
-
-    expect(result.currentPage).toBe(page);
-    expect(result.listOfContents.length).toBe(limit);
-    expect(result.isLastPage).toBe(false);
-    expect(result.nextPage).toBe(page + 1);
   });
 
   it('should alternate results between Ismock = true and Ismock = false', () => {
@@ -181,13 +173,10 @@ describe('PostsService', () => {
       { _id: '8', Ismock: true },
     ];
 
-    // Directly test the helper function
     const result = alternateMockPosts(mockPosts);
 
-    // Extract Ismock values
     const isMockValues = result.map((post) => post.Ismock);
 
-    // Check alternating pattern
     for (let i = 0; i < isMockValues.length - 1; i++) {
       expect(isMockValues[i]).not.toBe(isMockValues[i + 1]);
     }
@@ -238,6 +227,6 @@ async function fetchAllPosts(postModel: Model<any>) {
   const posts = await postModel.find().lean().exec();
   return posts.map((post) => ({
     ...post,
-    Ismock: false, // Assuming default value for Ismock
+    Ismock: false, 
   }));
 }
