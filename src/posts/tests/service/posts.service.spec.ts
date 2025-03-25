@@ -6,7 +6,7 @@ import { Model } from 'mongoose';
 import { Test, TestingModule } from '@nestjs/testing';
 import { DatabaseHelper } from '../../../helpers/helper';
 import { Like } from '../../../likes/models/likes.schema';
-import { AwsS3Service } from '../../../dataBase/aws';
+import { AwsS3Service } from '../../../../src/dataBase/aws';
 import { Post } from 'src/posts/models/posts.schema';
 
 const mockAwsS3Service = {

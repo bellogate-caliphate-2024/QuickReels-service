@@ -44,6 +44,8 @@ describe('LikeService', () => {
           useValue: {
             find: jest.fn(),
             save: jest.fn(),
+            findLike: jest.fn(), 
+
           },
         },
         {
