@@ -6,7 +6,7 @@ import { createReadStream } from 'fs';
 
 
 @Injectable()
-export default class AwsS3Service {
+export  class AwsS3Service {
   private s3Client: S3Client;
 
   constructor() {

@@ -28,7 +28,7 @@ exports.PostsModule = PostsModule = __decorate([
             ]),
         ],
         controllers: [posts_controller_1.PostsController],
-        providers: [posts_service_1.PostsService, helper_module_1.DatabaseHelper, aws_1.default, posts_repository_1.PostsRepository],
+        providers: [posts_service_1.PostsService, helper_module_1.DatabaseHelper, aws_1.AwsS3Service, posts_repository_1.PostsRepository],
     })
 ], PostsModule);
 //# sourceMappingURL=posts.module.js.map

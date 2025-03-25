@@ -7,7 +7,7 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { DatabaseHelper } from '../../../helpers/helper';
 import { Like } from '../../../likes/models/likes.schema';
 import { Post } from 'src/posts/models/posts.schema';
-import  AwsS3Service  from 'src/dataBase/aws';
+import { AwsS3Service } from 'src/dataBase/aws';
 import { PostsRepository } from '../../repository/posts.repository';
 
 const mockAwsS3Service = {
