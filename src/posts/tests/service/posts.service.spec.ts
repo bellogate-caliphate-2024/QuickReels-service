@@ -6,8 +6,8 @@ import { Model } from 'mongoose';
 import { Test, TestingModule } from '@nestjs/testing';
 import { DatabaseHelper } from '../../../helpers/helper';
 import { Like } from '../../../likes/models/likes.schema';
-import { AwsS3Service } from '../../../../src/dataBase/aws';
 import { Post } from 'src/posts/models/posts.schema';
+import { AwsS3Service } from 'src/dataBase/aws';
 
 const mockAwsS3Service = {
   uploadFile: jest.fn().mockResolvedValue('https://mock-s3-url.com/video.mp4'),

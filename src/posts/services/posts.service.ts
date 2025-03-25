@@ -4,7 +4,7 @@ import { PostsRepository } from '../repository/posts.repository';
 import { v4 as uuidv4 } from 'uuid';
 import * as path from 'path';
 import { format } from 'date-fns';
-import { AwsS3Service } from '../../../src/dataBase/aws';
+import { AwsS3Service } from 'src/dataBase/aws';
 import elasticsearchClient from 'src/config/elasticsearch.client';
 
 @Injectable()

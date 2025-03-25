@@ -7,6 +7,7 @@ import { DatabaseHelper } from '../../../helpers/helper';
 import { CreateLikeDto } from 'src/likes/dtos/likes.dto';
 import { LikeRepository } from '../../repository/likes.repository';
 
+
 describe('LikeService', () => {
   let service: LikeService;
   let likeModel: Model<Like>;
@@ -17,7 +18,7 @@ describe('LikeService', () => {
   };
 
   const mockAction = {
-    formatTime: jest.fn().mockReturnValue('2025-03-05T12:00:00Z'),
+  formatTime: jest.fn().mockResolvedValue('2025-03-05T12:00:00Z'),
   };
 
   beforeEach(async () => {
@@ -25,7 +26,7 @@ describe('LikeService', () => {
       providers: [
         LikeService,
         {
-          provide: 'ACTION',
+          provide: DatabaseHelper,
           useValue: mockAction,
         },
         {
@@ -71,7 +72,7 @@ describe('LikeService', () => {
   it('should return a message if the user has already liked the content', async () => {
     jest.spyOn(likeModel, 'findOne').mockResolvedValue({ mockCreateLikeDto });
 
-    const result = await service.createLike(mockCreateLikeDto);
+    const result =  service.createLike(mockCreateLikeDto);
 
     expect(result).toEqual({ message: 'User already liked this content' });
   });
@@ -87,7 +88,7 @@ describe('LikeService', () => {
 
     jest.spyOn(likeModel, 'create').mockResolvedValue(mockSavedLike as any);
 
-    const result = await service.createLike(mockCreateLikeDto);
+    const result =  service.createLike(mockCreateLikeDto);
 
     expect(result.message).toBe('Like added successfully');
     expect(likeModel.findOne).toHaveBeenCalledWith({
