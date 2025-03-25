@@ -7,7 +7,7 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { DatabaseHelper } from '../../../helpers/helper';
 import { Like } from '../../../likes/models/likes.schema';
 import { Post } from 'src/posts/models/posts.schema';
-import { AwsS3Service } from 'src/dataBase/aws';
+import { AwsS3Service } from '../../../dataBase/aws';
 import { PostsRepository } from '../../repository/posts.repository';
 
 const mockAwsS3Service = {
@@ -18,6 +18,7 @@ const mockAwsS3Service = {
 describe('PostsService', () => {
   let service: PostsService;
   let postModel: Model<any>;
+  let Action:DatabaseHelper;
 
   const mockHelper = {
     someHelperMethod: jest.fn(),
@@ -89,8 +90,7 @@ describe('PostsService', () => {
 
     service = module.get<PostsService>(PostsService);
     postModel = module.get<Model<any>>(getModelToken('Post'));
-    let ACTION: DatabaseHelper;
-    ACTION = module.get<DatabaseHelper>(DatabaseHelper);
+    Action = module.get<DatabaseHelper>(DatabaseHelper);
   });
 
   it('should create a post and return success message with new post', async () => {
