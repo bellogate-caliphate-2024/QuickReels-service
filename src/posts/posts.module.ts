@@ -4,7 +4,7 @@ import { PostsService } from './services/posts.service';
 import { MongooseModule } from '@nestjs/mongoose';
 import { Post, PostSchema } from 'src/posts/models/posts.schema';
 import { DatabaseHelper } from '../helpers/helper.module';
-import { AwsS3Service } from 'src/dataBase/aws';
+import { AwsS3Service } from '../dataBase/aws';
 import { Like, LikeSchema } from '../likes/models/likes.schema';
 import {PostsRepository} from './repository/posts.repository';
 

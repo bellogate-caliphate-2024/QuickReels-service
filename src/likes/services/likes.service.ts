@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { LikeRepository } from '../repository/likes.repository';
+import { LikeRepository } from '../repository/like.repository';
 import { CreateLikeDto } from '../dtos/likes.dto';
 import { DatabaseHelper } from '../../helpers/helper';
 

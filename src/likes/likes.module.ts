@@ -5,7 +5,7 @@ import { LikeService } from '../likes/services/likes.service';
 import { LikeController } from './controllers/likes.controller';
 import { Post, PostSchema } from '../posts/models/posts.schema';
 import { DatabaseHelper } from 'src/helpers/helper';
-import { LikeRepository } from './repository/likes.repository';
+import { LikeRepository } from './repository/like.repository';
 @Module({
   imports: [
     MongooseModule.forFeature([{ name: Like.name, schema: LikeSchema }]),

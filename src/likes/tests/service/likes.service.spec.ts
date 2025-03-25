@@ -3,7 +3,7 @@ import { LikeService } from '../../services/likes.service';
 import { getModelToken } from '@nestjs/mongoose';
 import { DatabaseHelper } from '../../../helpers/helper';
 import { CreateLikeDto } from 'src/likes/dtos/likes.dto';
-import { LikeRepository } from '../../repository/likes.repository';
+import { LikeRepository } from '../../repository/like.repository';
 
 describe('LikeService', () => {
   let service: LikeService;
