@@ -1,11 +1,9 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { CreatePostDto } from '../dtos/posts.dto';
 import { PostsRepository } from '../repository/posts.repository';
-import { v4 as uuidv4 } from 'uuid';
-import * as path from 'path';
 import { format } from 'date-fns';
-import { AwsS3Service } from 'src/dataBase/aws';
-import elasticsearchClient from 'src/config/elasticsearch.client';
+import { AwsS3Service } from '../../dataBase/aws';
+import eleasticClient from '../../config/elasticsearch.client';
 
 @Injectable()
 export class PostsService {
@@ -16,6 +14,8 @@ export class PostsService {
     private readonly awsS3Service: AwsS3Service, 
   ) {}
 
+
+
   async createPost(videoFile: Express.Multer.File, createDto: CreatePostDto) {
     try {
       const videoUrl = await this.awsS3Service.uploadFile(videoFile, 'videos');
@@ -25,7 +25,7 @@ export class PostsService {
 
       const newPost = await this.postsRepository.createPost(updatedDto);
 
-      await elasticsearchClient.index({
+      await eleasticClient.index({
         index: 'quickreels',
         id: newPost.id,
         document: {
@@ -60,7 +60,7 @@ export class PostsService {
         return { message: 'Search query cannot be empty', results: [] };
       }
   
-      const { hits } = await elasticsearchClient.search({
+      const { hits } = await eleasticClient.search({
         index: 'quickreels',
         query: {
           match: { title: query },

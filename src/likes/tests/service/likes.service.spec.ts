@@ -88,7 +88,7 @@ describe('LikeService', () => {
 
     jest.spyOn(likeModel, 'create').mockResolvedValue(mockSavedLike as any);
 
-    const result =  service.createLike(mockCreateLikeDto);
+    const result = await service.createLike(mockCreateLikeDto);
 
     expect(result.message).toBe('Like added successfully');
     expect(likeModel.findOne).toHaveBeenCalledWith({

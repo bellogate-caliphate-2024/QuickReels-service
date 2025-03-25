@@ -7,7 +7,8 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { DatabaseHelper } from '../../../helpers/helper';
 import { Like } from '../../../likes/models/likes.schema';
 import { Post } from 'src/posts/models/posts.schema';
-import { AwsS3Service } from 'src/dataBase/aws';
+import { AwsS3Service } from '../../../dataBase/aws';
+
 
 const mockAwsS3Service = {
   uploadFile: jest.fn().mockResolvedValue('https://mock-s3-url.com/video.mp4'),
@@ -17,7 +18,6 @@ const mockAwsS3Service = {
 describe('PostsService', () => {
   let service: PostsService;
   let postModel: Model<any>;
-  let ACTION: DatabaseHelper;
 
   const mockHelper = {
     someHelperMethod: jest.fn(),
@@ -88,6 +88,7 @@ describe('PostsService', () => {
 
     service = module.get<PostsService>(PostsService);
     postModel = module.get<Model<any>>(getModelToken('Post'));
+    let ACTION: DatabaseHelper;
     ACTION = module.get<DatabaseHelper>(DatabaseHelper);
   });
 
