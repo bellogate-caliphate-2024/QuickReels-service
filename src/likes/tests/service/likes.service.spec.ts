@@ -5,7 +5,7 @@ import { Model } from 'mongoose';
 import { Like } from '../../models/likes.schema';
 import { DatabaseHelper } from '../../../helpers/helper';
 import { CreateLikeDto } from 'src/likes/dtos/likes.dto';
-import { LikeRepository } from 'src/likes/repository/likes.repository';
+import { LikeRepository } from '../../repository/likes.repository';
 
 describe('LikeService', () => {
   let service: LikeService;
