@@ -1,24 +1,24 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { LikeService } from '../../services/likes.service';
 import { getModelToken } from '@nestjs/mongoose';
-import { Model } from 'mongoose';
-import { Like } from '../../models/likes.schema';
 import { DatabaseHelper } from '../../../helpers/helper';
 import { CreateLikeDto } from 'src/likes/dtos/likes.dto';
 import { LikeRepository } from '../../repository/likes.repository';
 
-
 describe('LikeService', () => {
   let service: LikeService;
-  let likeModel: Model<Like>;
-
-  const mockHelper = {
-    someFunction: jest.fn(),
-    time: jest.fn(),
-  };
+  let likeRepository: LikeRepository;
 
   const mockAction = {
-  formatTime: jest.fn().mockResolvedValue('2025-03-05T12:00:00Z'),
+    formatTime: jest.fn().mockResolvedValue('2025-03-05T12:00:00Z'),
+  };
+
+  const mockLikeRepository = {
+    findLike: jest.fn(),
+    createLike: jest.fn().mockImplementation((dto) => ({
+      ...dto,
+      _id: 'some-id',
+    })),
   };
 
   beforeEach(async () => {
@@ -30,34 +30,22 @@ describe('LikeService', () => {
           useValue: mockAction,
         },
         {
+          provide: LikeRepository,
+          useValue: mockLikeRepository,
+        },
+        {
           provide: getModelToken('Like'),
-          useValue: {
-            findOne: jest.fn(),
-            create: jest.fn(),
-          },
+          useValue: {}, 
         },
         {
           provide: getModelToken('Post'),
           useValue: {},
         },
-        {
-          provide: LikeRepository,
-          useValue: {
-            find: jest.fn(),
-            save: jest.fn(),
-            findLike: jest.fn(), 
-
-          },
-        },
-        {
-          provide: DatabaseHelper,
-          useValue: mockHelper,
-        }
       ],
     }).compile();
 
     service = module.get<LikeService>(LikeService);
-    likeModel = module.get<Model<Like>>(getModelToken('Like'));
+    likeRepository = module.get<LikeRepository>(LikeRepository);
   });
 
   it('should be defined', () => {
@@ -69,37 +57,39 @@ describe('LikeService', () => {
     contentId: 'content456',
   };
 
-  it('should return a message if the user has already liked the content', async () => {
-    jest.spyOn(likeModel, 'findOne').mockResolvedValue({ mockCreateLikeDto });
+  it('should return a message if user already liked the content', async () => {
+    mockLikeRepository.findLike.mockResolvedValue({
+      userId: 'user123',
+      contentId: 'content456',
+    });
 
-    const result =  service.createLike(mockCreateLikeDto);
-
+    const result = await service.createLike(mockCreateLikeDto);
     expect(result).toEqual({ message: 'User already liked this content' });
   });
 
-  it('should return false if the user has not liked the content', async () => {
-    jest.spyOn(likeModel, 'findOne').mockResolvedValue(null);
-
-    const mockSavedLike = {
-      userId: 'user123',
-      contentId: 'content456',
-      time: '2025-03-05T10:00:00Z',
-    };
-
-    jest.spyOn(likeModel, 'create').mockResolvedValue(mockSavedLike as any);
-
+  it('should add a like if not already liked', async () => {
+    mockLikeRepository.findLike
+      .mockResolvedValueOnce(null) 
+      .mockResolvedValueOnce(null); 
+  
+    mockLikeRepository.createLike.mockResolvedValueOnce({
+      _id: 'new-id',
+      ...mockCreateLikeDto,
+      time: new Date().toISOString(),
+    });
+  
     const result = await service.createLike(mockCreateLikeDto);
-
-    expect(result.message).toBe('Like added successfully');
-    expect(likeModel.findOne).toHaveBeenCalledWith({
-      userId: 'user123',
-      contentId: 'content456',
+  
+    expect(result).toEqual({
+      message: 'Like added successfully',
+      newLike: expect.objectContaining({
+        _id: 'new-id',
+        ...mockCreateLikeDto,
+        time: expect.any(String),
+      }),
     });
-    expect(likeModel.create).toHaveBeenCalledWith({
-      userId: 'user123',
-      contentId: 'content456',
-      time: '2025-03-05T10:00:00Z',
-    });
-    expect(mockHelper.time).toHaveBeenCalledWith('2025-03-05T10:00:00Z');
+    
+    expect(mockLikeRepository.findLike).toHaveBeenCalledTimes(2);
+    expect(mockLikeRepository.createLike).toHaveBeenCalledTimes(1);
   });
 });

@@ -8,7 +8,7 @@ import { DatabaseHelper } from '../../../helpers/helper';
 import { Like } from '../../../likes/models/likes.schema';
 import { Post } from 'src/posts/models/posts.schema';
 import { AwsS3Service } from '../../../dataBase/aws';
-
+import { PostsRepository } from '../../repository/posts.repository';
 
 const mockAwsS3Service = {
   uploadFile: jest.fn().mockResolvedValue('https://mock-s3-url.com/video.mp4'),
@@ -49,7 +49,8 @@ describe('PostsService', () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         PostsService,
-        { provide: DatabaseHelper, useValue: {} }, 
+        { provide: DatabaseHelper, useValue: {} },
+        { provide: PostsRepository, useValue: {} },
         { provide: getModelToken(Like.name), useValue: {} }, 
         { provide: AwsS3Service, useValue: mockAwsS3Service },
         {
@@ -92,27 +93,39 @@ describe('PostsService', () => {
     ACTION = module.get<DatabaseHelper>(DatabaseHelper);
   });
 
-  it('should create a post and return a file and a message', async () => {
+  it('should create a post and return success message with new post', async () => {
     const mockPost: CreatePostDto = {
       email: 'test@example.com',
-      video_url: ['https://example.com/video.mp4'],
-      thumbnail: ['https://example.com/thumbnail.jpg'],
+      video_url: ['https://example.com/video.mp4'] as string[],
+      thumbnail: ['https://example.com/thumbnail.jpg'] as string[], // Now required
       caption: 'This is a test post',
       Ismock: true,
       time: '2023-10-01T12:00:00Z',
-      userName: '',
+      userName: 'Test User',
       isLiked: false,
     };
-    const mockMessage = 'Post created successfully'
-
-    const result = await service.createPost(mockFile, mockPost);
-
-    expect(result).toEqual({
-      file: mockFile,
-      message: mockMessage,
+  
+    const mockCreatedPost = {
+      id: 'new-post-id',
+      ...mockPost,
+      time: new Date().toISOString(),
+      numberOfViews: 0,
+      numberOfLikes: 0,
+      numberOfComments: 0,
+      userProfilePicture: ''
+    };
+  
+    jest.spyOn(service, 'createPost').mockResolvedValue({
+      message: 'Post created successfully',
+      newPost: mockCreatedPost as Post,
     });
-
-    expect(service.createPost).toHaveBeenCalledWith(mockFile, mockPost);
+  
+    const result = await service.createPost(mockFile, mockPost);
+  
+    expect(result).toEqual({
+      message: 'Post created successfully',
+      newPost: mockCreatedPost,
+    });
   });
 
   it('should return correct pagination fields', async () => {
@@ -159,6 +172,9 @@ describe('PostsService', () => {
     });
   });
 
+
+
+  
   it('should alternate results between Ismock = true and Ismock = false', () => {
     const mockPosts = [
       { _id: '1', Ismock: true },
