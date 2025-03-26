@@ -11,10 +11,8 @@ export class PostsService {
 
   constructor(
     private readonly postsRepository: PostsRepository,
-    private readonly awsS3Service: AwsS3Service, 
+    private readonly awsS3Service: AwsS3Service,
   ) {}
-
-
 
   async createPost(videoFile: Express.Multer.File, createDto: CreatePostDto) {
     try {
@@ -45,8 +43,6 @@ export class PostsService {
     }
   }
 
-
-
   async getContents() {
     try {
       return await this.postsRepository.getAllPosts();
@@ -55,29 +51,27 @@ export class PostsService {
     }
   }
 
-
   async searchPosts(query: string) {
     try {
       if (!query.trim()) {
         return { message: 'Search query cannot be empty', results: [] };
       }
-  
+
       const { hits } = await eleasticClient.search({
         index: 'quickreels',
         query: {
           match: { title: query },
         },
       });
-  
+
       if (!hits.hits.length) {
         return { message: 'No matching posts found', results: [] };
       }
-  
+
       return hits.hits.map((hit) => hit._source);
     } catch (error) {
       this.logger.error('Error searching posts:', error);
       throw new Error('Failed to search posts');
     }
   }
-  
 }

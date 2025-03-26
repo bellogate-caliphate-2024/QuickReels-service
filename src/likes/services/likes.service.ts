@@ -22,7 +22,7 @@ export class LikeService {
 
     const newLike = await this.likeRepository.createLike({
       ...createLikeDto,
-      time: formattedTime
+      time: formattedTime,
     });
 
     return { message: 'Like added successfully', newLike };

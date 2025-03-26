@@ -35,7 +35,7 @@ describe('LikeService', () => {
         },
         {
           provide: getModelToken('Like'),
-          useValue: {}, 
+          useValue: {},
         },
         {
           provide: getModelToken('Post'),
@@ -69,17 +69,17 @@ describe('LikeService', () => {
 
   it('should add a like if not already liked', async () => {
     mockLikeRepository.findLike
-      .mockResolvedValueOnce(null) 
-      .mockResolvedValueOnce(null); 
-  
+      .mockResolvedValueOnce(null)
+      .mockResolvedValueOnce(null);
+
     mockLikeRepository.createLike.mockResolvedValueOnce({
       _id: 'new-id',
       ...mockCreateLikeDto,
       time: new Date().toISOString(),
     });
-  
+
     const result = await service.createLike(mockCreateLikeDto);
-  
+
     expect(result).toEqual({
       message: 'Like added successfully',
       newLike: expect.objectContaining({
@@ -88,7 +88,7 @@ describe('LikeService', () => {
         time: expect.any(String),
       }),
     });
-    
+
     expect(mockLikeRepository.findLike).toHaveBeenCalledTimes(2);
     expect(mockLikeRepository.createLike).toHaveBeenCalledTimes(1);
   });

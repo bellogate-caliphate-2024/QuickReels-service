@@ -4,9 +4,8 @@ import { v4 as uuidv4 } from 'uuid';
 import * as path from 'path';
 import { createReadStream } from 'fs';
 
-
 @Injectable()
-export  class AwsS3Service {
+export class AwsS3Service {
   private s3Client: S3Client;
 
   constructor() {
@@ -34,7 +33,9 @@ export  class AwsS3Service {
       await this.s3Client.send(command);
       return `https://${process.env.AWS_S3_BUCKET_NAME}.s3.${process.env.AWS_REGION}.amazonaws.com/${fileKey}`;
     } catch (error) {
-      throw new Error(`Failed to upload file to aws s3 bucket: ${error.message}`);
+      throw new Error(
+        `Failed to upload file to aws s3 bucket: ${error.message}`,
+      );
     }
   }
 

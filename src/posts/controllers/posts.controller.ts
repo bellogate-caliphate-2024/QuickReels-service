@@ -48,7 +48,6 @@ export class PostsController {
     return this.postService.getContents();
   }
 
-
   @Get('search')
   async searchPosts(@Query('query') query: string) {
     return this.postService.searchPosts(query);

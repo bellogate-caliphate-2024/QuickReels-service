@@ -6,7 +6,7 @@ import { Post, PostSchema } from 'src/posts/models/posts.schema';
 import { DatabaseHelper } from '../helpers/helper.module';
 import { AwsS3Service } from '../DataBase/aws.module';
 import { Like, LikeSchema } from '../likes/models/likes.schema';
-import {PostsRepository} from './repository/posts.repository';
+import { PostsRepository } from './repository/posts.repository';
 
 @Module({
   imports: [

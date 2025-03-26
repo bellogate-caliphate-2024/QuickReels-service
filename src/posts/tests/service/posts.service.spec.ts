@@ -18,7 +18,7 @@ const mockAwsS3Service = {
 describe('PostsService', () => {
   let service: PostsService;
   let postModel: Model<any>;
-  let Action:DatabaseHelper;
+  let Action: DatabaseHelper;
 
   const mockHelper = {
     someHelperMethod: jest.fn(),
@@ -52,7 +52,7 @@ describe('PostsService', () => {
         PostsService,
         { provide: DatabaseHelper, useValue: {} },
         { provide: PostsRepository, useValue: {} },
-        { provide: getModelToken(Like.name), useValue: {} }, 
+        { provide: getModelToken(Like.name), useValue: {} },
         { provide: AwsS3Service, useValue: mockAwsS3Service },
         {
           provide: getModelToken('Post'),
@@ -104,7 +104,7 @@ describe('PostsService', () => {
       userName: 'Test User',
       isLiked: false,
     };
-  
+
     const mockCreatedPost = {
       id: 'new-post-id',
       ...mockPost,
@@ -112,16 +112,16 @@ describe('PostsService', () => {
       numberOfViews: 0,
       numberOfLikes: 0,
       numberOfComments: 0,
-      userProfilePicture: ''
+      userProfilePicture: '',
     };
-  
+
     jest.spyOn(service, 'createPost').mockResolvedValue({
       message: 'Post created successfully',
       newPost: mockCreatedPost as Post,
     });
-  
+
     const result = await service.createPost(mockFile, mockPost);
-  
+
     expect(result).toEqual({
       message: 'Post created successfully',
       newPost: mockCreatedPost,
@@ -155,12 +155,11 @@ describe('PostsService', () => {
     const page = 1;
     const limit = 1;
     jest.spyOn(service, 'getContents').mockResolvedValue({
-          currentPage: page,
-          listOfContents: mockPosts.slice(0, limit),
-          isLastPage: false,
-          nextPage: page + 1,
-        } as unknown as Post[]); 
-    
+      currentPage: page,
+      listOfContents: mockPosts.slice(0, limit),
+      isLastPage: false,
+      nextPage: page + 1,
+    } as unknown as Post[]);
 
     const result = await service.getContents();
 
@@ -172,9 +171,6 @@ describe('PostsService', () => {
     });
   });
 
-
-
-  
   it('should alternate results between Ismock = true and Ismock = false', () => {
     const mockPosts = [
       { _id: '1', Ismock: true },
@@ -244,6 +240,6 @@ async function fetchAllPosts(postModel: Model<any>) {
   const posts = await postModel.find().lean().exec();
   return posts.map((post) => ({
     ...post,
-    Ismock: false, 
+    Ismock: false,
   }));
 }

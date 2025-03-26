@@ -1,5 +1,5 @@
 {
-   "compilerOptions": {
+  "compilerOptions": {
     "module": "commonjs",
     "declaration": true,
     "removeComments": true,
@@ -20,6 +20,5 @@
   },
   "ts-node": {
     "transpileOnly": true
-  },
-
+  }
 }

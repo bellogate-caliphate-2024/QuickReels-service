@@ -3,7 +3,6 @@ import { AppModule } from './app/app.module';
 import { CustomLogger } from './app/logger/logger.service';
 
 async function bootstrap() {
-
   const app = await NestFactory.create(AppModule, {
     logger: new CustomLogger(),
   });

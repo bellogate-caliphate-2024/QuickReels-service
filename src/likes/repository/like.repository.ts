@@ -6,7 +6,9 @@ import { CreateLikeDto } from '../dtos/likes.dto';
 
 @Injectable()
 export class LikeRepository {
-  constructor(@InjectModel(Like.name) private readonly likeModel: Model<Like>) {}
+  constructor(
+    @InjectModel(Like.name) private readonly likeModel: Model<Like>,
+  ) {}
 
   async findLike(userId: string, contentId: string): Promise<Like | null> {
     return this.likeModel.findOne({ userId, contentId }).exec();

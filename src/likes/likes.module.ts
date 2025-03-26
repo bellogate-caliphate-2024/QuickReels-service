@@ -12,7 +12,7 @@ import { LikeRepository } from './repository/like.repository';
     MongooseModule.forFeature([{ name: Post.name, schema: PostSchema }]),
   ],
   controllers: [LikeController],
-  providers: [LikeService, DatabaseHelper,LikeRepository],
+  providers: [LikeService, DatabaseHelper, LikeRepository],
   exports: [LikeService],
 })
 export class LikeModule {}
