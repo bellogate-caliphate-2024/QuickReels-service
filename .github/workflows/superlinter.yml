@@ -13,10 +13,6 @@ permissions:
   packages: read
   statuses: write
 
-env:
-  NODE_PATH: ./src
-  CI: true
-
 jobs:
   lint_and_test:
     runs-on: ubuntu-latest
@@ -31,41 +27,27 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: '20.x'
-          cache: 'yarn'
 
       - name: Install Dependencies
-        run: |
-          yarn install
-          yarn add -D tsconfig-paths @types/node
-          pip install checkov
+        run: yarn install
 
       - name: Run Tests
-        run: |
-          yarn test --config jest.config.js --passWithNoTests
+        run: yarn test
 
       - name: Run Super Linter
-        uses: super-linter/super-linter@v5
+        uses: super-linter/super-linter@latest
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           DEFAULT_BRANCH: emp
-          VALIDATE_ALL_CODEBASE: false
-          VALIDATE_JSCPD: false
-          VALIDATE_YAML: false
-          VALIDATE_JAVASCRIPT_ES: false
-          VALIDATE_TYPESCRIPT_STANDARD: false
-          VALIDATE_TYPESCRIPT_ES: false
-          VALIDATE_TYPESCRIPT_PRETTIER: false
+          VALIDATE_ALL_CODEBASE: 'false'
+          VALIDATE_JSCPD: 'false'
+          VALIDATE_YAML: 'false'
+          VALIDATE_JAVASCRIPT_ES: 'false'
+          VALIDATE_TYPESCRIPT_STANDARD: 'false'
+          VALIDATE_TYPESCRIPT_ES: 'false'
           JSCPD_CONFIG_FILE: .jscpd.json
           LOG_LEVEL: DEBUG
-          FILTER_REGEX_EXCLUDE: .*test.*|.*mock.*
-          CHECKOV_FILE: .checkov.yaml
 
-      - name: Run Checkov Scan
-        uses: bridgecrewio/checkov-action@v12
-        with:
-          directory: .
-          soft_fail: true
-          framework: terraform
-          quiet: true
-          download_external_modules: true
-          skip_check: CKV_AWS_23,CKV_AWS_24  # Skip specific checks if needed
+      - name: Run Checkov action
+        id: checkov
+        uses: bridgecrewio/checkov-action@94be32d33f46ce5f2f07200bb5df4f5036b7296c
