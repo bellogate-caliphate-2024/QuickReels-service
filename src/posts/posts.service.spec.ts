@@ -4,7 +4,7 @@ import { CreatePostDto } from '../dtos/posts.dto';
 import { getModelToken } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { Test, TestingModule } from '@nestjs/testing';
-import { Helper } from '../helpers/helper.module';
+import { DatabaseHelper } from '../helpers/helper.module';
 import { Like } from '../Schemas/likes.schema';
 import { AwsS3Service } from '../DataBase/Aws';
 
@@ -16,7 +16,7 @@ const mockAwsS3Service = {
 describe('PostsService', () => {
   let service: PostsService;
   let postModel: Model<any>;
-  let ACTION: Helper;
+  let ACTION: DatabaseHelper;
 
   const mockHelper = {
     someHelperMethod: jest.fn(),
@@ -48,7 +48,7 @@ describe('PostsService', () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         PostsService,
-        { provide: Helper, useValue: {} }, // Mock Helper
+        { provide: DatabaseHelper, useValue: {} }, // Mock Helper
         { provide: getModelToken(Like.name), useValue: {} }, // Mock Like Model
         { provide: AwsS3Service, useValue: mockAwsS3Service },
         {
@@ -87,7 +87,7 @@ describe('PostsService', () => {
 
     service = module.get<PostsService>(PostsService);
     postModel = module.get<Model<any>>(getModelToken('Post'));
-    ACTION = module.get<Helper>(Helper);
+    ACTION = module.get<DatabaseHelper>(DatabaseHelper);
   });
 
   it('should create a post and return a file and a message', async () => {

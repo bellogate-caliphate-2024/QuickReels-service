@@ -34,6 +34,9 @@ let PostsController = class PostsController {
     async getContents(page, limit) {
         return this.postService.getContents(Number(page), Number(limit));
     }
+    async searchPosts(query) {
+        return this.postService.searchPosts(query);
+    }
 };
 exports.PostsController = PostsController;
 __decorate([
@@ -58,6 +61,13 @@ __decorate([
     __metadata("design:paramtypes", [Number, Number]),
     __metadata("design:returntype", Promise)
 ], PostsController.prototype, "getContents", null);
+__decorate([
+    (0, common_1.Get)('search'),
+    __param(0, (0, common_1.Query)('query')),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String]),
+    __metadata("design:returntype", Promise)
+], PostsController.prototype, "searchPosts", null);
 exports.PostsController = PostsController = __decorate([
     (0, common_1.Controller)('posts'),
     __metadata("design:paramtypes", [posts_service_1.PostsService])

@@ -10,4 +10,5 @@ export declare class PostsController {
         isLastPage: boolean;
         nextPage: number | null;
     }>;
+    searchPosts(query: string): Promise<unknown[]>;
 }

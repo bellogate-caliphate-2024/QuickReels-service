@@ -1,9 +1,9 @@
 import { Module } from '@nestjs/common';
-import { Helper } from '../helpers/helper';
+import { DatabaseHelper } from '../helpers/helper';
 
 @Module({
-  providers: [Helper],
-  exports: [Helper],
+  providers: [DatabaseHelper],
+  exports: [DatabaseHelper],
 })
 export class HelperModule {}
-export { Helper };
+export { DatabaseHelper };

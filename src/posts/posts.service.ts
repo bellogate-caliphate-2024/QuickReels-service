@@ -15,6 +15,7 @@ export class PostsService {
   logger: Logger;
   constructor(
     private readonly ACTION: DatabaseHelper,
+    private readonly awsS3Service: AwsS3Service,
     @InjectModel(Like.name) private readonly likeModel: Model<Like>,
   ) {
     this.logger = new Logger(PostsService.name);
