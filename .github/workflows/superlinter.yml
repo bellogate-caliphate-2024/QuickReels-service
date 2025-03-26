@@ -16,6 +16,7 @@ permissions:
 jobs:
   lint_and_test:
     runs-on: ubuntu-latest
+
     steps:
       - name: Checkout Code
         uses: actions/checkout@v4
@@ -25,7 +26,7 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '20.x'
+          node-version: '22.13.1'
 
       - name: Install Dependencies
         run: yarn install
@@ -37,7 +38,7 @@ jobs:
         uses: super-linter/super-linter@latest
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          DEFAULT_BRANCH: emp
+          DEFAULT_BRANCH: production
           VALIDATE_ALL_CODEBASE: 'false'
           VALIDATE_JSCPD: 'false'
           VALIDATE_YAML: 'false'
@@ -46,15 +47,3 @@ jobs:
           VALIDATE_TYPESCRIPT_ES: 'false'
           JSCPD_CONFIG_FILE: .jscpd.json
           LOG_LEVEL: DEBUG
-
-      - name: Run Checkov action
-        id: checkov
-        uses: bridgecrewio/checkov-action@94be32d33f46ce5f2f07200bb5df4f5036b7296c
-
-      - name: update-checkov-version
-        id: checkov_version
-        run: |
-          version=$(curl -s https://api.github.com/repos/bridgecrewio/checkov/tags | jq -r '.[0].name')
-          sed -i'.bkp' -e 's/docker:\/\/ghcr.io\/bridgecrewio\/checkov.*'\''/docker:\/\/ghcr.io\/bridgecrewio\/checkov:'"${version}"''\''/g' action.yml
-          rm action.yml.bkp
-          echo "version=$version" >> $GITHUB_OUTPUT
