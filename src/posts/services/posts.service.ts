@@ -2,7 +2,7 @@ import { Injectable, Logger } from '@nestjs/common';
 import { CreatePostDto } from '../dtos/posts.dto';
 import { PostsRepository } from '../repository/posts.repository';
 import { format } from 'date-fns';
-import { AwsS3Service } from '../../dataBase/aws';
+import { AwsS3Service } from '../../DataBase/Aws';
 import eleasticClient from '../../config/elasticsearch.client';
 
 @Injectable()
@@ -46,7 +46,7 @@ export class PostsService {
   }
 
 
-  
+
   async getContents() {
     try {
       return await this.postsRepository.getAllPosts();

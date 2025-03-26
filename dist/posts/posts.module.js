@@ -13,7 +13,7 @@ const posts_service_1 = require("./services/posts.service");
 const mongoose_1 = require("@nestjs/mongoose");
 const posts_schema_1 = require("./models/posts.schema");
 const helper_module_1 = require("../helpers/helper.module");
-const aws_1 = require("../dataBase/aws");
+const aws_module_1 = require("../DataBase/aws.module");
 const likes_schema_1 = require("../likes/models/likes.schema");
 const posts_repository_1 = require("./repository/posts.repository");
 let PostsModule = class PostsModule {
@@ -28,7 +28,7 @@ exports.PostsModule = PostsModule = __decorate([
             ]),
         ],
         controllers: [posts_controller_1.PostsController],
-        providers: [posts_service_1.PostsService, helper_module_1.DatabaseHelper, aws_1.AwsS3Service, posts_repository_1.PostsRepository],
+        providers: [posts_service_1.PostsService, helper_module_1.DatabaseHelper, aws_module_1.AwsS3Service, posts_repository_1.PostsRepository],
     })
 ], PostsModule);
 //# sourceMappingURL=posts.module.js.map
