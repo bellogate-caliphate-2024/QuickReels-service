@@ -45,6 +45,7 @@ jobs:
           VALIDATE_JAVASCRIPT_ES: 'false'
           VALIDATE_TYPESCRIPT_STANDARD: 'false'
           VALIDATE_TYPESCRIPT_ES: 'false'
-          VALIDATE_CHECKOV: 'false'  # Disable Checkov (if supported)
+          VALIDATE_YAML_PRETTIER: 'false'
+          VALIDATE_CHECKOV: 'false' # Disable Checkov (if supported)
           JSCPD_CONFIG_FILE: .jscpd.json
           LOG_LEVEL: DEBUG
