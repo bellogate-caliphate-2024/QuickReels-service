@@ -16,14 +16,7 @@ permissions:
 jobs:
   lint_and_test:
     runs-on: ubuntu-latest
-
-  update-checkov:
-    runs-on: [self-hosted, public, linux, x64]
     steps:
-      - uses: actions/checkout@93ea575cb5d8a053eaa0ac8fa3b40d7e05a33cc8  # v3
-        with:
-          fetch-depth: '0'
-
       - name: Checkout Code
         uses: actions/checkout@v4
         with:
