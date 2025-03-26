@@ -4,7 +4,6 @@ import { v4 as uuidv4 } from 'uuid';
 import * as path from 'path';
 import { createReadStream } from 'fs';
 
-
 @Injectable()
 export class AwsS3Service {
   private s3Client: S3Client;
@@ -34,12 +33,14 @@ export class AwsS3Service {
       await this.s3Client.send(command);
       return `https://${process.env.AWS_S3_BUCKET_NAME}.s3.${process.env.AWS_REGION}.amazonaws.com/${fileKey}`;
     } catch (error) {
-      throw new Error(`Failed to upload file: ${error.message}`);
+      throw new Error(
+        `Failed to upload file to aws s3 bucket: ${error.message}`,
+      );
     }
   }
 
   async uploadLocalFile(filePath: string, folder: string): Promise<string> {
-    const fileKey = `${folder}/${uuidv4()}_${path.basename(filePath)}`;
+    let fileKey = `${folder}/${uuidv4()}_${path.basename(filePath)}`;
 
     const uploadParams = {
       Bucket: process.env.AWS_S3_BUCKET_NAME!,

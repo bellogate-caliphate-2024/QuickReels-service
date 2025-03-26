@@ -11,7 +11,7 @@ import {
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { CreatePostDto } from '../dtos/posts.dto';
-import { PostsService } from './posts.service';
+import { PostsService } from '../services/posts.service';
 
 @Controller('posts')
 export class PostsController {
@@ -45,9 +45,8 @@ export class PostsController {
     @Query('page') page: number,
     @Query('limit') limit: number,
   ) {
-    return this.postService.getContents(Number(page), Number(limit));
+    return this.postService.getContents();
   }
-
 
   @Get('search')
   async searchPosts(@Query('query') query: string) {

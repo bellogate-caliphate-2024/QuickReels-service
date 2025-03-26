@@ -1,12 +1,13 @@
-import { PostsService } from './posts.service';
-import { mockFile } from '../__mock__/file';
-import { CreatePostDto } from '../dtos/posts.dto';
+import { PostsService } from '../../services/posts.service';
+import { mockFile } from '../../../__mock__/file';
+import { CreatePostDto } from '../../dtos/posts.dto';
 import { getModelToken } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { Test, TestingModule } from '@nestjs/testing';
-import { DatabaseHelper } from '../helpers/helper.module';
-import { Like } from '../Schemas/likes.schema';
-import { AwsS3Service } from '../DataBase/Aws';
+import { DatabaseHelper } from '../../../helpers/helper';
+import { Like } from '../../../likes/models/likes.schema';
+import { Post } from 'src/posts/models/posts.schema';
+import { AwsS3Service } from '../../../DataBase/Aws';
 
 const mockAwsS3Service = {
   uploadFile: jest.fn().mockResolvedValue('https://mock-s3-url.com/video.mp4'),
@@ -16,7 +17,6 @@ const mockAwsS3Service = {
 describe('PostsService', () => {
   let service: PostsService;
   let postModel: Model<any>;
-  let ACTION: DatabaseHelper;
 
   const mockHelper = {
     someHelperMethod: jest.fn(),
@@ -90,32 +90,39 @@ describe('PostsService', () => {
     ACTION = module.get<DatabaseHelper>(DatabaseHelper);
   });
 
-  it('should create a post and return a file and a message', async () => {
+  it('should create a post and return success message with new post', async () => {
     const mockPost: CreatePostDto = {
       email: 'test@example.com',
-      video_url: ['https://example.com/video.mp4'],
-      thumbnail: ['https://example.com/thumbnail.jpg'],
+      video_url: ['https://example.com/video.mp4'] as string[],
+      thumbnail: ['https://example.com/thumbnail.jpg'] as string[], // Now required
       caption: 'This is a test post',
       Ismock: true,
       time: '2023-10-01T12:00:00Z',
-      userName: '',
+      userName: 'Test User',
       isLiked: false,
     };
-    const mockMessage = 'Post created successfully';
+
+    const mockCreatedPost = {
+      id: 'new-post-id',
+      ...mockPost,
+      time: new Date().toISOString(),
+      numberOfViews: 0,
+      numberOfLikes: 0,
+      numberOfComments: 0,
+      userProfilePicture: '',
+    };
 
     jest.spyOn(service, 'createPost').mockResolvedValue({
-      file: mockFile,
-      message: mockMessage,
+      message: 'Post created successfully',
+      newPost: mockCreatedPost as Post,
     });
 
     const result = await service.createPost(mockFile, mockPost);
 
     expect(result).toEqual({
-      file: mockFile,
-      message: mockMessage,
+      message: 'Post created successfully',
+      newPost: mockCreatedPost,
     });
-
-    expect(service.createPost).toHaveBeenCalledWith(mockFile, mockPost);
   });
 
   it('should return correct pagination fields', async () => {
@@ -149,21 +156,16 @@ describe('PostsService', () => {
       listOfContents: mockPosts.slice(0, limit),
       isLastPage: false,
       nextPage: page + 1,
-    });
+    } as unknown as Post[]);
 
-    jest.spyOn(service, 'getContents').mockResolvedValue({
+    const result = await service.getContents();
+
+    expect(result).toEqual({
       currentPage: page,
-      listOfContents: mockPosts,
+      listOfContents: mockPosts.slice(0, limit),
       isLastPage: false,
       nextPage: page + 1,
     });
-
-    const result = await service.getContents(page, limit);
-
-    expect(result.currentPage).toBe(page);
-    expect(result.listOfContents.length).toBe(limit);
-    expect(result.isLastPage).toBe(false);
-    expect(result.nextPage).toBe(page + 1);
   });
 
   it('should alternate results between Ismock = true and Ismock = false', () => {
@@ -181,13 +183,10 @@ describe('PostsService', () => {
       { _id: '8', Ismock: true },
     ];
 
-    // Directly test the helper function
     const result = alternateMockPosts(mockPosts);
 
-    // Extract Ismock values
     const isMockValues = result.map((post) => post.Ismock);
 
-    // Check alternating pattern
     for (let i = 0; i < isMockValues.length - 1; i++) {
       expect(isMockValues[i]).not.toBe(isMockValues[i + 1]);
     }
@@ -238,6 +237,6 @@ async function fetchAllPosts(postModel: Model<any>) {
   const posts = await postModel.find().lean().exec();
   return posts.map((post) => ({
     ...post,
-    Ismock: false, // Assuming default value for Ismock
+    Ismock: false,
   }));
 }

@@ -1,7 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { LikeController } from '../likes/likes.controller';
-import { LikeService } from '../likes/likes.service';
-import { CreateLikeDto } from '../dtos/likes.dto';
+import { LikeController } from '../../controllers/likes.controller';
+import { LikeService } from '../../services/likes.service';
+import { CreateLikeDto } from '../../dtos/likes.dto';
 
 describe('LikeController', () => {
   let controller: LikeController;

@@ -1,8 +1,8 @@
 import { Logger } from '@nestjs/common';
-import { CreatePostDto } from '../dtos/posts.dto';
+import { CreatePostDto } from '../posts/dtos/posts.dto';
 import { DatabaseHelper } from '../helpers/helper';
 import { AwsS3Service } from '../DataBase/Aws';
-import { Like } from '../Schemas/likes.schema';
+import { Like } from '../likes/models/likes.schema';
 import { Model } from 'mongoose';
 export declare class PostsService {
     private readonly ACTION;

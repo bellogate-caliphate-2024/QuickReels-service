@@ -1,7 +1,7 @@
-import { Client } from "@elastic/elasticsearch";
+import { Client } from '@elastic/elasticsearch';
 
-const client = new Client({
-  node: "http://localhost:9200",
+const eleasticClient = new Client({
+  node: 'http://localhost:9200',
 });
 
-export default client;
+export default eleasticClient;

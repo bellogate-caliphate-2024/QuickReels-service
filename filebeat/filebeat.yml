@@ -1,4 +1,4 @@
-name: "quickreels-app-filebeat"
+name: 'quickreels-app-filebeat'
 logging.metrics.enabled: false
 xpack.security.enabled: false
 xpack.monitoring.enabled: false
@@ -20,5 +20,5 @@ filebeat.inputs:
       message_key: 'message'
 
 output.elasticsearch:
-  hosts: ["elasticsearch:9200"]
-  index: "quickreels-app"
+  hosts: ['elasticsearch:9200']
+  index: 'quickreels-app'

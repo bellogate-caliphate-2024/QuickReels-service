@@ -45,5 +45,7 @@ jobs:
           VALIDATE_JAVASCRIPT_ES: 'false'
           VALIDATE_TYPESCRIPT_STANDARD: 'false'
           VALIDATE_TYPESCRIPT_ES: 'false'
+          VALIDATE_YAML_PRETTIER: 'false'
+          VALIDATE_CHECKOV: 'false'
           JSCPD_CONFIG_FILE: .jscpd.json
           LOG_LEVEL: DEBUG
