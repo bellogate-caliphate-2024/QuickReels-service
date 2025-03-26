@@ -39,10 +39,6 @@ jobs:
           yarn add -D tsconfig-paths @types/node
           pip install checkov
 
-      - name: Configure Paths
-        run: |
-          echo "::add-path::$GITHUB_WORKSPACE/node_modules/.bin"
-
       - name: Run Tests
         run: |
           yarn test --config jest.config.js --passWithNoTests
