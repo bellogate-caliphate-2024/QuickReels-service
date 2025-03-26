@@ -26,7 +26,7 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '22.13.1'
+          node-version: '20.x'
 
       - name: Install Dependencies
         run: yarn install
@@ -38,12 +38,22 @@ jobs:
         uses: super-linter/super-linter@latest
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          DEFAULT_BRANCH: production
+          DEFAULT_BRANCH: emp
           VALIDATE_ALL_CODEBASE: 'false'
           VALIDATE_JSCPD: 'false'
-          VALIDATE_YAML: 'false'
-          VALIDATE_JAVASCRIPT_ES: 'false'
-          VALIDATE_TYPESCRIPT_STANDARD: 'false'
-          VALIDATE_TYPESCRIPT_ES: 'false'
+          VALIDATE_YAML: 'true'
+          VALIDATE_JAVASCRIPT_ES: 'true'
+          VALIDATE_TYPESCRIPT_STANDARD: 'true'
+          VALIDATE_TYPESCRIPT_ES: 'true'
           JSCPD_CONFIG_FILE: .jscpd.json
           LOG_LEVEL: DEBUG
+
+      - name: Debug Checkov Inputs
+        run: |
+          echo "Running Checkov with the following config:"
+          checkov --version
+          checkov -d . --soft-fail
+
+      - name: Run Checkov action
+        id: checkov
+        uses: bridgecrewio/checkov-action@94be32d33f46ce5f2f07200bb5df4f5036b7296c
