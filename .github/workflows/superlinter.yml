@@ -36,3 +36,7 @@ jobs:
 
       - name: Run Super Linter
         uses: super-linter/super-linter@latest
+
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          DEFAULT_BRANCH: production
