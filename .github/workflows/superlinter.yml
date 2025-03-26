@@ -17,6 +17,15 @@ jobs:
   lint_and_test:
     runs-on: ubuntu-latest
 
+  update-checkov:
+      runs-on: [self-hosted, public, linux, x64]
+      steps:
+        - uses: actions/checkout@93ea575cb5d8a053eaa0ac8fa3b40d7e05a33cc8  # v3
+          with:
+            fetch-depth: '0'
+  
+       
+
     steps:
       - name: Checkout Code
         uses: actions/checkout@v4
@@ -51,3 +60,11 @@ jobs:
       - name: Run Checkov action
         id: checkov
         uses: bridgecrewio/checkov-action@94be32d33f46ce5f2f07200bb5df4f5036b7296c
+
+      - name: update-checkov-version
+        id: checkov_version
+        run: |
+          version=$(curl -s https://api.github.com/repos/bridgecrewio/checkov/tags | jq -r '.[0].name')
+          sed -i'.bkp' -e 's/docker:\/\/ghcr.io\/bridgecrewio\/checkov.*'\''/docker:\/\/ghcr.io\/bridgecrewio\/checkov:'"${version}"''\''/g' action.yml
+          rm action.yml.bkp
+          echo "version=$version" >> $GITHUB_OUTPUT
