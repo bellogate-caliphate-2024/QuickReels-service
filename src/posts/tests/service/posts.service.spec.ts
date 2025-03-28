@@ -6,8 +6,9 @@ import { Model } from 'mongoose';
 import { Test, TestingModule } from '@nestjs/testing';
 import { DatabaseHelper } from '../../../helpers/helper';
 import { Like } from '../../../likes/models/likes.schema';
-import { Post } from 'src/posts/models/posts.schema';
+import { Post } from '../../models/posts.schema';
 import { AwsS3Service } from '../../../DataBase/Aws';
+import { PostsRepository } from '../../repository/posts.repository';
 
 const mockAwsS3Service = {
   uploadFile: jest.fn().mockResolvedValue('https://mock-s3-url.com/video.mp4'),
@@ -17,9 +18,9 @@ const mockAwsS3Service = {
 describe('PostsService', () => {
   let service: PostsService;
   let postModel: Model<any>;
+  let helper: DatabaseHelper;
 
   const mockHelper = {
-    someHelperMethod: jest.fn(),
     alternateMockPosts: jest.fn((posts) => {
       return posts.map((post, index) => ({
         ...post,
@@ -42,14 +43,32 @@ describe('PostsService', () => {
         Ismock: false,
       },
     ]),
+    randomizeADs: jest.fn((posts, ads) => {
+      const combined = [...posts, ...ads];
+      for (let i = combined.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [combined[i], combined[j]] = [combined[j], combined[i]];
+      }
+      return combined;
+    }),
   };
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         PostsService,
-        { provide: DatabaseHelper, useValue: {} }, // Mock Helper
-        { provide: getModelToken(Like.name), useValue: {} }, // Mock Like Model
+        {
+          provide: PostsRepository,
+          useValue: {
+            create: jest.fn(),
+            find: jest.fn(),
+            findOne: jest.fn(),
+            update: jest.fn(),
+            delete: jest.fn(),
+          },
+        },
+        { provide: DatabaseHelper, useValue: mockHelper },
+        { provide: getModelToken(Like.name), useValue: {} },
         { provide: AwsS3Service, useValue: mockAwsS3Service },
         {
           provide: getModelToken('Post'),
@@ -87,7 +106,7 @@ describe('PostsService', () => {
 
     service = module.get<PostsService>(PostsService);
     postModel = module.get<Model<any>>(getModelToken('Post'));
-    ACTION = module.get<DatabaseHelper>(DatabaseHelper);
+    helper = module.get<DatabaseHelper>(DatabaseHelper);
   });
 
   it('should create a post and return success message with new post', async () => {
@@ -183,7 +202,7 @@ describe('PostsService', () => {
       { _id: '8', Ismock: true },
     ];
 
-    const result = alternateMockPosts(mockPosts);
+    const result = helper.alternateMockPosts(mockPosts);
 
     const isMockValues = result.map((post) => post.Ismock);
 
@@ -193,25 +212,7 @@ describe('PostsService', () => {
   });
 
   it('should fetch all posts with the specified fields', async () => {
-    (postModel.find().exec as jest.Mock).mockResolvedValue([
-      {
-        _id: '123',
-        video_url: ['video1.mp4', 'video2.mp4'],
-        thumbnail: ['thumb1.jpg', 'thumb2.jpg'],
-        caption: 'Test Caption',
-        time: new Date().toISOString(),
-        numberOfViews: 10,
-        numberOfLikes: 5,
-        numberOfComments: 2,
-        email: 'test@example.com',
-        userName: 'Test User',
-        userProfilePicture: 'profile.jpg',
-        isLiked: true,
-        Ismock: false,
-      },
-    ]);
-
-    const result = await fetchAllPosts(postModel);
+    const result = await helper.fetchAllPosts();
     expect(result).toEqual(expect.any(Array));
     expect(result[0]).toHaveProperty('video_url');
     expect(result[0]).toHaveProperty('thumbnail');
@@ -227,16 +228,3 @@ describe('PostsService', () => {
     expect(result[0]).toHaveProperty('Ismock');
   });
 });
-function alternateMockPosts(mockPosts: { _id: string; Ismock: boolean }[]) {
-  return mockPosts.map((post, index) => ({
-    ...post,
-    Ismock: index % 2 === 0,
-  }));
-}
-async function fetchAllPosts(postModel: Model<any>) {
-  const posts = await postModel.find().lean().exec();
-  return posts.map((post) => ({
-    ...post,
-    Ismock: false,
-  }));
-}
