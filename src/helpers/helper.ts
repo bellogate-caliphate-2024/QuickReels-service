@@ -149,4 +149,35 @@ export class DatabaseHelper {
   formatTime(time?: string | Date): string {
     return format(time ? new Date(time) : new Date(), 'EEE HH:mm MMMM yyyy');
   }
+
+  async randomizeADs(posts: Post[], ads: Post[]) {
+    if (ads.length === 0) return posts;
+
+    const mixedContent: Post[] = [...posts];
+    const shuffledAds = this.shuffleArray(ads);
+
+    let adIndex = 0;
+    let i = 0;
+
+    while (adIndex < (await shuffledAds).length && i < mixedContent.length) {
+      if (Math.random() < 0.5) {
+        mixedContent.splice(i, 0, shuffledAds[adIndex]);
+        adIndex++;
+      }
+      i++;
+    }
+    while (adIndex < (await shuffledAds).length) {
+      mixedContent.push(shuffledAds[adIndex]);
+      adIndex++;
+    }
+
+    return mixedContent;
+  }
+
+  async shuffleArray<T>(array: T[]): Promise<T[]> {
+    return array
+      .map((value) => ({ value, sort: Math.random() }))
+      .sort((a, b) => a.sort - b.sort)
+      .map(({ value }) => value);
+  }
 }

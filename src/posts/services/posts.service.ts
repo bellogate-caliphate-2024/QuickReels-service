@@ -4,7 +4,8 @@ import { PostsRepository } from '../repository/posts.repository';
 import { format } from 'date-fns';
 import { AwsS3Service } from '../../DataBase/Aws';
 import eleasticClient from '../../config/elasticsearch.client';
-
+import { DatabaseHelper } from '../../helpers/helper';
+import { Post } from '../models/posts.schema';
 @Injectable()
 export class PostsService {
   private readonly logger = new Logger(PostsService.name);
@@ -12,6 +13,7 @@ export class PostsService {
   constructor(
     private readonly postsRepository: PostsRepository,
     private readonly awsS3Service: AwsS3Service,
+    private readonly dataBaseHelper: DatabaseHelper,
   ) {}
 
   async createPost(videoFile: Express.Multer.File, createDto: CreatePostDto) {
@@ -45,7 +47,11 @@ export class PostsService {
 
   async getContents() {
     try {
-      return await this.postsRepository.getAllPosts();
+      const posts: Post[] = (await this.postsRepository.getAllPosts()) ?? [];
+      const ads: Post[] = (await this.postsRepository.findAds()) ?? [];
+      const mixedContent = this.dataBaseHelper.randomizeADs(posts, ads);
+
+      return mixedContent;
     } catch (error) {
       throw new Error('Failed to retrieve contents');
     }

@@ -22,4 +22,8 @@ export class PostsRepository {
   async findById(postId: string): Promise<Post | null> {
     return this.postModel.findById(postId).exec();
   }
+
+  async findAds(): Promise<Post[]> {
+    return (await this.postModel.find({ isAd: true }).exec()) ?? [];
+  }
 }

@@ -28,6 +28,7 @@ describe('PostsController', () => {
       userName: 'Clark',
       isLiked: true,
       Ismock: false,
+      isAd: false,
     };
 
     const numberOfViews = 100;
