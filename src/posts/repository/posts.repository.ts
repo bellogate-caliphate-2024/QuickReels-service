@@ -26,4 +26,16 @@ export class PostsRepository {
   async findAds(): Promise<Post[]> {
     return (await this.postModel.find({ isAd: true }).exec()) ?? [];
   }
+
+  async getAds(): Promise<{ videoUrl: string; isAd: boolean }[]> {
+    const ads = await this.postModel
+      .find({ isAd: true })
+      .select('video_url')
+      .lean()
+      .exec();
+    return ads.map((ad) => ({
+      videoUrl: ad.video_url[0],
+      isAd: true,
+    }));
+  }
 }

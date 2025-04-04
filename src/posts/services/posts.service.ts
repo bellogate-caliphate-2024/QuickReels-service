@@ -45,15 +45,38 @@ export class PostsService {
     }
   }
 
-  async getContents() {
-    try {
-      const posts: Post[] = (await this.postsRepository.getAllPosts()) ?? [];
-      const ads: Post[] = (await this.postsRepository.findAds()) ?? [];
-      const mixedContent = this.dataBaseHelper.randomizeADs(posts, ads);
+  async getContents(page: number, limit: number) {
+    page = page || 1;
+    limit = limit || 10;
 
-      return mixedContent;
+    try {
+      const [allPosts, allAds] = await Promise.all([
+        this.postsRepository.getAllPosts() || [],
+        this.postsRepository.findAds() || [],
+      ]);
+
+      const allContent = await this.dataBaseHelper.randomizeADs(
+        allPosts,
+        allAds,
+      );
+      const totalItems = allContent.length;
+
+      const totalPages = Math.ceil(totalItems / limit);
+      const currentPage = Math.max(1, Math.min(page, totalPages));
+      const startIndex = (currentPage - 1) * limit;
+      const endIndex = Math.min(startIndex + limit, totalItems);
+
+      const pageContent = allContent.slice(startIndex, endIndex);
+
+      return {
+        currentPage: currentPage,
+        nextPage: currentPage < totalPages ? currentPage + 1 : null,
+        isLastPage: currentPage >= totalPages,
+        totalItems: totalItems,
+        listOfContents: pageContent,
+      };
     } catch (error) {
-      throw new Error('Failed to retrieve contents');
+      throw new Error('Failed to load content. Please try again later.');
     }
   }
 
@@ -79,5 +102,9 @@ export class PostsService {
       this.logger.error('Error searching posts:', error);
       throw new Error('Failed to search posts');
     }
+  }
+
+  async getAds(): Promise<{ videoUrl: string; isAd: boolean }[]> {
+    return await this.postsRepository.getAds();
   }
 }

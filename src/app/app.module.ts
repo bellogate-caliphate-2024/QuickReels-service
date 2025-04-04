@@ -5,6 +5,7 @@ import { PostsModule } from '../posts/posts.module';
 import { MongooseModule } from '@nestjs/mongoose';
 import { ConfigModule } from '@nestjs/config';
 import { LikeModule } from '../likes/likes.module';
+import { CommentsModule } from 'src/comments/comments.module';
 
 @Module({
   imports: [
@@ -17,6 +18,7 @@ import { LikeModule } from '../likes/likes.module';
     ),
     PostsModule,
     LikeModule,
+    CommentsModule,
   ],
   controllers: [AppController],
   providers: [AppService],

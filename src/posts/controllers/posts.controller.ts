@@ -45,11 +45,16 @@ export class PostsController {
     @Query('page') page: number,
     @Query('limit') limit: number,
   ) {
-    return this.postService.getContents();
+    return this.postService.getContents(page, limit);
   }
 
   @Get('search')
   async searchPosts(@Query('query') query: string) {
     return this.postService.searchPosts(query);
+  }
+
+  @Get('ads')
+  async getAds(): Promise<{ videoUrl: string; isAd: boolean }[]> {
+    return this.postService.getAds();
   }
 }

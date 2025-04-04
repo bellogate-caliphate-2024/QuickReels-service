@@ -149,6 +149,7 @@ describe('PostsService', () => {
     const mockPosts = [
       {
         _id: '1',
+        id: '1',
         video_url: ['video1.mp4', 'video2.mp4'],
         thumbnail: ['thumb1.jpg', 'thumb2.jpg'],
         caption: 'Caption 1',
@@ -175,15 +176,17 @@ describe('PostsService', () => {
       currentPage: page,
       listOfContents: mockPosts.slice(0, limit),
       isLastPage: false,
+      totalItems: 6,
       nextPage: page + 1,
-    } as unknown as Post[]);
+    });
 
-    const result = await service.getContents();
+    const result = await service.getContents(0, 10);
 
     expect(result).toEqual({
       currentPage: page,
       listOfContents: mockPosts.slice(0, limit),
       isLastPage: false,
+      totalItems: 6,
       nextPage: page + 1,
     });
   });
