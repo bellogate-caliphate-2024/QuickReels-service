@@ -60,6 +60,11 @@ export class Post {
   @Prop({ default: 0 })
   numberOfComments: number;
   id: string | undefined;
+
+  @Prop({ required: false, default: false })
+  @IsOptional()
+  @IsBoolean()
+  isAd?: boolean;
 }
 
 export const PostSchema = SchemaFactory.createForClass(Post);

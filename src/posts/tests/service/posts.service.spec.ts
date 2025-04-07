@@ -43,6 +43,14 @@ describe('PostsService', () => {
         Ismock: false,
       },
     ]),
+    randomizeADs: jest.fn((posts, ads) => {
+      const combined = [...posts, ...ads];
+      for (let i = combined.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [combined[i], combined[j]] = [combined[j], combined[i]];
+      }
+      return combined;
+    }),
   };
 
   beforeEach(async () => {
@@ -111,6 +119,7 @@ describe('PostsService', () => {
       time: '2023-10-01T12:00:00Z',
       userName: 'Test User',
       isLiked: false,
+      isAd: false,
     };
 
     const mockCreatedPost = {
@@ -140,6 +149,7 @@ describe('PostsService', () => {
     const mockPosts = [
       {
         _id: '1',
+        id: '1',
         video_url: ['video1.mp4', 'video2.mp4'],
         thumbnail: ['thumb1.jpg', 'thumb2.jpg'],
         caption: 'Caption 1',
@@ -166,15 +176,17 @@ describe('PostsService', () => {
       currentPage: page,
       listOfContents: mockPosts.slice(0, limit),
       isLastPage: false,
+      totalItems: 6,
       nextPage: page + 1,
-    } as unknown as Post[]);
+    });
 
-    const result = await service.getContents();
+    const result = await service.getContents(0, 10);
 
     expect(result).toEqual({
       currentPage: page,
       listOfContents: mockPosts.slice(0, limit),
       isLastPage: false,
+      totalItems: 6,
       nextPage: page + 1,
     });
   });
@@ -218,5 +230,93 @@ describe('PostsService', () => {
     expect(result[0]).toHaveProperty('userProfilePicture');
     expect(result[0]).toHaveProperty('isLiked');
     expect(result[0]).toHaveProperty('Ismock');
+  });
+
+  it('should insert ads at random positions among posts', async () => {
+    const posts: Post[] = [
+      {
+        id: '1',
+        video_url: ['video1.mp4'],
+        thumbnail: ['thumb1.jpg'],
+        caption: 'Caption 1',
+        time: new Date().toISOString(),
+        numberOfViews: 0,
+        numberOfLikes: 0,
+        numberOfComments: 0,
+        email: 'user1@example.com',
+        userName: 'User One',
+        userProfilePicture: 'profile1.jpg',
+        Ismock: false,
+        isAd: false,
+      },
+      {
+        id: '2',
+        video_url: ['video2.mp4'],
+        thumbnail: ['thumb2.jpg'],
+        caption: 'Caption 2',
+        time: new Date().toISOString(),
+        numberOfViews: 0,
+        numberOfLikes: 0,
+        numberOfComments: 0,
+        email: 'user2@example.com',
+        userName: 'User Two',
+        userProfilePicture: 'profile2.jpg',
+        Ismock: false,
+        isAd: false,
+      },
+      {
+        id: '3',
+        video_url: ['video3.mp4'],
+        thumbnail: ['thumb3.jpg'],
+        caption: 'Caption 3',
+        time: new Date().toISOString(),
+        numberOfViews: 0,
+        numberOfLikes: 0,
+        numberOfComments: 0,
+        email: 'user3@example.com',
+        userName: 'User Three',
+        userProfilePicture: 'profile3.jpg',
+        Ismock: false,
+        isAd: false,
+      },
+    ];
+    const ads: Post[] = [
+      {
+        id: 'A',
+        video_url: ['ad1.mp4'],
+        thumbnail: ['ad1-thumb.jpg'],
+        caption: 'Ad Caption 1',
+        time: new Date().toISOString(),
+        numberOfViews: 0,
+        numberOfLikes: 0,
+        numberOfComments: 0,
+        email: 'ad1@example.com',
+        userName: 'Ad User 1',
+        userProfilePicture: 'ad1-profile.jpg',
+        Ismock: false,
+        isAd: true,
+      },
+      {
+        id: 'B',
+        video_url: ['ad2.mp4'],
+        thumbnail: ['ad2-thumb.jpg'],
+        caption: 'Ad Caption 2',
+        time: new Date().toISOString(),
+        numberOfViews: 0,
+        numberOfLikes: 0,
+        numberOfComments: 0,
+        email: 'ad2@example.com',
+        userName: 'Ad User 2',
+        userProfilePicture: 'ad2-profile.jpg',
+        Ismock: false,
+        isAd: true,
+      },
+    ];
+
+    const result = await helper.randomizeADs(posts, ads);
+
+    // Ensure all posts and ads are present in the final array
+    expect(result).toHaveLength(posts.length + ads.length);
+    expect(result).toEqual(expect.arrayContaining([...posts, ...ads]));
   });
 });

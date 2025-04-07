@@ -64,4 +64,8 @@ export class CreatePostDto {
   @IsOptional()
   @IsString()
   isLiked: boolean;
+
+  @IsOptional()
+  @IsString()
+  isAd: boolean;
 }
