@@ -13,6 +13,7 @@ describe('PostsController', () => {
         file: mockFile,
         message: 'Post created successfully',
       }),
+      getAds: jest.fn().mockResolvedValue([]),
     } as any;
 
     controller = new PostsController(postsService);
@@ -53,5 +54,14 @@ describe('PostsController', () => {
       mockFile,
       createPostDto,
     );
+  });
+
+  it('should return ads from the service', async () => {
+    const mockAds = [{ videoUrl: 'https://example.com/ad.mp4', isAd: true }];
+    jest.spyOn(postsService, 'getAds').mockResolvedValue(mockAds);
+
+    const result = await controller.getAds();
+    expect(result).toEqual(mockAds);
+    expect(postsService.getAds).toHaveBeenCalled();
   });
 });
