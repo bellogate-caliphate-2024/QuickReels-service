@@ -49,20 +49,6 @@ export class CommentRepository {
       .exec();
   }
 
-  async getRepliesByCommentId(
-    parentId: string,
-    page,
-    limit,
-  ): Promise<Comment[]> {
-    const skip = (page - 1) * limit;
-    return this.commentModel
-      .find({ parentId })
-      .sort({ createdAt: -1 })
-      .skip(skip)
-      .limit(limit)
-      .lean()
-      .exec();
-  }
 
   async deleteComment(commentId: string): Promise<boolean> {
     const comment = await this.commentModel.findById(commentId);
