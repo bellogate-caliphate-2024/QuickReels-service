@@ -52,6 +52,17 @@ export class CommentService {
   }
 
 
+  async getReplies(
+    commentID: string,
+    page,
+    limit,
+  ): Promise<Comment[]> {
+    const replies = await this.commentRepository.getRepliesByCommentId(commentID, page, limit);
+    return replies;
+  }
+
+
+
 
   async deleteComment(commentId: string) {
     const deleted = await this.commentRepository.deleteComment(commentId);
