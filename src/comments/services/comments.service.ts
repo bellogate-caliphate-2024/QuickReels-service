@@ -54,7 +54,7 @@ export class CommentService {
     commentID: string,
     page,
     limit,
-  ): Promise<Comment[]> {
+  ): Promise<any> {
     const replies = await this.commentRepository.getPaginatedComments(commentID, page, limit);
     
   }
