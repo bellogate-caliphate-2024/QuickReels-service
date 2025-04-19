@@ -119,7 +119,4 @@ describe('CommentService', () => {
     expect(mockCommentRepository.deleteComment).toHaveBeenCalledWith(replyId);
   });
 
-
-
-
 });
