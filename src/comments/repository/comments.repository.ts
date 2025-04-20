@@ -49,7 +49,6 @@ export class CommentRepository {
       .exec();
   }
 
-
   async deleteComment(commentId: string): Promise<boolean> {
     const comment = await this.commentModel.findById(commentId);
     if (!comment) return false;

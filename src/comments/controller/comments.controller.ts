@@ -3,7 +3,9 @@ import { CommentService } from '../services/comments.service';
 import { CreateCommentDto } from '../dtos/comments.dto';
 import { createReplyDto } from '../dtos/reply.dto';
 import { Delete } from '@nestjs/common';
-
+import { UseGuards } from '@nestjs/common';
+import { JwtAuthGuard } from '../../auth/guards/auth.guards';
+@UseGuards(JwtAuthGuard)
 @Controller('comments')
 export class CommentController {
   constructor(private readonly commentService: CommentService) {}
@@ -31,14 +33,14 @@ export class CommentController {
     return this.commentService.getComments(contentId, page, limit);
   }
 
-  @Get(':commentId/replies')
-  async getReplies(
-    @Param('commentId') commentId: string,
-    @Query('page') page,
-    @Query('limit') limit,
-  ) {
-    return this.commentService.getRepliesByCommentId(commentId, page, limit);
-  }
+  // @Get(':commentId/replies')
+  // async getReplies(
+  //   @Param('commentId') commentId: string,
+  //   @Query('page') page,
+  //   @Query('limit') limit,
+  // ) {
+  //   return this.commentService.getRepliesByCommentId(commentId, page, limit);
+  // }
 
   @Delete(':commentId')
   async deleteComment(@Param('commentId') commentId: string) {
