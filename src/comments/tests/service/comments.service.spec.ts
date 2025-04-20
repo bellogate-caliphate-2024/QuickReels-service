@@ -75,7 +75,6 @@ describe('CommentService', () => {
     ];
     mockCommentRepository.getPaginatedComments.mockResolvedValue(comments);
     mockCommentRepository.getCommentCount.mockResolvedValue(comments.length);
-    mockCommentRepository.getPaginatedComments.mockResolvedValue(comments);
 
     const result = await commentService.getComments(contentId, 1, 10);
 
