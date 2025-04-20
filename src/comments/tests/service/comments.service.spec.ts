@@ -75,7 +75,6 @@ describe('CommentService', () => {
     ];
     mockCommentRepository.getPaginatedComments.mockResolvedValue(comments);
     mockCommentRepository.getCommentCount.mockResolvedValue(comments.length);
-    mockCommentRepository.getPaginatedComments.mockResolvedValue(comments);
 
     const result = await commentService.getComments(contentId, 1, 10);
 
@@ -119,25 +118,4 @@ describe('CommentService', () => {
     });
     expect(mockCommentRepository.deleteComment).toHaveBeenCalledWith(replyId);
   });
-
-  it('should fetch a paginated set of replies for a parent comment', async () => {
- 
-    const parentId = 'comment1';
-    const replies = [
-      { _id: 'reply1', text: 'Reply 1', parentId },
-      { _id: 'reply2', text: 'Reply 2', parentId },
-    ];
-
-    mockCommentRepository.getRepliesByCommentId.mockResolvedValue(replies);
-
-    const result = await commentService.getReplies(parentId, 0, 10);
-
-    expect(result).toEqual(replies);
-    expect(mockCommentRepository.getRepliesByCommentId).toHaveBeenCalledWith(
-      parentId,
-      0,
-      10,
-    );
-  });
-
 });

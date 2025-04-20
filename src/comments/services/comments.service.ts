@@ -13,7 +13,6 @@ export class CommentService {
   }
 
   async getComments(contentId: string, page: number, limit: number) {
-    // Convert to numbers and validate
     page = Number(page);
     limit = Number(limit);
 
@@ -25,7 +24,6 @@ export class CommentService {
         await this.commentRepository.getCommentCount(contentId);
       const totalPages = Math.ceil(totalComments / limit) || 1;
 
-      // Ensure page stays within valid bounds
       page = page > totalPages ? totalPages : page;
 
       const offset = (page - 1) * limit;
@@ -51,18 +49,14 @@ export class CommentService {
     }
   }
 
-
-  async getReplies(
-    commentID: string,
-    page,
-    limit,
-  ): Promise<Comment[]> {
-    const replies = await this.commentRepository.getRepliesByCommentId(commentID, page, limit);
+  async getReplies(commentID: string, page, limit): Promise<any> {
+    const replies = await this.commentRepository.getPaginatedComments(
+      commentID,
+      page,
+      limit,
+    );
     return replies;
   }
-
-
-
 
   async deleteComment(commentId: string) {
     const deleted = await this.commentRepository.deleteComment(commentId);

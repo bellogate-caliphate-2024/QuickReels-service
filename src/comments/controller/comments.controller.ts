@@ -37,7 +37,7 @@ export class CommentController {
     @Query('page') page,
     @Query('limit') limit,
   ) {
-    return this.commentService.getRepliesByCommentId(commentId, page, limit);
+    return this.commentService.getReplies(commentId, page, limit);
   }
 
   @Delete(':commentId')
