@@ -8,11 +8,14 @@ import {
   HttpCode,
   Body,
   Get,
+  UseGuards,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { CreatePostDto } from '../dtos/posts.dto';
 import { PostsService } from '../services/posts.service';
+import { JwtAuthGuard } from '../../auth/guards/auth.guards';
 
+@UseGuards(JwtAuthGuard)
 @Controller('posts')
 export class PostsController {
   constructor(private readonly postService: PostsService) {}
