@@ -22,8 +22,8 @@ describe('PostsController', () => {
   it('should handle a POST request and return a file and a message', async () => {
     const createPostDto: CreatePostDto = {
       email: 'test@example.com',
-      video_url: ['https://example.com/video.mp4'],
-      thumbnail: ['https://example.com/thumbnail.jpg'],
+      video_url: 'https://example.com/video.mp4',
+      thumbnail: 'https://example.com/thumbnail.jpg',
       caption: 'This is a test post',
       time: '2023-10-01T12:00:00Z',
       userName: 'Clark',
@@ -39,10 +39,9 @@ describe('PostsController', () => {
     const result = await controller.createPost(
       mockFile,
       createPostDto,
-      ' ',
+      numberOfViews,
       numberOfComments,
       numberOfViews,
-      0,
     );
 
     expect(result).toEqual({

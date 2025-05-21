@@ -1,7 +1,6 @@
 import { User } from '../../src/user/schema/user.schema';
 import { Types } from 'mongoose';
 
-
 export const mockFile = {
   fieldname: 'file',
   originalname: 'test.jpg',
@@ -26,4 +25,3 @@ export const mockUser = (user?: Partial<User>): User =>
     save: jest.fn().mockResolvedValue(true),
     toObject: jest.fn().mockReturnThis(),
   }) as unknown as User;
-

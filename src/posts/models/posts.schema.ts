@@ -1,7 +1,6 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document } from 'mongoose';
 import {
-  IsArray,
   IsBoolean,
   IsEmail,
   IsNotEmpty,
@@ -20,7 +19,7 @@ export class Post {
   @IsString()
   time?: string;
 
-  @Prop({ required: true, unique: true })
+  @Prop({ required: true })
   @IsNotEmpty()
   @IsEmail()
   email: string;
@@ -28,12 +27,12 @@ export class Post {
   @Prop({ required: true })
   @IsNotEmpty()
   @IsUrl()
-  video_url: string[];
+  video_url: string;
 
   @Prop({ required: false })
   @IsOptional()
   @IsUrl()
-  thumbnail: string[];
+  thumbnail: string;
 
   @Prop({ required: false })
   @IsOptional()
@@ -47,9 +46,6 @@ export class Post {
 
   @Prop({ required: true })
   userName: string;
-
-  @Prop({ required: true })
-  userProfilePicture: string;
 
   @Prop({ default: 0 })
   numberOfViews: number;

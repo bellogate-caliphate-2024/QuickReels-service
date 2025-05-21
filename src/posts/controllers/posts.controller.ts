@@ -9,6 +9,8 @@ import {
   Body,
   Get,
   UseGuards,
+  Delete,
+  Param,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { CreatePostDto } from '../dtos/posts.dto';
@@ -26,7 +28,6 @@ export class PostsController {
   async createPost(
     @UploadedFile() videoFile: Express.Multer.File,
     @Body() createPostDto: CreatePostDto,
-    @Query('userProfilePicture') userProfilePicture: string,
     @Query('numberOfViews') numberOfViews: number,
     @Query('numberOfLikes') numberOfLikes: number,
     @Query('numberOfComments') numberOfComments: number,
@@ -35,7 +36,6 @@ export class PostsController {
       throw new BadRequestException('No video file uploaded');
     }
 
-    createPostDto.userProfilePicture = userProfilePicture;
     createPostDto.numberOfViews = Number(numberOfViews);
     createPostDto.numberOfLikes = Number(numberOfLikes);
     createPostDto.numberOfComments = Number(numberOfComments);
@@ -59,5 +59,10 @@ export class PostsController {
   @Get('ads')
   async getAds(): Promise<{ videoUrl: string; isAd: boolean }[]> {
     return this.postService.getAds();
+  }
+
+  @Delete(':id')
+  async deletePost(@Param('id') id: string) {
+    return this.postService.deleteContent(id);
   }
 }

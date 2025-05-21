@@ -112,8 +112,8 @@ describe('PostsService', () => {
   it('should create a post and return success message with new post', async () => {
     const mockPost: CreatePostDto = {
       email: 'test@example.com',
-      video_url: ['https://example.com/video.mp4'] as string[],
-      thumbnail: ['https://example.com/thumbnail.jpg'] as string[], // Now required
+      video_url: 'https://example.com/video.mp4',
+      thumbnail: 'https://example.com/thumbnail.jpg', // Now required
       caption: 'This is a test post',
       Ismock: true,
       time: '2023-10-01T12:00:00Z',
@@ -150,8 +150,8 @@ describe('PostsService', () => {
       {
         _id: '1',
         id: '1',
-        video_url: ['video1.mp4', 'video2.mp4'],
-        thumbnail: ['thumb1.jpg', 'thumb2.jpg'],
+        video_url: 'video1.mp4',
+        thumbnail: 'thumb1.jpg',
         caption: 'Caption 1',
         time: new Date().toISOString(),
         numberOfViews: 10,
@@ -174,7 +174,7 @@ describe('PostsService', () => {
     const limit = 1;
     jest.spyOn(service, 'getContents').mockResolvedValue({
       currentPage: page,
-      listOfContents: mockPosts.slice(0, limit),
+      listOfContents: mockPosts,
       isLastPage: false,
       totalItems: 6,
       nextPage: page + 1,
@@ -236,8 +236,8 @@ describe('PostsService', () => {
     const posts: Post[] = [
       {
         id: '1',
-        video_url: ['video1.mp4'],
-        thumbnail: ['thumb1.jpg'],
+        video_url: 'video1.mp4',
+        thumbnail: 'thumb1.jpg',
         caption: 'Caption 1',
         time: new Date().toISOString(),
         numberOfViews: 0,
@@ -245,14 +245,13 @@ describe('PostsService', () => {
         numberOfComments: 0,
         email: 'user1@example.com',
         userName: 'User One',
-        userProfilePicture: 'profile1.jpg',
         Ismock: false,
         isAd: false,
       },
       {
         id: '2',
-        video_url: ['video2.mp4'],
-        thumbnail: ['thumb2.jpg'],
+        video_url: 'video2.mp4',
+        thumbnail: 'thumb2.jpg',
         caption: 'Caption 2',
         time: new Date().toISOString(),
         numberOfViews: 0,
@@ -260,14 +259,13 @@ describe('PostsService', () => {
         numberOfComments: 0,
         email: 'user2@example.com',
         userName: 'User Two',
-        userProfilePicture: 'profile2.jpg',
         Ismock: false,
         isAd: false,
       },
       {
         id: '3',
-        video_url: ['video3.mp4'],
-        thumbnail: ['thumb3.jpg'],
+        video_url: 'video3.mp4',
+        thumbnail: 'thumb3.jpg',
         caption: 'Caption 3',
         time: new Date().toISOString(),
         numberOfViews: 0,
@@ -275,7 +273,6 @@ describe('PostsService', () => {
         numberOfComments: 0,
         email: 'user3@example.com',
         userName: 'User Three',
-        userProfilePicture: 'profile3.jpg',
         Ismock: false,
         isAd: false,
       },
@@ -283,8 +280,8 @@ describe('PostsService', () => {
     const ads: Post[] = [
       {
         id: 'A',
-        video_url: ['ad1.mp4'],
-        thumbnail: ['ad1-thumb.jpg'],
+        video_url: 'ad1.mp4',
+        thumbnail: 'ad1-thumb.jpg',
         caption: 'Ad Caption 1',
         time: new Date().toISOString(),
         numberOfViews: 0,
@@ -292,14 +289,13 @@ describe('PostsService', () => {
         numberOfComments: 0,
         email: 'ad1@example.com',
         userName: 'Ad User 1',
-        userProfilePicture: 'ad1-profile.jpg',
         Ismock: false,
         isAd: true,
       },
       {
         id: 'B',
-        video_url: ['ad2.mp4'],
-        thumbnail: ['ad2-thumb.jpg'],
+        video_url: 'ad2.mp4',
+        thumbnail: 'ad2-thumb.jpg',
         caption: 'Ad Caption 2',
         time: new Date().toISOString(),
         numberOfViews: 0,
@@ -307,7 +303,6 @@ describe('PostsService', () => {
         numberOfComments: 0,
         email: 'ad2@example.com',
         userName: 'Ad User 2',
-        userProfilePicture: 'ad2-profile.jpg',
         Ismock: false,
         isAd: true,
       },

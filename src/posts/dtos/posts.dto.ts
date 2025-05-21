@@ -15,6 +15,10 @@ import { Transform } from 'class-transformer';
 export class CreatePostDto {
   @IsOptional()
   @IsString()
+  id?: string;
+
+  @IsOptional()
+  @IsString()
   time?: string;
 
   @IsString()
@@ -25,11 +29,11 @@ export class CreatePostDto {
   @IsOptional()
   @IsArray()
   @IsString({ each: true })
-  video_url?: string[];
+  video_url?: string;
 
   @IsOptional()
   @IsString({ each: true })
-  thumbnail?: string[];
+  thumbnail?: string;
 
   @IsOptional()
   @IsString()
@@ -53,19 +57,15 @@ export class CreatePostDto {
   @IsString()
   userName: string;
 
-  @IsOptional()
-  @IsUrl()
-  userProfilePicture?: string;
-
   @IsBoolean()
   @Transform(({ value }) => value === 'true')
   Ismock: boolean;
 
   @IsOptional()
   @IsString()
-  isLiked: boolean;
+  isLiked?: boolean;
 
   @IsOptional()
   @IsString()
-  isAd: boolean;
+  isAd?: boolean;
 }

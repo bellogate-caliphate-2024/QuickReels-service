@@ -49,7 +49,6 @@ export class CommentService {
     }
   }
 
-  
   async getReplies(commentID: string, page, limit): Promise<any> {
     const replies = await this.commentRepository.getPaginatedComments(
       commentID,
@@ -58,7 +57,6 @@ export class CommentService {
     );
     return replies;
   }
-
 
   async deleteComment(commentId: string) {
     const deleted = await this.commentRepository.deleteComment(commentId);

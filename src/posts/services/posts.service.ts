@@ -1,11 +1,14 @@
-import { Injectable, Logger } from '@nestjs/common';
+import { Injectable, Logger, NotFoundException } from '@nestjs/common';
+import { v4 as uuidv4 } from 'uuid';
 import { CreatePostDto } from '../dtos/posts.dto';
 import { PostsRepository } from '../repository/posts.repository';
 import { format } from 'date-fns';
 import { AwsS3Service } from '../../DataBase/Aws';
 import eleasticClient from '../../config/elasticsearch.client';
 import { DatabaseHelper } from '../../helpers/helper';
-import { Post } from '../models/posts.schema';
+import * as path from 'path';
+import * as fs from 'fs';
+
 @Injectable()
 export class PostsService {
   private readonly logger = new Logger(PostsService.name);
@@ -16,32 +19,63 @@ export class PostsService {
     private readonly dataBaseHelper: DatabaseHelper,
   ) {}
 
-  async createPost(videoFile: Express.Multer.File, createDto: CreatePostDto) {
+  async createPost(
+    videoFile: Express.Multer.File,
+    createDto: CreatePostDto,
+  ): Promise<any> {
+    const tempDir = path.join(__dirname, 'tmp');
+    let videoFilePath: string;
+    let thumbnailPath: string;
+
     try {
+      videoFilePath = await this.dataBaseHelper.saveTempFile(
+        videoFile.buffer,
+        `video-${Date.now()}_${uuidv4()}_${videoFile.originalname}`,
+      );
+
       const videoUrl = await this.awsS3Service.uploadFile(videoFile, 'videos');
 
-      const formattedTime = format(new Date(), 'MM/dd/yyyy');
-      const updatedDto = { ...createDto, videoUrl, time: formattedTime };
+      thumbnailPath = await this.dataBaseHelper.generateThumbnail(
+        videoFilePath,
+        tempDir,
+      );
 
-      const newPost = await this.postsRepository.createPost(updatedDto);
+      const thumbnailFile = {
+        buffer: await fs.promises.readFile(thumbnailPath),
+        originalname: path.basename(thumbnailPath),
+        mimetype: 'image/png',
+      } as Express.Multer.File;
 
-      await eleasticClient.index({
-        index: 'quickreels',
-        id: newPost.id,
-        document: {
-          title: createDto.caption,
-          uploader: createDto.userName,
-          upload_date: new Date(),
-        },
+      const thumbnailUrl = await this.awsS3Service.uploadFile(
+        thumbnailFile,
+        'thumbnails',
+      );
+
+      if (!createDto.email) {
+        throw new NotFoundException('Please enter your email to post content');
+      }
+
+      const formattedTime = format(new Date(), 'MM/dd/yyyy HH:mm a');
+
+      const newPost = await this.postsRepository.createPost({
+        email: createDto.email,
+        userName: createDto.userName,
+        caption: createDto.caption,
+        video_url: videoUrl,
+        thumbnail: thumbnailUrl,
+        Ismock: createDto.Ismock,
+        time: createDto.time || formattedTime,
+        numberOfViews: 0,
+        numberOfLikes: 0,
+        numberOfComments: 0,
       });
 
       return {
-        message: 'Post created successfully',
+        message: 'Video and thumbnail successfully uploaded and stored.',
         newPost,
       };
     } catch (error) {
-      this.logger.error('Error creating post', error);
-      throw new Error('Failed to create post');
+      throw new Error(error.message || 'Failed to upload video');
     }
   }
 
@@ -106,5 +140,13 @@ export class PostsService {
 
   async getAds(): Promise<{ videoUrl: string; isAd: boolean }[]> {
     return await this.postsRepository.getAds();
+  }
+
+  async deleteContent(id: string): Promise<{ message: string }> {
+    const result = await this.postsRepository.deleteById(id);
+    if (!result) {
+      throw new NotFoundException('Content not found');
+    }
+    return { message: 'Content deleted successfully' };
   }
 }

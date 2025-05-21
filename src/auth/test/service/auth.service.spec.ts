@@ -76,7 +76,6 @@ describe('AuthService', () => {
         authService.signin({
           email: 'test@mail.com',
           password: 'wrongpass',
-          userName: 'testuser',
         }),
       ).rejects.toThrow('Invalid Password!......Please try again...');
     });
@@ -93,7 +92,6 @@ describe('AuthService', () => {
       const result = await authService.signin({
         email: 'test@mail.com',
         password: 'correctpass',
-        userName: 'testuser',
       });
 
       expect(result.accessToken).toBe('mock-token');

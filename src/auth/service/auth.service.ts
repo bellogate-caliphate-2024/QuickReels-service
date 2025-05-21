@@ -21,7 +21,7 @@ export class AuthService {
     private readonly jwtService: JwtService,
   ) {}
 
-  async authenticate(input: AuthDto): Promise<AuthResult> {
+  async authenticate(input: SigninData): Promise<AuthResult> {
     const user = await this.validateUser(input);
 
     if (!user) {
@@ -33,22 +33,21 @@ export class AuthService {
     return await this.signin(user);
   }
 
-  async validateUser(input: AuthDto): Promise<SigninData | null> {
+  async validateUser(input) {
     const user = await this.usersService.findByEmail(input.email);
 
     if (!user) {
       throw new NotFoundException('User not found');
     }
-    const isMatch =
-      user && (await bcrypt.compare(input.password, user.password));
+    const isMatch = await bcrypt.compare(input.password, user.password);
 
-    if (isMatch) {
-      return {
-        email: user.email,
-        password: user.password,
-      };
+    if (!isMatch) {
+      throw new UnauthorizedException('Invalid Password! Please try again...');
     }
-    return null;
+
+    return {
+      email: user.email,
+    };
   }
 
   async signUp(user: SigninData): Promise<RegistrationResponse> {
@@ -77,6 +76,8 @@ export class AuthService {
 
   async signin(authDto: AuthDto) {
     const user = await this.usersService.findByEmail(authDto.email);
+    console.log(user);
+
     if (!user) throw new NotFoundException('User not found');
 
     const isValid = await bcrypt.compare(authDto.password, user.password);

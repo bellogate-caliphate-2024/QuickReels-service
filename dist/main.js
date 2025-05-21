@@ -7,7 +7,12 @@ async function bootstrap() {
     const app = await core_1.NestFactory.create(app_module_1.AppModule, {
         logger: new logger_service_1.CustomLogger(),
     });
-    await app.listen(process.env.PORT ?? 3000);
+    app.enableCors({
+        origin: 'http://localhost:3000',
+        credentials: true,
+    });
+    await app.listen(process.env.PORT ?? 3001);
+    console.log('Server is running on port', process.env.PORT ?? 3001);
 }
 bootstrap();
 //# sourceMappingURL=main.js.map

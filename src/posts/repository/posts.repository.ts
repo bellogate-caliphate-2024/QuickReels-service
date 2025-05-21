@@ -16,7 +16,8 @@ export class PostsRepository {
   }
 
   async getAllPosts(): Promise<Post[]> {
-    return this.postModel.find().exec();
+    const post = this.postModel.find().exec();
+    return post;
   }
 
   async findById(postId: string): Promise<Post | null> {
@@ -37,5 +38,22 @@ export class PostsRepository {
       videoUrl: ad.video_url[0],
       isAd: true,
     }));
+  }
+
+  async deleteById(id: string): Promise<boolean> {
+    const res = await this.postModel.findByIdAndDelete(id);
+    return !!res;
+  }
+
+  async findByEmail(email: string): Promise<Post | null> {
+    return this.postModel.findOne({ email }).exec();
+  }
+
+  async updatePost(post: Post): Promise<Post | null> {
+    return this.postModel
+      .findByIdAndUpdate(post.id, post, {
+        new: true,
+      })
+      .exec();
   }
 }

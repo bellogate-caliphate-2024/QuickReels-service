@@ -7,10 +7,10 @@ export class AuthDto {
 
   @IsString()
   @IsNotEmpty()
-  userName?: string;
+  name?: string;
 
   @IsString()
   @IsNotEmpty()
   @Length(6, 20)
-  password: string;
+  password?: string;
 }

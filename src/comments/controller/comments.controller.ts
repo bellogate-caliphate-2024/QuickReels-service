@@ -33,7 +33,6 @@ export class CommentController {
     return this.commentService.getComments(contentId, page, limit);
   }
 
-
   @Get(':commentId/replies')
   async getReplies(
     @Param('commentId') commentId: string,
@@ -43,7 +42,6 @@ export class CommentController {
     return this.commentService.getReplies(commentId, page, limit);
   }
 
-  
   @Delete(':commentId')
   async deleteComment(@Param('commentId') commentId: string) {
     return this.commentService.deleteComment(commentId);
