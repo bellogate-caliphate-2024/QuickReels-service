@@ -8,16 +8,17 @@ import eleasticClient from '../../config/elasticsearch.client';
 import { DatabaseHelper } from '../../helpers/helper';
 import * as path from 'path';
 import * as fs from 'fs';
+import { UpdatePostDto } from '../dtos/update-post.dto';
 
 @Injectable()
 export class PostsService {
-  private readonly logger = new Logger(PostsService.name);
 
   constructor(
     private readonly postsRepository: PostsRepository,
     private readonly awsS3Service: AwsS3Service,
     private readonly dataBaseHelper: DatabaseHelper,
-  ) {}
+  ) {
+  }
 
   async createPost(
     videoFile: Express.Multer.File,
@@ -79,6 +80,7 @@ export class PostsService {
     }
   }
 
+
   async getContents(page: number, limit: number) {
     page = page || 1;
     limit = limit || 10;
@@ -114,6 +116,7 @@ export class PostsService {
     }
   }
 
+
   async searchPosts(query: string) {
     try {
       if (!query.trim()) {
@@ -133,14 +136,19 @@ export class PostsService {
 
       return hits.hits.map((hit) => hit._source);
     } catch (error) {
-      this.logger.error('Error searching posts:', error);
       throw new Error('Failed to search posts');
     }
   }
 
+  async updatePost(id: string, updateDto: UpdatePostDto) {
+    return this.postsRepository.findByIdAndUpdate(id, updateDto);
+  }
+  
+
   async getAds(): Promise<{ videoUrl: string; isAd: boolean }[]> {
     return await this.postsRepository.getAds();
   }
+
 
   async deleteContent(id: string): Promise<{ message: string }> {
     const result = await this.postsRepository.deleteById(id);
@@ -149,4 +157,5 @@ export class PostsService {
     }
     return { message: 'Content deleted successfully' };
   }
+
 }

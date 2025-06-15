@@ -7,7 +7,7 @@ import { ConfigModule } from '@nestjs/config';
 import { LikeModule } from '../likes/likes.module';
 import { CommentsModule } from '../comments/comments.module';
 import { AuthModule } from '../auth/auth.module';
-
+import {UsersModule} from '../user/user.module';
 @Module({
   imports: [
     ConfigModule.forRoot({
@@ -21,6 +21,7 @@ import { AuthModule } from '../auth/auth.module';
     LikeModule,
     CommentsModule,
     AuthModule,
+    UsersModule
   ],
   controllers: [AppController],
   providers: [AppService],

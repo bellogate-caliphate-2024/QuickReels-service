@@ -6,7 +6,7 @@ import {
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { Post } from '../posts/models/posts.schema';
-import * as path from 'path'; // Updated import for path
+import * as path from 'path'; 
 import * as fs from 'fs';
 import * as ffmpeg from 'fluent-ffmpeg';
 import * as ffmpegStatic from '@ffmpeg-installer/ffmpeg';
@@ -181,3 +181,4 @@ export class DatabaseHelper {
       .map(({ value }) => value);
   }
 }
+ 

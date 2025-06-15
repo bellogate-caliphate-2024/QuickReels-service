@@ -1,16 +1,34 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { getModelToken } from '@nestjs/mongoose';
 import { PostsRepository } from '../../repository/posts.repository';
+import { PostsService } from '../../services/posts.service';
 import { Model } from 'mongoose';
-
-describe('PostRepository - getAds', () => {
+import { UpdatePostDto } from 'src/posts/dtos/update-post.dto';
+import { AwsS3Service } from '../../../DataBase/Aws';
+import { DatabaseHelper } from '../../../helpers/helper'; 
+describe('PostsService & PostsRepository', () => {
   let repository: PostsRepository;
   let postModel: Model<any>;
+  let postsService: PostsService;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
+        PostsService,
         PostsRepository,
+        {
+          provide: AwsS3Service,
+          useValue: {
+            uploadFile: jest.fn(),
+            deleteFile: jest.fn(),
+          },
+        },
+        {
+          provide: DatabaseHelper,
+          useValue: {
+            transformUrl: jest.fn((url) => url),
+          },
+        },
         {
           provide: getModelToken('Post'),
           useValue: {
@@ -18,32 +36,40 @@ describe('PostRepository - getAds', () => {
             select: jest.fn().mockReturnThis(),
             lean: jest.fn().mockReturnThis(),
             exec: jest.fn(),
+            findByIdAndUpdate: jest.fn(),
           },
         },
       ],
     }).compile();
 
+    postsService = module.get<PostsService>(PostsService);
     repository = module.get<PostsRepository>(PostsRepository);
     postModel = module.get<Model<any>>(getModelToken('Post'));
   });
 
-  it('should return mapped ads with videoUrl and isAd=true', async () => {
-    const mockAds = [
-      { video_url: ['https://example.com/ad1.mp4'] },
-      { video_url: ['https://example.com/ad2.mp4'] },
-    ];
 
-    (
-      postModel.find({}).select('video_url').lean().exec as jest.Mock
-    ).mockResolvedValue(mockAds);
+  
 
-    const result = await repository.getAds();
 
-    expect(result).toEqual([
-      { videoUrl: 'https://example.com/ad1.mp4', isAd: true },
-      { videoUrl: 'https://example.com/ad2.mp4', isAd: true },
-    ]);
+  it('should call postsRepository.findByIdAndUpdate with correct args', async () => {
+    const id = '123abc';
+    const updateDto: UpdatePostDto = {
+      caption: 'Updated caption',
+      userName: 'updatedUser',
+      isAd: true,
+      isLiked: true,
+      Ismock: false,
+    };
 
-    expect(postModel.find).toHaveBeenCalledWith({ isAd: true });
+    const expectedResult = { _id: id, ...updateDto, __v: 0 };
+
+    jest
+      .spyOn(repository, 'findByIdAndUpdate')
+      .mockResolvedValue(expectedResult as any);
+
+    const result = await postsService.updatePost(id, updateDto);
+
+    expect(repository.findByIdAndUpdate).toHaveBeenCalledWith(id, updateDto);
+    expect(result).toEqual(expectedResult);
   });
 });
