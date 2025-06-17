@@ -28,7 +28,7 @@ describe('LikeController', () => {
 
   it('should call LikeService and return success message when liking content', async () => {
     const createLikeDto: CreateLikeDto = {
-      userId: 'user123',
+      userEmail: 'user123',
       contentId: 'content123',
       time: new Date(),
     };

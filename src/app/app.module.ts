@@ -7,7 +7,9 @@ import { ConfigModule } from '@nestjs/config';
 import { LikeModule } from '../likes/likes.module';
 import { CommentsModule } from '../comments/comments.module';
 import { AuthModule } from '../auth/auth.module';
-import {UsersModule} from '../user/user.module';
+import { UsersModule } from '../user/user.module';
+import { FollowersModule } from '../followers/followers.module';
+
 @Module({
   imports: [
     ConfigModule.forRoot({
@@ -21,7 +23,8 @@ import {UsersModule} from '../user/user.module';
     LikeModule,
     CommentsModule,
     AuthModule,
-    UsersModule
+    UsersModule,
+    FollowersModule
   ],
   controllers: [AppController],
   providers: [AppService],
