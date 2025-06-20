@@ -1,6 +1,6 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { AuthService } from '../../service/auth.service';
-import { UsersService } from '../../../user/service/user.service';
+import { UserService } from '../../../user/service/user.service';
 import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
 import { mockUser } from '../../../__mock__/file';
@@ -8,7 +8,7 @@ import { Types } from 'mongoose';
 
 describe('AuthService', () => {
   let authService: AuthService;
-  let usersService: UsersService;
+  let usersService: UserService;
   let jwtService: JwtService;
 
   beforeEach(async () => {
@@ -16,7 +16,7 @@ describe('AuthService', () => {
       providers: [
         AuthService,
         {
-          provide: UsersService,
+          provide: UserService,
           useValue: {
             findByEmail: jest.fn(),
             createUser: jest.fn().mockImplementation((dto) =>
@@ -39,7 +39,7 @@ describe('AuthService', () => {
     }).compile();
 
     authService = module.get<AuthService>(AuthService);
-    usersService = module.get<UsersService>(UsersService);
+    usersService = module.get<UserService>(UserService);
     jwtService = module.get<JwtService>(JwtService);
   });
 

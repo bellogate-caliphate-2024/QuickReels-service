@@ -53,7 +53,7 @@ describe('LikeService', () => {
   });
 
   const mockCreateLikeDto: CreateLikeDto = {
-    userId: 'user123',
+    userEmail: 'user123',
     contentId: 'content456',
   };
 
