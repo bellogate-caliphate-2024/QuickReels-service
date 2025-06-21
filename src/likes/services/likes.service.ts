@@ -28,8 +28,6 @@ export class LikeService {
     return { message: 'Like added successfully', newLike };
   }
 
-
-
   async removeLike(userEmail: string, contentId: string) {
     const result = await this.likeRepository.deleteLike(userEmail, contentId);
     if (!result) {
@@ -38,7 +36,6 @@ export class LikeService {
     return { message: 'Like removed successfully' };
   }
 
-  
   async getLikesCount(contentId: string) {
     const count = await this.likeRepository.getLikesCount(contentId);
     return { likesCount: count };
