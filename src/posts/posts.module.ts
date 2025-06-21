@@ -1,16 +1,21 @@
 import { Module } from '@nestjs/common';
-import { PostsController } from './posts.controller';
-import { PostsService } from './posts.service';
+import { PostsController } from './controllers/posts.controller';
+import { PostsService } from './services/posts.service';
 import { MongooseModule } from '@nestjs/mongoose';
-import { Post, PostSchema } from 'src/Schemas/posts.schema';
-import { Helper } from '../helpers/helper.module';
-import { AwsS3Service } from 'src/DataBase/Aws';
+import { Post, PostSchema } from 'src/posts/models/posts.schema';
+import { DatabaseHelper } from '../helpers/helper.module';
+import { AwsS3Service } from '../DataBase/aws.module';
+import { Like, LikeSchema } from '../likes/models/likes.schema';
+import { PostsRepository } from './repository/posts.repository';
 
 @Module({
   imports: [
-    MongooseModule.forFeature([{ name: Post.name, schema: PostSchema }]), // Register PostModel
+    MongooseModule.forFeature([
+      { name: Post.name, schema: PostSchema },
+      { name: Like.name, schema: LikeSchema },
+    ]),
   ],
   controllers: [PostsController],
-  providers: [PostsService, Helper, AwsS3Service],
+  providers: [PostsService, DatabaseHelper, AwsS3Service, PostsRepository],
 })
 export class PostsModule {}

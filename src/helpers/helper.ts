@@ -5,21 +5,24 @@ import {
 } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
-import { Post } from '../Schemas/posts.schema';
-import * as path from 'path'; // Updated import for path
+import { Post } from '../posts/models/posts.schema';
+import * as path from 'path'; 
 import * as fs from 'fs';
 import * as ffmpeg from 'fluent-ffmpeg';
 import * as ffmpegStatic from '@ffmpeg-installer/ffmpeg';
 import * as ffprobeStatic from '@ffprobe-installer/ffprobe';
+import { format } from 'date-fns';
 
 @Injectable()
-export class Helper {
+export class DatabaseHelper {
   @InjectModel(Post.name) private postModel: Model<Post>;
   constructor() {}
 
   async saveToDatabase(postData: Partial<Post>) {
     try {
       const createdPost = new this.postModel(postData);
+      console.log('createdPost', createdPost);
+
       return await createdPost.save();
     } catch (error) {
       throw this.handleError(error);
@@ -142,4 +145,40 @@ export class Helper {
 
     return alternatedPosts;
   }
+
+  formatTime(time?: string | Date): string {
+    return format(time ? new Date(time) : new Date(), 'EEE HH:mm MMMM yyyy');
+  }
+
+  async randomizeADs(posts: Post[], ads: Post[]) {
+    if (ads.length === 0) return posts;
+
+    const mixedContent: Post[] = [...posts];
+    const shuffledAds = this.shuffleArray(ads);
+
+    let adIndex = 0;
+    let i = 0;
+
+    while (adIndex < (await shuffledAds).length && i < mixedContent.length) {
+      if (Math.random() < 0.5) {
+        mixedContent.splice(i, 0, shuffledAds[adIndex]);
+        adIndex++;
+      }
+      i++;
+    }
+    while (adIndex < (await shuffledAds).length) {
+      mixedContent.push(shuffledAds[adIndex]);
+      adIndex++;
+    }
+
+    return mixedContent;
+  }
+
+  async shuffleArray<T>(array: T[]): Promise<T[]> {
+    return array
+      .map((value) => ({ value, sort: Math.random() }))
+      .sort((a, b) => a.sort - b.sort)
+      .map(({ value }) => value);
+  }
 }
+ 

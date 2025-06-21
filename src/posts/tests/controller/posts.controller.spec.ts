@@ -1,0 +1,66 @@
+import { PostsController } from '../../controllers/posts.controller';
+import { PostsService } from '../../services/posts.service';
+import { CreatePostDto } from '../../dtos/posts.dto';
+import { mockFile } from '../../../__mock__/file';
+
+describe('PostsController', () => {
+  let controller: PostsController;
+  let postsService: PostsService;
+
+  beforeEach(() => {
+    postsService = {
+      createPost: jest.fn().mockResolvedValue({
+        file: mockFile,
+        message: 'Post created successfully',
+      }),
+      getAds: jest.fn().mockResolvedValue([]),
+    } as any;
+
+    controller = new PostsController(postsService);
+  });
+
+  it('should handle a POST request and return a file and a message', async () => {
+    const createPostDto: CreatePostDto = {
+      email: 'test@example.com',
+      video_url: 'https://example.com/video.mp4',
+      thumbnail: 'https://example.com/thumbnail.jpg',
+      caption: 'This is a test post',
+      time: '2023-10-01T12:00:00Z',
+      userName: 'Clark',
+      isLiked: true,
+      Ismock: false,
+      isAd: false,
+    };
+
+    const numberOfViews = 100;
+
+    const numberOfComments = 50;
+
+    const result = await controller.createPost(
+      mockFile,
+      createPostDto,
+      numberOfViews,
+      numberOfComments,
+      numberOfViews,
+    );
+
+    expect(result).toEqual({
+      file: mockFile,
+      message: 'Post created successfully',
+    });
+
+    expect(postsService.createPost).toHaveBeenCalledWith(
+      mockFile,
+      createPostDto,
+    );
+  });
+
+  it('should return ads from the service', async () => {
+    const mockAds = [{ videoUrl: 'https://example.com/ad.mp4', isAd: true }];
+    jest.spyOn(postsService, 'getAds').mockResolvedValue(mockAds);
+
+    const result = await controller.getAds();
+    expect(result).toEqual(mockAds);
+    expect(postsService.getAds).toHaveBeenCalled();
+  });
+});
