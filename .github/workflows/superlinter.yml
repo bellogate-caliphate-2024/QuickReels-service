@@ -38,6 +38,8 @@ jobs:
         uses: super-linter/super-linter@latest
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_SHA: ${{ github.sha }}
+          GITHUB_BEFORE_SHA: ${{ github.event.before }}
           DEFAULT_BRANCH: production
           VALIDATE_ALL_CODEBASE: 'false'
           VALIDATE_JSCPD: 'false'
