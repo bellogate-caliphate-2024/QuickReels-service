@@ -81,19 +81,26 @@ export class PostsController {
   }
 
 
-@ApiTags('Posts') 
-@Patch(':id')
-@ApiOperation({ summary: 'Update a post by ID' })
-@ApiBody({ type: UpdatePostDto })
-@ApiResponse({ status: 200, description: 'Post updated successfully' })
-async updatePost(@Param('id') id: string, @Body() updateDto: UpdatePostDto) {
-  return this.postService.updatePost(id, updateDto);
-}
-
   @Get('ads')
   @ApiOperation({ summary: 'Fetch ads' })
   async getAds(): Promise<{ videoUrl: string; isAd: boolean }[]> {
     return this.postService.getAds();
+  }
+
+
+  @Get(':id')
+  @ApiOperation({ summary: 'Get a post by ID and increment view count' })
+  @ApiParam({ name: 'id', description: 'ID of the post to retrieve' })
+  async getPostncrementViewCount(@Param('id') id: string) {
+    return this.postService.getPostncrementViewCount(id);
+  }
+
+  @Patch(':id')
+  @ApiOperation({ summary: 'Update a post by ID' })
+  @ApiBody({ type: UpdatePostDto })
+  @ApiResponse({ status: 200, description: 'Post updated successfully' })
+  async updatePost(@Param('id') id: string, @Body() updateDto: UpdatePostDto) {
+    return this.postService.updatePost(id, updateDto);
   }
 
   @Delete(':id')

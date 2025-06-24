@@ -11,6 +11,7 @@ import {
   SigninData,
 } from '../type/auth.type';
 import { UserService } from '../../user/service/user.service';
+
 import * as bcrypt from 'bcrypt';
 import { JwtService } from '@nestjs/jwt';
 

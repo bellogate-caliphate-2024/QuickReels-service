@@ -8,6 +8,8 @@ import { LikeModule } from '../likes/likes.module';
 import { CommentsModule } from '../comments/comments.module';
 import { AuthModule } from '../auth/auth.module';
 import { UserModule } from '../user/user.module';
+import { FollowersModule } from '../followers/followers.module';
+
 
 @Module({
   imports: [
@@ -23,6 +25,8 @@ import { UserModule } from '../user/user.module';
     CommentsModule,
     AuthModule,
     UserModule,
+    FollowersModule
+
   ],
   controllers: [AppController],
   providers: [AppService],

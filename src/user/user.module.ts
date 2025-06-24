@@ -22,3 +22,4 @@ import { Post, PostSchema } from '../posts/models/posts.schema';
   exports: [UserService],
 })
 export class UserModule {}
+

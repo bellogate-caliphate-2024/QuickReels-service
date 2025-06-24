@@ -59,7 +59,7 @@ describe('LikeService', () => {
 
   it('should return a message if user already liked the content', async () => {
     mockLikeRepository.findLike.mockResolvedValue({
-      userId: 'user123',
+      userEmail: 'user123',
       contentId: 'content456',
     });
 

@@ -19,6 +19,7 @@ describe('PostsService', () => {
   let service: PostsService;
   let postModel: Model<any>;
   let helper: DatabaseHelper;
+  let postsRepository: PostsRepository;
 
   const mockHelper = {
     alternateMockPosts: jest.fn((posts) => {
@@ -65,6 +66,7 @@ describe('PostsService', () => {
             findOne: jest.fn(),
             update: jest.fn(),
             delete: jest.fn(),
+            findByIdAndUpdate: jest.fn(),
           },
         },
         { provide: DatabaseHelper, useValue: mockHelper },
@@ -107,6 +109,7 @@ describe('PostsService', () => {
     service = module.get<PostsService>(PostsService);
     postModel = module.get<Model<any>>(getModelToken('Post'));
     helper = module.get<DatabaseHelper>(DatabaseHelper);
+    postsRepository = module.get<PostsRepository>(PostsRepository);
   });
 
   it('should create a post and return success message with new post', async () => {
@@ -313,5 +316,38 @@ describe('PostsService', () => {
     // Ensure all posts and ads are present in the final array
     expect(result).toHaveLength(posts.length + ads.length);
     expect(result).toEqual(expect.arrayContaining([...posts, ...ads]));
+  });
+
+
+  describe('getPostncrementViewCount', () => {
+    it('should find a post by ID and increment its view count', async () => {
+      const postId = 'some-post-id';
+      const mockPost = {
+        _id: postId,
+        numberOfViews: 10,
+        // other post properties...
+      };
+      
+      (postsRepository.findByIdAndUpdate as jest.Mock).mockResolvedValue({ ...mockPost, numberOfViews: 11 });
+
+      const result = await service.getPostncrementViewCount(postId);
+
+      expect(postsRepository.findByIdAndUpdate).toHaveBeenCalledWith(
+        postId,
+        { $inc: { numberOfViews: 1 } },
+      );
+      expect(result).toBeDefined();
+      expect(result.numberOfViews).toBe(11);
+    });
+
+    it('should throw NotFoundException if post is not found', async () => {
+        const postId = 'non-existent-id';
+  
+        (postsRepository.findByIdAndUpdate as jest.Mock).mockResolvedValue(null);
+  
+        await expect(service.getPostncrementViewCount(postId)).rejects.toThrow(
+          'Post not found',
+        );
+      });
   });
 });
