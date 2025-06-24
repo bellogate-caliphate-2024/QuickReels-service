@@ -143,7 +143,17 @@ export class PostsService {
   async updatePost(id: string, updateDto: UpdatePostDto) {
     return this.postsRepository.findByIdAndUpdate(id, updateDto);
   }
-  
+
+  async getPostncrementViewCount(id: string) {
+    const post = await this.postsRepository.findByIdAndUpdate(
+      id,
+      { $inc: { numberOfViews: 1 } } as any,
+    );
+    if (!post) {
+      throw new NotFoundException('Post not found');
+    }
+    return post;
+  }
 
   async getAds(): Promise<{ videoUrl: string; isAd: boolean }[]> {
     return await this.postsRepository.getAds();
