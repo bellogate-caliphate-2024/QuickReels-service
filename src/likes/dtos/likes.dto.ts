@@ -1,11 +1,11 @@
-import { IsString, IsNotEmpty, IsOptional } from 'class-validator';
+import { IsString, IsNotEmpty, IsOptional, IsEmail } from 'class-validator';
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 
 export class CreateLikeDto {
-  @ApiProperty({ example: 'user_123', description: 'The ID of the user who liked the content' })
-  @IsString()
+  @ApiProperty({ example: 'user@example.com', description: 'The email of the user who liked the content' })
+  @IsEmail()
   @IsNotEmpty()
-  userId: string;
+  userEmail: string;
 
   @ApiProperty({ example: 'post_456', description: 'The ID of the content being liked' })
   @IsString()
