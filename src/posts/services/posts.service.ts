@@ -144,6 +144,7 @@ export class PostsService {
     return this.postsRepository.findByIdAndUpdate(id, updateDto);
   }
 
+
   async getPostncrementViewCount(id: string) {
     const post = await this.postsRepository.findByIdAndUpdate(
       id,

@@ -318,6 +318,7 @@ describe('PostsService', () => {
     expect(result).toEqual(expect.arrayContaining([...posts, ...ads]));
   });
 
+
   describe('getPostncrementViewCount', () => {
     it('should find a post by ID and increment its view count', async () => {
       const postId = 'some-post-id';

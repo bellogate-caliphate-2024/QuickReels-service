@@ -10,14 +10,15 @@ import {
   RegistrationResponse,
   SigninData,
 } from '../type/auth.type';
-import { UsersService } from '../../user/service/user.service';
+import { UserService } from '../../user/service/user.service';
+
 import * as bcrypt from 'bcrypt';
 import { JwtService } from '@nestjs/jwt';
 
 @Injectable()
 export class AuthService {
   constructor(
-    private readonly usersService: UsersService,
+    private readonly usersService: UserService,
     private readonly jwtService: JwtService,
   ) {}
 

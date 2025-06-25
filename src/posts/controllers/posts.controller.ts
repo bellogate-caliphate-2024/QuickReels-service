@@ -80,6 +80,7 @@ export class PostsController {
     return this.postService.searchPosts(query);
   }
 
+
   @Get('ads')
   @ApiOperation({ summary: 'Fetch ads' })
   async getAds(): Promise<{ videoUrl: string; isAd: boolean }[]> {
