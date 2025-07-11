@@ -9,6 +9,7 @@ import { CommentsModule } from '../comments/comments.module';
 import { AuthModule } from '../auth/auth.module';
 import { UserModule } from '../user/user.module';
 import { FollowersModule } from '../followers/followers.module';
+import { UserProgressModule } from '../user-progress/user-progress.module';
 
 
 @Module({
@@ -25,7 +26,8 @@ import { FollowersModule } from '../followers/followers.module';
     CommentsModule,
     AuthModule,
     UserModule,
-    FollowersModule
+    FollowersModule,
+    UserProgressModule
 
   ],
   controllers: [AppController],
