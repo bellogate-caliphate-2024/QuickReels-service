@@ -87,6 +87,13 @@ export class PostsController {
     return this.postService.getAds();
   }
 
+  @Get('share-link/:id')
+  @ApiOperation({ summary: 'Get a shareable link for a post' })
+  @ApiParam({ name: 'id', description: 'ID of the post to share' })
+  async getShareableLink(@Param('id') id: string) {
+    return { shareableLink: await this.postService.generateShareableLink(id) };
+  }
+
 
   @Get(':id')
   @ApiOperation({ summary: 'Get a post by ID and increment view count' })

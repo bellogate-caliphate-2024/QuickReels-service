@@ -160,6 +160,11 @@ export class PostsService {
     return await this.postsRepository.getAds();
   }
 
+  async generateShareableLink(postId: string): Promise<string> {
+    const baseUrl = 'https://quickreels.com/posts/';
+    return `${baseUrl}${postId}`;
+  }
+
 
   async deleteContent(id: string): Promise<{ message: string }> {
     const result = await this.postsRepository.deleteById(id);
