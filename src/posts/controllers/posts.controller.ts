@@ -28,14 +28,16 @@ import { CreatePostDto } from '../dtos/posts.dto';
 import { PostsService } from '../services/posts.service';
 import { JwtAuthGuard } from '../../auth/guards/auth.guards';
 import { UpdatePostDto } from '../dtos/update-post.dto';
+import { FirebaseAuthGuard } from '../../auth/guards/firebase-auth.guard';
 @ApiTags('Posts')
-// @UseGuards(JwtAuthGuard)
+@UseGuards(JwtAuthGuard)
 @Controller('posts')
 export class PostsController {
   constructor(private readonly postService: PostsService) {}
 
   @Post('create_post')
   @HttpCode(201)
+  @UseGuards(FirebaseAuthGuard)
   @UseInterceptors(FileInterceptor('videoFile'))
   @ApiOperation({ summary: 'Create a post with video upload' })
   @ApiConsumes('multipart/form-data')

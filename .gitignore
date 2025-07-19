@@ -56,3 +56,5 @@ pids
 # Diagnostic reports (https://nodejs.org/api/report.html)
 report.[0-9]*.[0-9]*.[0-9]*.[0-9]*.json
 
+quickreels-service-firebase-adminsdk-yjzwg-9d83784058.json
+

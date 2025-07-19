@@ -8,7 +8,7 @@ import { Model } from 'mongoose';
 import { Post } from '../posts/models/posts.schema';
 import * as path from 'path'; 
 import * as fs from 'fs';
-import * as ffmpeg from 'fluent-ffmpeg';
+import ffmpeg from 'fluent-ffmpeg';
 import * as ffmpegStatic from '@ffmpeg-installer/ffmpeg';
 import * as ffprobeStatic from '@ffprobe-installer/ffprobe';
 import { format } from 'date-fns';

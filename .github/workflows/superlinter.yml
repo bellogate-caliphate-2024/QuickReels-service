@@ -55,5 +55,8 @@ jobs:
           VALIDATE_JSON: 'false'
           VALIDATE_MARKDOWN: 'false'
           VALIDATE_NATURAL_LANGUAGE: 'false'
+          VALIDATE_BASH: false
+          VALIDATE_PERL: false
+          VALIDATE_SHELL_SHFMT: false
           JSCPD_CONFIG_FILE: .jscpd.json
           LOG_LEVEL: DEBUG
