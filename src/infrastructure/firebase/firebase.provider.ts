@@ -1,5 +1,6 @@
 import * as admin from 'firebase-admin';
-import * as serviceAccount from './serviceAccount.json';
+import * as serviceAccount from '../../../quickreels-service-firebase-adminsdk-yjzwg-9d83784058.json';
+
 
 export const FirebaseAdminProvider = {
   provide: 'FIREBASE_ADMIN',
